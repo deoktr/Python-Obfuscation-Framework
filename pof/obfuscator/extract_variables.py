@@ -14,51 +14,6 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-# TODO (deoktr): WORK IN PROGRESS !
-#
-# Look at `Ruff` for "variable extraction"
-#
-# IDEA: maybe put every declaration at the start of the function, so that it has way
-#   less chance to break the actual function
-#
-# example output:
-#
-# ```
-# import os
-# BASE = "/home/test/"
-# path = os.path.join(BASE, "file.txt")
-# print(path)
-# ```
-#
-# ```
-# import os
-# u = "/home/test/"
-# BASE = u
-# a = "file.txt"
-# path = os.path.join(BASE, a)
-# x = path
-# print(x)
-# ```
-#
-# FIXME (deoktr): parenthesis variables:
-# ```
-# if (
-#    x < 1 and y > 2
-# )
-# ```
-# this would break because the variables would be added INSIDE the parenthesis
-#
-#
-# FIXME (deoktr): decorators:
-# ```
-# class Foo:
-#     @classmethod
-#     def bar(a=1, b=2):
-#        pass
-# ```
-# after classmethod and before def variables a and b will be obfuscated,
-# breaking the code
-#
 import keyword
 from tokenize import DEDENT, ENCODING, INDENT, NAME, NEWLINE, NL, NUMBER, OP, STRING
 
@@ -241,6 +196,8 @@ class ExtractVariablesObfuscator:
     RESERVED = RESERVED_WORDS + BUILTINS + tuple(keyword.kwlist)
     KEYWORDS = tuple(keyword.kwlist)
 
+    CONTINUATION_KEYWORDS = ("elif", "else", "except", "finally")
+
     def __init__(self, generator=None) -> None:
         if generator is None:
             generator = BasicGenerator.alphabet_generator()
@@ -249,12 +206,14 @@ class ExtractVariablesObfuscator:
     def generate_new_name(self):
         return next(self.generator)
 
-    def obfuscate_tokens(self, tokens):
+    def obfuscate_tokens(self, tokens):  # noqa: C901
         result = []
         new_line_buffer = []
         line_buffer = []
-        parenthesis_depth = 0  # parenthesis depth
+        parenthesis_depth = 0
         prev_toknum = None
+        in_decorator = False
+
         for toknum, tokval, *_ in tokens:
             new_tokens = [(toknum, tokval)]
 
@@ -263,17 +222,28 @@ class ExtractVariablesObfuscator:
             elif toknum == OP and tokval == ")":
                 parenthesis_depth -= 1
 
+            # track decorator context, suppress flushing between @ and def/class
+            if toknum == OP and tokval == "@":
+                in_decorator = True
+            elif in_decorator and toknum == NAME and tokval in ("def", "class"):
+                in_decorator = False
+
             is_docstring = toknum == STRING and (
-                prev_toknum
-                in [
-                    NEWLINE,
-                    DEDENT,
-                    INDENT,
-                    ENCODING,
-                ]
+                prev_toknum in [NEWLINE, DEDENT, INDENT, ENCODING]
             )
 
-            if (toknum == STRING and not is_docstring) or toknum == NUMBER:
+            # check if current line starts with a continuation keyword if so,
+            # skip extraction to avoid scope issues
+            first_name_in_line = None
+            for tok in line_buffer:
+                if tok[0] == NAME:
+                    first_name_in_line = tok[1]
+                    break
+            on_continuation_line = first_name_in_line in self.CONTINUATION_KEYWORDS
+
+            if (
+                (toknum == STRING and not is_docstring) or toknum == NUMBER
+            ) and not on_continuation_line:
                 random_name = self.generate_new_name()
                 new_line_buffer.extend(
                     [
@@ -285,19 +255,11 @@ class ExtractVariablesObfuscator:
                 )
                 new_tokens = [(NAME, random_name)]
 
-            # TODO (deoktr): ensure that this works
-            has_decorator = any("@" in t[1] for t in line_buffer)
-            newline_count = [t[1] for t in line_buffer].count("\n")
+            is_newline = toknum in (NEWLINE, NL) and tokval == "\n"
+            can_flush = is_newline and parenthesis_depth == 0 and not in_decorator
 
-            if (
-                ((toknum in (NEWLINE, NL)) and tokval == "\n") and not has_decorator
-            ) or (newline_count > 1):
-                if has_decorator:
-                    line_buffer = [(NEWLINE, "\n"), *line_buffer]
-                    new_tokens = new_line_buffer + line_buffer + new_tokens
-                else:
-                    new_tokens = new_line_buffer + new_tokens + line_buffer
-
+            if can_flush:
+                new_tokens = new_line_buffer + new_tokens + line_buffer
                 new_line_buffer = []
                 line_buffer = []
             elif toknum in (INDENT, DEDENT):

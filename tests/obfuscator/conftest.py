@@ -182,22 +182,12 @@ OBFUSCATOR_REGISTRY: list[ObfuscatorEntry] = [
         "remove",
         is_output_preserving=False,
     ),
-    ObfuscatorEntry(
-        NewlineObfuscator,
-        "NewlineObfuscator",
-        "remove",
-        xfail=True,
-        # FIXME
-        xfail_reason="Produces invalid Python when removing newlines from block bodies",
-    ),
+    ObfuscatorEntry(NewlineObfuscator, "NewlineObfuscator", "remove"),
     ObfuscatorEntry(
         PrintObfuscator,
         "PrintObfuscator",
         "remove",
         is_output_preserving=False,
-        xfail=True,
-        # FIXME
-        xfail_reason="Produces invalid Python when print is the only statement in a block",
     ),
     # Junk / behavior-altering
     ObfuscatorEntry(AddCommentsObfuscator, "AddCommentsObfuscator", "junk"),
@@ -228,8 +218,6 @@ OBFUSCATOR_REGISTRY: list[ObfuscatorEntry] = [
         ExtractVariablesObfuscator,
         "ExtractVariablesObfuscator",
         "other",
-        xfail=True,
-        xfail_reason="WIP: breaks with decorators and parenthesized conditions",
     ),
     # value obfuscators
     ObfuscatorEntry(BooleanObfuscator, "BooleanObfuscator", "other"),

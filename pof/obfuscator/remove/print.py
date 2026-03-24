@@ -16,7 +16,21 @@
 
 # this could cause some problems, if the print statement was the
 # only one present in the file
-from tokenize import NAME, OP
+from tokenize import COMMENT, DEDENT, INDENT, NAME, NEWLINE, NL, OP
+
+
+def _fill_empty_blocks(tokens):
+    filled = []
+    for i, (toknum, tokval, *rest) in enumerate(tokens):
+        filled.append((toknum, tokval, *rest))
+        if toknum == INDENT:
+            j = i + 1
+            while j < len(tokens) and tokens[j][0] in (NEWLINE, NL, COMMENT):
+                j += 1
+            if j < len(tokens) and tokens[j][0] == DEDENT:
+                filled.append((NAME, "pass"))
+                filled.append((NEWLINE, "\n"))
+    return filled
 
 
 class PrintObfuscator:
@@ -53,4 +67,6 @@ class PrintObfuscator:
             if new_tokens:
                 result.extend(new_tokens)
             prev_tokval = tokval
-        return result
+
+        # insert pass into block bodies left empty after token removal
+        return _fill_empty_blocks(result)

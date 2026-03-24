@@ -14,7 +14,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-from tokenize import INDENT, NEWLINE, NL
+from tokenize import COMMENT, NEWLINE, NL
 
 
 class NewlineObfuscator:
@@ -31,9 +31,8 @@ class NewlineObfuscator:
             # remove empty lines created after token manipulations
             # \n after \n --> 2 new lines in a row = one is useless
             # \n after NL --> same ^
-            # \n after INDENT --> docstrings are placed after an indent
-            if toknum == NL or (
-                toknum == NEWLINE and (prev_toknum in (NEWLINE, NL, INDENT))
+            if (toknum == NL and prev_toknum != COMMENT) or (
+                toknum == NEWLINE and (prev_toknum in (NEWLINE, NL))
             ):
                 new_tokens = None
 
