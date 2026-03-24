@@ -1183,6 +1183,9 @@ Other Python obfuscation projects:
 
 ## TODO
 
+- Ensure that the info in the readme are correct and still valide and working.
+- Add control flow obfuscation, add dead code, opaque predicates, control flow
+  flattening.
 - Fix `NamesObfuscator`.
 - Fix multi line strings.
 - Add option to prepend a shebang, and add ability to customize it.

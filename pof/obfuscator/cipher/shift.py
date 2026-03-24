@@ -23,13 +23,12 @@ from pof.utils.tokens import untokenize
 class ShiftObfuscator(ShiftCipher):
     """Shift cipher obfuscator."""
 
-    @classmethod
-    def obfuscate_tokens(cls, tokens):
+    def obfuscate_tokens(self, tokens):
         code = untokenize(tokens)
         return [
             (NAME, "exec"),
             (LPAR, "("),
-            *cls.decode_tokens(cls.encode_tokens(code)),
+            *self.decode_tokens(self.encode_tokens(code)),
             (RPAR, ")"),
             (NEWLINE, "\n"),
         ]
