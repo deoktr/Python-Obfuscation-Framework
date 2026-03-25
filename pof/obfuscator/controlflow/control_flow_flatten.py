@@ -67,7 +67,7 @@ class ControlFlowFlattenObfuscator:
 
         dispatcher_cases: list[ast.If | None] = []
 
-        for idx, (state_num, stmt) in enumerate(zip(block_states, body)):
+        for idx, (state_num, stmt) in enumerate(zip(block_states, body, strict=True)):
             next_state = block_states[idx + 1] if idx + 1 < num_blocks else exit_state
 
             case_body: list[ast.stmt] = []

@@ -162,11 +162,15 @@ def run_all():
     # custom API example
     obf = Example()
     obfuscate_to_file(obf.custom_complete(source), "custom_complete")
-    obfuscate_to_file(black_format(obf.custom_complete(source)), "custom_complete_format")
+    obfuscate_to_file(
+        black_format(obf.custom_complete(source)), "custom_complete_format"
+    )
     obfuscate_to_file(obf.evasion_basic(source), "evasion_basic")
     obfuscate_to_file(obf.obfuscator(VariablesObfuscator(), source), "variables_obf")
     obfuscate_to_file(obf.obfuscator(ConstantsObfuscator(), source), "constant_obf")
-    obfuscate_to_file(obf.obfuscator(ExtractVariablesObfuscator(), source), "extractvariables_obf")
+    obfuscate_to_file(
+        obf.obfuscator(ExtractVariablesObfuscator(), source), "extractvariables_obf"
+    )
     obfuscate_to_file(obf.obfuscator(BuiltinsObfuscator(), source), "buildtins_obf")
     obfuscate_to_file(obf.obfuscator(XORObfuscator(), source), "xor_obf")
     obfuscate_to_file(obf.obfuscator(RC4Obfuscator(), source), "rc4_obf")
@@ -177,7 +181,9 @@ def run_all():
     obfuscate_to_file(obf.obfuscator(TokensObfuscator(), source), "tokens_obf")
     obfuscate_to_file(obf.obfuscator(IPv6Obfuscator(), source), "ipv6_obf")
     obfuscate_to_file(obf.obfuscator(MACObfuscator(), source), "mac_obf")
-    obfuscate_to_file(obf.obfuscator(DeepEncryptionObfuscator(), source), "deepencryption_obf")
+    obfuscate_to_file(
+        obf.obfuscator(DeepEncryptionObfuscator(), source), "deepencryption_obf"
+    )
     obfuscate_to_file(obf.obfuscator(GlobalsObfuscator(), source), "globals_obf")
     obfuscate_to_file(obf.obfuscator(ControlFlowFlattenObfuscator(), source), "cff_obf")
     obfuscate_to_file(obf.stager(QuineStager(), source), "quine_stager")

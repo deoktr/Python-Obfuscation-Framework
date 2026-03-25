@@ -1318,8 +1318,7 @@ Other Python obfuscation projects:
 
 ## TODO
 
-- Add control flow obfuscation, add dead code, opaque predicates, control flow
-  flattening.
+- Add dead code, opaque predicates.
 - Fix `NamesObfuscator`.
 - Add option to prepend a shebang, and add ability to customize it.
 
