@@ -39,6 +39,7 @@ from pof.errors import PofError
 from pof.logger import logger
 from pof.utils.cipher import ShiftCipher
 from pof.utils.generator import AdvancedGenerator
+from pof.utils.tokens import merge_implicit_strings
 
 
 class StringsObfuscator:
@@ -375,6 +376,7 @@ class StringsObfuscator:
         return tokens
 
     def obfuscate_tokens(self, tokens):
+        tokens = merge_implicit_strings(tokens)
         result = []  # obfuscated tokens
 
         if self.import_b64decode:

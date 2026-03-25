@@ -18,6 +18,7 @@ import keyword
 from tokenize import DEDENT, ENCODING, INDENT, NAME, NEWLINE, NL, NUMBER, OP, STRING
 
 from pof.utils.generator import BasicGenerator
+from pof.utils.tokens import merge_implicit_strings
 
 
 class ExtractVariablesObfuscator:
@@ -207,6 +208,7 @@ class ExtractVariablesObfuscator:
         return next(self.generator)
 
     def obfuscate_tokens(self, tokens):  # noqa: C901
+        tokens = merge_implicit_strings(tokens)
         result = []
         new_line_buffer = []
         line_buffer = []

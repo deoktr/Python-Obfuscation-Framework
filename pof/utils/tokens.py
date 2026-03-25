@@ -82,3 +82,61 @@ def untokenize(iterable):
     if ut.encoding is not None:
         out = out.encode(ut.encoding)
     return out
+
+
+def merge_implicit_strings(tokens: list) -> list:
+    """Merge implicitly concatenated string literals into a single token.
+
+    Python allows adjacent string literals to be concatenated::
+
+        a = ("hello"
+             "world")
+
+    The tokenizer produces separate STRING tokens for each literal.
+    This function merges them so obfuscation strategies receive a single
+    string value and produce valid output.
+    """
+    result: list = []
+    i = 0
+    while i < len(tokens):
+        toknum = tokens[i][0]
+        tokval = tokens[i][1]
+        if toknum != STRING:
+            result.append(tokens[i])
+            i += 1
+            continue
+
+        try:
+            accumulated = eval(tokval)  # noqa: S307
+        except Exception:  # noqa: BLE001
+            result.append(tokens[i])
+            i += 1
+            continue
+
+        merged = False
+        j = i + 1
+        while j < len(tokens):
+            next_toknum = tokens[j][0]
+            if next_toknum == NL:
+                j += 1
+                continue
+            if next_toknum == STRING:
+                try:
+                    next_val = eval(tokens[j][1])  # noqa: S307
+                except Exception:  # noqa: BLE001
+                    break
+                if type(accumulated) is not type(next_val):
+                    break
+                accumulated += next_val
+                merged = True
+                j += 1
+                continue
+            break
+
+        if merged:
+            result.append((STRING, repr(accumulated)))
+        else:
+            result.append(tokens[i])
+        i = j if merged else i + 1
+
+    return result

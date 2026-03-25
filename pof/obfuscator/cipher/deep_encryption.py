@@ -14,9 +14,19 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-# FIXME (deoktr): work in progress !
 from base64 import b64encode
-from tokenize import DEDENT, INDENT, LPAR, NAME, NEWLINE, OP, RPAR, STRING, untokenize
+from tokenize import (
+    DEDENT,
+    INDENT,
+    LPAR,
+    NAME,
+    NEWLINE,
+    NL,
+    OP,
+    RPAR,
+    STRING,
+    untokenize,
+)
 
 from pof.logger import logger
 
@@ -25,14 +35,56 @@ class DeepEncryptionObfuscator:
     def __init__(self, encryption_depth=0) -> None:
         self.encryption_depth = encryption_depth
 
+    @staticmethod
+    def _nested_depth_at(tokens):
+        nested = 0
+        awaiting = False
+        for i, (toknum, tokval) in enumerate(tokens):
+            if toknum == NAME and tokval in ("def", "class") and nested == 0:
+                awaiting = True
+            if awaiting and toknum == INDENT:
+                awaiting = False
+                nested += 1
+            elif nested > 0 and toknum == INDENT:
+                nested += 1
+            elif nested > 0 and toknum == DEDENT:
+                nested -= 1
+            yield i, nested
+
+    @staticmethod
+    def _is_empty_return(tokens, pos):
+        """Check if the return at pos has no value (bare return)."""
+        for j in range(pos + 1, len(tokens)):
+            nt = tokens[j][0]
+            if nt in (NEWLINE, NL):
+                return True
+            if nt != DEDENT:
+                return False
+        return True
+
+    @classmethod
+    def _replace_returns(cls, tokens):
+        """Replace return with r= at the function body level.
+
+        Returns inside nested def/class are left intact.
+        """
+        depths = dict(cls._nested_depth_at(tokens))
+        result = []
+        for i, (toknum, tokval) in enumerate(tokens):
+            if toknum == NAME and tokval == "return" and depths.get(i, 0) == 0:
+                result.extend([(NAME, "r"), (OP, "=")])
+                if cls._is_empty_return(tokens, i):
+                    result.append((NAME, "None"))
+            else:
+                result.append((toknum, tokval))
+        return result
+
     def obfuscate_tokens(self, tokens):  # noqa: C901 PLR0912
         """Encrypt every function's source code.
 
-        Encrypt every function's source code with different keys, and decrypt
-        only when needed (just-in-time).
-        This will prevent the entire source code being accessible at once in the
-        memory, of course the draw back is the speed will be reduced.
-        Also verify integrity dynamically, maybe also sign encrypted code.
+        Encrypt every function's source code and decrypt only when needed
+        (just-in-time) via exec(). This prevents the entire source code being
+        accessible at once in memory.
 
         Convert functions into the following:
 
@@ -47,12 +99,8 @@ class DeepEncryptionObfuscator:
             del r_dict
             return r_val
         ```
-
-        Todo:
-        - create a function 'exec_return' and call it with en encrypted source
         """
         result = []  # obfuscated tokens
-        # just for testing
         result.extend(
             [
                 (NAME, "from"),
@@ -91,11 +139,9 @@ class DeepEncryptionObfuscator:
                 inside_function and depth <= self.encryption_depth and toknum == DEDENT
             ):
                 inside_function = False
-                # [2:-1] is to remove indent/dedent
 
                 fixed_function_tokens = []
-                # FIXME (deoktr): fix
-                fixed_depth = -1  # should it be - (self.encryption_depth) ??
+                fixed_depth = -1
                 for ftnum, ftval in function_tokens:
                     ftval_d = ftval
                     if ftnum == INDENT:
@@ -105,59 +151,43 @@ class DeepEncryptionObfuscator:
                         fixed_depth -= 1
                     fixed_function_tokens.append((ftnum, ftval_d))
 
-                # TODO (deoktr): need to change ALL indents tokens
+                # [2:-1] removes the outer indent/dedent wrapper
                 source = untokenize(fixed_function_tokens[2:-1])
 
-                # obviously doesn't work with yield
                 if not any(i in source for i in ["yield", "super"]):
-                    # TODO (deoktr): find a way better way
-                    # FIXME (deoktr): this should replace empty return statements
-                    source = source.replace("return\n", "r=None")
-                    source = source.replace("return", "r=")
+                    body_tokens = fixed_function_tokens[2:-1]
+                    replaced_tokens = self._replace_returns(body_tokens)
+                    source = untokenize(replaced_tokens)
 
                     encoded = b64encode(source.encode())
                     globals_dict_name = "r_dict"
                     new_tokens = [
                         (NEWLINE, "\n"),
-                        (
-                            INDENT,
-                            "    " * (self.encryption_depth + 1),
-                        ),  # TODO (deoktr): change me
+                        (INDENT, "    " * (self.encryption_depth + 1)),
+                        # r_dict = globals().copy()
                         (NAME, globals_dict_name),
                         (OP, "="),
                         (NAME, "globals"),
                         (LPAR, "("),
-                        (LPAR, ")"),
+                        (RPAR, ")"),
                         (OP, "."),
-                        (OP, "copy"),
+                        (NAME, "copy"),
                         (LPAR, "("),
-                        (LPAR, ")"),
+                        (RPAR, ")"),
                         (NEWLINE, "\n"),
+                        # r_dict.update(locals())
                         (NAME, globals_dict_name),
                         (OP, "."),
                         (NAME, "update"),
                         (LPAR, "("),
                         (NAME, "locals"),
                         (LPAR, "("),
-                        (LPAR, ")"),
-                        (LPAR, ")"),
-                        (NEWLINE, "\n"),
-                        # print the code before executing it, for testing
-                        (NAME, "print"),
-                        (LPAR, "("),
-                        (NAME, "b64decode"),
-                        (LPAR, "("),
-                        (STRING, repr(encoded)),
-                        (RPAR, ")"),
-                        (OP, "."),
-                        (NAME, "decode"),
-                        (LPAR, "("),
                         (RPAR, ")"),
                         (RPAR, ")"),
                         (NEWLINE, "\n"),
+                        # exec(b64decode(b'...'), r_dict)
                         (NAME, "exec"),
                         (LPAR, "("),
-                        # just for testing
                         (NAME, "b64decode"),
                         (LPAR, "("),
                         (STRING, repr(encoded)),
@@ -166,6 +196,7 @@ class DeepEncryptionObfuscator:
                         (NAME, globals_dict_name),
                         (RPAR, ")"),
                         (NEWLINE, "\n"),
+                        # if 'r' not in r_dict:
                         (NAME, "if"),
                         (STRING, "'r'"),
                         (NAME, "not"),
@@ -173,14 +204,13 @@ class DeepEncryptionObfuscator:
                         (NAME, globals_dict_name),
                         (OP, ":"),
                         (NEWLINE, "\n"),
-                        (
-                            INDENT,
-                            "    " * (self.encryption_depth + 2),
-                        ),  # TODO (deoktr): change me
+                        # return None
+                        (INDENT, "    " * (self.encryption_depth + 2)),
                         (NAME, "return"),
                         (NAME, "None"),
                         (DEDENT, ""),
                         (NEWLINE, "\n"),
+                        # r_val = r_dict['r']
                         (NAME, "r_val"),
                         (OP, "="),
                         (NAME, globals_dict_name),
@@ -188,9 +218,11 @@ class DeepEncryptionObfuscator:
                         (STRING, "'r'"),
                         (OP, "]"),
                         (NEWLINE, "\n"),
+                        # del r_dict
                         (NAME, "del"),
                         (NAME, globals_dict_name),
                         (NEWLINE, "\n"),
+                        # return r_val
                         (NAME, "return"),
                         (NAME, "r_val"),
                         (NEWLINE, "\n"),

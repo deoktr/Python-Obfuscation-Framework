@@ -41,6 +41,7 @@ import random
 from tokenize import DEDENT, ENCODING, INDENT, NAME, NEWLINE, NUMBER, OP, STRING
 
 from pof.utils.generator import BasicGenerator
+from pof.utils.tokens import merge_implicit_strings
 
 
 class ConstantsObfuscator:
@@ -233,6 +234,7 @@ class ConstantsObfuscator:
         return [(NAME, variables[tokval][0])], variables
 
     def obfuscate_tokens(self, tokens):
+        tokens = merge_implicit_strings(tokens)
         variables = {}
         result = []
         parenthesis_depth = 0  # parenthesis depth

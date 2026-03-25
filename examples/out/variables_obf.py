@@ -2,30 +2,30 @@ import os
 
 def get_linux_release_info():
     """Get Linux release info from /etc/os-release."""
-    qpmvku = '/etc/os-release'
-    if not os.path.exists(qpmvku):
+    WpiYdpFP = '/etc/os-release'
+    if not os.path.exists(WpiYdpFP):
         print('OS release file not found. This might not be a Linux system.')
         return None
-    ayCWD = {}
+    aYOaQ9e = {}
     try:
-        with open(qpmvku, 'r') as bnW:
-            for UBrTZVp in bnW:
-                if not UBrTZVp or '=' not in UBrTZVp:
+        with open(WpiYdpFP, 'r') as wlPfmDfY2_:
+            for YfcOwCdJ0 in wlPfmDfY2_:
+                if not YfcOwCdJ0 or '=' not in YfcOwCdJ0:
                     continue
-                amv, sX5sRamg = UBrTZVp.strip().split('=', 1)
-                sX5sRamg = sX5sRamg.strip('"\'\n')
-                ayCWD[amv] = sX5sRamg
+                I1IEd, hWRp = YfcOwCdJ0.strip().split('=', 1)
+                hWRp = hWRp.strip('"\'\n')
+                aYOaQ9e[I1IEd] = hWRp
         print('\nLinux Release Information:')
-        print(f"Distribution: {ayCWD.get('NAME', 'Unknown')}")
-        print(f"Version: {ayCWD.get('VERSION', 'Unknown')}")
-        print(f"Version ID: {ayCWD.get('VERSION_ID', 'Unknown')}")
-        print(f"Pretty Name: {ayCWD.get('PRETTY_NAME', 'Unknown')}")
-        return ayCWD
+        print(f"Distribution: {aYOaQ9e.get('NAME', 'Unknown')}")
+        print(f"Version: {aYOaQ9e.get('VERSION', 'Unknown')}")
+        print(f"Version ID: {aYOaQ9e.get('VERSION_ID', 'Unknown')}")
+        print(f"Pretty Name: {aYOaQ9e.get('PRETTY_NAME', 'Unknown')}")
+        return aYOaQ9e
     except Exception as e:
         print(f'Error reading release file: {e}')
         return None
 if __name__ == '__main__':
     if os.name == 'posix' and os.path.exists('/etc/os-release'):
-        Wvw = get_linux_release_info()
+        V9Psv = get_linux_release_info()
     else:
         print('This script is designed for Linux systems.')

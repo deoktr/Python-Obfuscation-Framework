@@ -141,8 +141,6 @@ OBFUSCATOR_REGISTRY: list[ObfuscatorEntry] = [
         "DeepEncryptionObfuscator",
         "cipher",
         constructor_args={"encryption_depth": 0},
-        xfail=True,
-        xfail_reason="WIP",
     ),
     # esoteric
     ObfuscatorEntry(CallObfuscator, "CallObfuscator", "esoteric"),
@@ -263,6 +261,18 @@ FIXTURES: list[SourceFixture] = [
             "stopped at 3\n"
             "0:alpha\n1:beta\n2:gamma\n"
             "16.4\n"
+        ),
+    ),
+    SourceFixture(
+        name="multiline_strings",
+        path=str(FIXTURES_DIR / "multiline_strings.py"),
+        expected_output=(
+            "helloworld\n"
+            "foobar\n"
+            "onetwothree\n"
+            "helloworld\n"
+            "helloworld\n"
+            "abc\n"
         ),
     ),
 ]

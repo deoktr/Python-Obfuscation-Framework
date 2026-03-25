@@ -1,23 +1,23 @@
-e2FmYvKjoo='VERSION'
-UqtGOwHMbF="r"
-blbdwyKJ=None
-EoekDswy55="/etc/os-release"
-wVg='NAME'
-zZ3maSLJ=__name__
-ISOM7r="posix"
-uYJiP=Exception
-MTK4jLW2xv="\nLinux Release Information:"
-Q1t1Pa=print
-qTMSOm="\"'\n"
-ukQ5UGbX='Unknown'
-id69Z="__main__"
-NU6drFex8D='PRETTY_NAME'
-gCac='VERSION_ID'
-PerHqKoE=1
-pjD_OXbg3="This script is designed for Linux systems."
-e5wKHt0=open
-uWFg="="
-sz5FH_5="OS release file not found. This might not be a Linux system."
+lc5lf="OS release file not found. This might not be a Linux system."
+dzjKCNa=print
+XUi='Unknown'
+gCQ=open
+T5MlK="__main__"
+V4t=None
+oTG6VKCVI=Exception
+s6qA4rG="\nLinux Release Information:"
+qRxMvYi='VERSION'
+w0Ipb='PRETTY_NAME'
+W47Ny4c="r"
+DDmmJmb="="
+hyUGd7lEl4=__name__
+w1coazp='NAME'
+puTh=1
+ENAmRd_ffx="posix"
+ILw_UuBr="\"'\n"
+CJfG0Ihk="This script is designed for Linux systems."
+qPIn_JGTi="/etc/os-release"
+PV5qXvd='VERSION_ID'
 # source file that will be obfuscated
 import os
 
@@ -26,49 +26,49 @@ def get_linux_release_info():
     """Get Linux release info from /etc/os-release."""
 
     # Check if the file exists
-    release_file=EoekDswy55
+    release_file=qPIn_JGTi
 
     if not os.path.exists(release_file):
-        Q1t1Pa(sz5FH_5)
-        return blbdwyKJ
+        dzjKCNa(lc5lf)
+        return V4t
 
         # Dictionary to store release information
     release_info={}
 
     try:
     # Read and parse the file
-        with e5wKHt0(release_file,UqtGOwHMbF)as f:
+        with gCQ(release_file,W47Ny4c)as f:
             for line in f:
-                if not line or uWFg not in line:
+                if not line or DDmmJmb not in line:
                     continue
 
                     # Split key and value
-                key,value=line.strip().split(uWFg,PerHqKoE)
+                key,value=line.strip().split(DDmmJmb,puTh)
 
                 # Remove quotes from value
-                value=value.strip(qTMSOm)
+                value=value.strip(ILw_UuBr)
 
                 # Store in dictionary
                 release_info[key]=value
 
                 # Print key release information
-        Q1t1Pa(MTK4jLW2xv)
-        Q1t1Pa(f"Distribution: {release_info.get(wVg,ukQ5UGbX)}")
-        Q1t1Pa(f"Version: {release_info.get(e2FmYvKjoo,ukQ5UGbX)}")
-        Q1t1Pa(f"Version ID: {release_info.get(gCac,ukQ5UGbX)}")
-        Q1t1Pa(f"Pretty Name: {release_info.get(NU6drFex8D,ukQ5UGbX)}")
+        dzjKCNa(s6qA4rG)
+        dzjKCNa(f"Distribution: {release_info.get(w1coazp,XUi)}")
+        dzjKCNa(f"Version: {release_info.get(qRxMvYi,XUi)}")
+        dzjKCNa(f"Version ID: {release_info.get(PV5qXvd,XUi)}")
+        dzjKCNa(f"Pretty Name: {release_info.get(w0Ipb,XUi)}")
 
         return release_info
 
-    except uYJiP as e:
-        Q1t1Pa(f"Error reading release file: {e}")
-        return blbdwyKJ
+    except oTG6VKCVI as e:
+        dzjKCNa(f"Error reading release file: {e}")
+        return V4t
 
 
         # Main execution
-if zZ3maSLJ==id69Z:
+if hyUGd7lEl4==T5MlK:
 # Check if running on Linux
-    if os.name==ISOM7r and os.path.exists(EoekDswy55):
+    if os.name==ENAmRd_ffx and os.path.exists(qPIn_JGTi):
         release_details=get_linux_release_info()
     else:
-        Q1t1Pa(pjD_OXbg3)
+        dzjKCNa(CJfG0Ihk)

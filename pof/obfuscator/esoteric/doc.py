@@ -20,6 +20,7 @@ from tokenize import NAME, NUMBER, OP, STRING
 
 from pof.errors import PofError
 from pof.logger import logger
+from pof.utils.tokens import merge_implicit_strings
 
 
 class CharFromDocObfuscator:
@@ -228,6 +229,7 @@ class CharFromDocObfuscator:
     def obfuscate_tokens(self, tokens):
         # print.__doc__[0] = 'P'
         # __builtins__.__doc__[0] = 'B'
+        tokens = merge_implicit_strings(tokens)
         result = []
 
         for _index, (toknum, tokval, *_) in enumerate(tokens):

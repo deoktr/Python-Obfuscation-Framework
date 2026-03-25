@@ -1,29 +1,29 @@
 import os
-def Ceh0RM6c5D():
- j1YJwvlP='/etc/os-release'
- if not os.path.exists(j1YJwvlP):
+def Mda():
+ ydo='/etc/os-release'
+ if not os.path.exists(ydo):
   print('OS release file not found. This might not be a Linux system.')
   return None
- oD7PH9yc2={}
+ oFLBU={}
  try:
-  with open(j1YJwvlP,'r')as fih2Kq:
-   for GUqy6 in fih2Kq:
-    if not GUqy6 or'='not in GUqy6:
+  with open(ydo,'r')as i_mu8Z:
+   for w2KRyS1c2R in i_mu8Z:
+    if not w2KRyS1c2R or'='not in w2KRyS1c2R:
      continue
-    SC_N,ujexlUbB=GUqy6.strip().split('=',1)
-    ujexlUbB=ujexlUbB.strip('"\'\n')
-    oD7PH9yc2[SC_N]=ujexlUbB
+    kNB1KZ7,qVJyEkZ=w2KRyS1c2R.strip().split('=',1)
+    qVJyEkZ=qVJyEkZ.strip('"\'\n')
+    oFLBU[kNB1KZ7]=qVJyEkZ
   print('\nLinux Release Information:')
-  print(f"Distribution: {oD7PH9yc2.get('NAME','Unknown')}")
-  print(f"Version: {oD7PH9yc2.get('VERSION','Unknown')}")
-  print(f"Version ID: {oD7PH9yc2.get('VERSION_ID','Unknown')}")
-  print(f"Pretty Name: {oD7PH9yc2.get('PRETTY_NAME','Unknown')}")
-  return oD7PH9yc2
+  print(f"Distribution: {oFLBU.get('NAME','Unknown')}")
+  print(f"Version: {oFLBU.get('VERSION','Unknown')}")
+  print(f"Version ID: {oFLBU.get('VERSION_ID','Unknown')}")
+  print(f"Pretty Name: {oFLBU.get('PRETTY_NAME','Unknown')}")
+  return oFLBU
  except Exception as e:
   print(f'Error reading release file: {e}')
   return None
 if __name__=='__main__':
  if os.name=='posix'and os.path.exists('/etc/os-release'):
-  T_hJ3hEB=Ceh0RM6c5D()
+  whm=Mda()
  else:
   print('This script is designed for Linux systems.')

