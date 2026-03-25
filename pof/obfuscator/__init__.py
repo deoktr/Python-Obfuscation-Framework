@@ -25,6 +25,7 @@ from .compression.gzip import GzipObfuscator
 from .compression.lzma import LzmaObfuscator
 from .compression.zlib import ZlibObfuscator
 from .constants import ConstantsObfuscator
+from .controlflow.control_flow_flatten import ControlFlowFlattenObfuscator
 from .definitions import DefinitionsObfuscator
 from .encoding.a85 import ASCII85Obfuscator
 from .encoding.b16 import Base16Obfuscator
@@ -76,6 +77,7 @@ __all__ = [
     "CharFromDocObfuscator",
     "CommentsObfuscator",
     "ConstantsObfuscator",
+    "ControlFlowFlattenObfuscator",
     "DeepEncryptionObfuscator",
     "DefinitionsObfuscator",
     "DocstringObfuscator",

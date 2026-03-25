@@ -31,6 +31,7 @@ from pof.obfuscator import (
     CharFromDocObfuscator,
     CommentsObfuscator,
     ConstantsObfuscator,
+    ControlFlowFlattenObfuscator,
     DeepEncryptionObfuscator,
     DefinitionsObfuscator,
     DocstringObfuscator,
@@ -222,6 +223,11 @@ OBFUSCATOR_REGISTRY: list[ObfuscatorEntry] = [
     ObfuscatorEntry(BuiltinsObfuscator, "BuiltinsObfuscator", "other"),
     ObfuscatorEntry(NumberObfuscator, "NumberObfuscator", "other"),
     ObfuscatorEntry(StringsObfuscator, "StringsObfuscator", "other"),
+    ObfuscatorEntry(
+        ControlFlowFlattenObfuscator,
+        "ControlFlowFlattenObfuscator",
+        "other",
+    ),
     # other
     ObfuscatorEntry(TokensObfuscator, "TokensObfuscator", "other"),
 ]
@@ -267,12 +273,7 @@ FIXTURES: list[SourceFixture] = [
         name="multiline_strings",
         path=str(FIXTURES_DIR / "multiline_strings.py"),
         expected_output=(
-            "helloworld\n"
-            "foobar\n"
-            "onetwothree\n"
-            "helloworld\n"
-            "helloworld\n"
-            "abc\n"
+            "helloworld\nfoobar\nonetwothree\nhelloworld\nhelloworld\nabc\n"
         ),
     ),
 ]

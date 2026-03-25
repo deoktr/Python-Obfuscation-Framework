@@ -793,6 +793,41 @@ print("Hello, world!")
 
 ```
 
+#### ControlFlowFlattenObfuscator
+
+Classic control flow flattening.
+
+Source:
+
+```python
+def greet(name):
+    msg = "Hello, "
+    msg = msg + name
+    return msg
+```
+
+Output:
+
+```python
+def greet(name):
+    _state=936
+    _ret=None
+    while _state!=435:
+        if _state==995:
+            msg=msg+name
+            _state=528
+        elif _state==936:
+            msg='Hello, '
+            _state=995
+        elif _state==528:
+            _ret=msg
+            _state=435
+    return _ret
+```
+
+> [!NOTE]
+> Functions containing `yield`, `async`, or `try/except` are skipped and left unchanged.
+
 ### Stager
 
 #### DownloadStager

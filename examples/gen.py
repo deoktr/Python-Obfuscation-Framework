@@ -179,6 +179,7 @@ def run_all():
     obfuscate_to_file(obf.obfuscator(MACObfuscator(), source), "mac_obf")
     obfuscate_to_file(obf.obfuscator(DeepEncryptionObfuscator(), source), "deepencryption_obf")
     obfuscate_to_file(obf.obfuscator(GlobalsObfuscator(), source), "globals_obf")
+    obfuscate_to_file(obf.obfuscator(ControlFlowFlattenObfuscator(), source), "cff_obf")
     obfuscate_to_file(obf.stager(QuineStager(), source), "quine_stager")
 
 
