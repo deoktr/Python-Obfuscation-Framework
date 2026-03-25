@@ -217,6 +217,12 @@ def add_obfuscation(tokens, form):
     )
 
     # ciphers
+    tokens = obfuscation_bool_helper(
+        tokens,
+        form,
+        "obf_deepencryption",
+        obfuscator.DeepEncryptionObfuscator,
+    )
     tokens = obfuscation_bool_helper(tokens, form, "obf_rc4", obfuscator.RC4Obfuscator)
     # TODO (deoktr): fix
     # tokens = obfuscation_bool_helper(
