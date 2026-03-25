@@ -29,6 +29,7 @@ class AdvanceOptionsDrawer {
     constructor() {
         this.drawer = document.getElementById("advancedOptionsDrawer");
         this.drawerToggle = document.getElementById("advancedOptionsDrawerToggle");
+        this.unselectAllBtn = document.getElementById("unselectAllButton");
 
         this.toggleDrawer = this.toggleDrawer.bind(this);
         this.closeDrawer = this.closeDrawer.bind(this);
@@ -38,6 +39,14 @@ class AdvanceOptionsDrawer {
 
     attachEventListeners() {
         this.drawerToggle.addEventListener("click", this.toggleDrawer);
+        this.unselectAllBtn.addEventListener("click", () => this.setAllCheckboxes(false));
+    }
+
+    setAllCheckboxes(checked) {
+        const form = this.drawer.closest("form");
+        form.querySelectorAll('input[type="checkbox"]:not(:disabled)').forEach(cb => {
+            cb.checked = checked;
+        });
     }
 
     toggleDrawer() {
