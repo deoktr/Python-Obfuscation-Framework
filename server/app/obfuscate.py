@@ -68,6 +68,14 @@ def add_obfuscation(tokens, form):
         obfuscator.PrintObfuscator,
     )
 
+    # control flow
+    tokens = obfuscation_bool_helper(
+        tokens,
+        form,
+        "obf_cff",
+        obfuscator.ControlFlowFlattenObfuscator,
+    )
+
     # rename/move
     tokens = obfuscation_bool_helper(
         tokens,

@@ -2,9 +2,12 @@
 
 Web server to obfuscate Python scripts using pof.
 
-Simple server written in Python with flask, and using HTMX for user interaction with Pygment for Python syntax highlight.
+Simple server written in Python with flask, and using HTMX for user interaction
+with Pygment for Python syntax highlight.
 
-Two endpoints are presented, one simple HTTP API to send raw Python sources and receive raw outputs, and one to get HTML formatted output for use with a webpage to show the highlighted code.
+Two endpoints are presented, one simple HTTP API to send raw Python sources and
+receive raw outputs, and one to get HTML formatted output for use with a webpage
+to show the highlighted code.
 
 ## Usage
 

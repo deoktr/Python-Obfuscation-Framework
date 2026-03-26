@@ -1,6 +1,6 @@
 [project]
 name = "python-obfuscation-framework-server"
-version = "2.4.3"
+version = "2.4.4"
 description = "Python Obfuscation Framework"
 readme = "README.md"
 requires-python = ">=3.9"
@@ -26,8 +26,11 @@ dependencies = [
     "gunicorn[gevent]>=23.0.0",
     "markupsafe>=3.0.3",
     "pygments>=2.19.2",
-    "python-obfuscation-framework>=1.9.2",
+    "python-obfuscation-framework>=1.9.3",
 ]
+
+[tool.setuptools]
+py-modules = ["app"]
 
 [project.urls]
 "Homepage" = "https://github.com/deoktr/Python-Obfuscation-Framework/"
