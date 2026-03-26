@@ -75,6 +75,12 @@ def add_obfuscation(tokens, form):
         "obf_cff",
         obfuscator.ControlFlowFlattenObfuscator,
     )
+    tokens = obfuscation_bool_helper(
+        tokens,
+        form,
+        "obf_dead_code",
+        obfuscator.DeadCodeObfuscator,
+    )
 
     # rename/move
     tokens = obfuscation_bool_helper(

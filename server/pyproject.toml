@@ -26,7 +26,7 @@ dependencies = [
     "gunicorn[gevent]>=23.0.0",
     "markupsafe>=3.0.3",
     "pygments>=2.19.2",
-    "python-obfuscation-framework>=1.9.3",
+    "python-obfuscation-framework>=1.9.4",
 ]
 
 [tool.setuptools]
