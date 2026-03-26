@@ -828,6 +828,21 @@ def greet(name):
 > [!NOTE]
 > Functions containing `yield`, `async`, or `try/except` are skipped and left unchanged.
 
+#### DeadCodeObfuscator
+
+Insert dead (unreachable/unused) code blocks into the source.
+
+Source: `print('Hello, world')`
+
+```python
+while False:
+    Etb4inx6B1=[21,7,46,2]
+    agw_QLOu=283-42
+    FwQ2='msg'
+
+print('Hello, world')
+```
+
 ### Stager
 
 #### DownloadStager
