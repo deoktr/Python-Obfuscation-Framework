@@ -1223,8 +1223,11 @@ interesting strings in Python source code. To check rules against source files
 and/or obfuscated files run:
 
 ```bash
-yara --no-warnings yara/python.yar file.py
+yara --no-warnings yara/python.yar examples/out/custom_complete_format.py
 ```
+
+> [!NOTE]
+> The rules are far from perfect, but they are a starting point.
 
 ## Development
 
