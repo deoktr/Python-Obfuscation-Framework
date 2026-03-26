@@ -32,6 +32,7 @@ from pof.obfuscator import (
     CommentsObfuscator,
     ConstantsObfuscator,
     ControlFlowFlattenObfuscator,
+    DeadCodeObfuscator,
     DeepEncryptionObfuscator,
     DefinitionsObfuscator,
     DocstringObfuscator,
@@ -191,6 +192,7 @@ OBFUSCATOR_REGISTRY: list[ObfuscatorEntry] = [
     # Junk / behavior-altering
     ObfuscatorEntry(AddCommentsObfuscator, "AddCommentsObfuscator", "junk"),
     ObfuscatorEntry(AddNewlinesObfuscator, "AddNewlinesObfuscator", "junk"),
+    ObfuscatorEntry(DeadCodeObfuscator, "DeadCodeObfuscator", "junk"),
     # name/variable obfuscators
     ObfuscatorEntry(ConstantsObfuscator, "ConstantsObfuscator", "other"),
     ObfuscatorEntry(

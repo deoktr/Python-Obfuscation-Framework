@@ -43,6 +43,7 @@ from .esoteric.imports import ImportsObfuscator
 from .extract_variables import ExtractVariablesObfuscator
 from .junk.add_comments import AddCommentsObfuscator
 from .junk.add_newlines import AddNewlinesObfuscator
+from .junk.dead_code import DeadCodeObfuscator
 from .names import NamesObfuscator
 from .names_rope import NamesRopeObfuscator
 from .numbers import NumberObfuscator
@@ -78,6 +79,7 @@ __all__ = [
     "CommentsObfuscator",
     "ConstantsObfuscator",
     "ControlFlowFlattenObfuscator",
+    "DeadCodeObfuscator",
     "DeepEncryptionObfuscator",
     "DefinitionsObfuscator",
     "DocstringObfuscator",

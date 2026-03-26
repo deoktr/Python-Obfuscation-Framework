@@ -186,6 +186,7 @@ def run_all():
     )
     obfuscate_to_file(obf.obfuscator(GlobalsObfuscator(), source), "globals_obf")
     obfuscate_to_file(obf.obfuscator(ControlFlowFlattenObfuscator(), source), "cff_obf")
+    obfuscate_to_file(obf.obfuscator(DeadCodeObfuscator(), source), "dead_obf")
     obfuscate_to_file(obf.stager(QuineStager(), source), "quine_stager")
 
 
