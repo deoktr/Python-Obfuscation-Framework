@@ -1336,7 +1336,6 @@ Other Python obfuscation projects:
 
 ## TODO
 
-- Add dead code, opaque predicates.
 - Fix `NamesObfuscator`.
 - Add option to prepend a shebang, and add ability to customize it.
 

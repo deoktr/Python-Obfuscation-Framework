@@ -147,17 +147,37 @@ class DeadCodeObfuscator:
         tokens.append((DEDENT, ""))
         return tokens
 
-    def _generate_dead_if_tokens(self, indent_level: int):
+    @staticmethod
+    def _get_false_cond():
         false_conds = [
             [(NAME, "False")],
             [(NUMBER, "0")],
             [(STRING, '""')],
             [(NAME, "None")],
+            [
+                (NUMBER, str(random.randint(1, 50))),
+                (OP, ">"),
+                (NUMBER, str(random.randint(51, 100))),
+            ],
+            [
+                (NUMBER, str(random.randint(1, 50))),
+                (OP, "=="),
+                (NUMBER, str(random.randint(51, 100))),
+            ],
+            [(NAME, "not"), (NAME, "True")],
+            [(NAME, "True"), (NAME, "and"), (NAME, "False")],
+            [(NUMBER, "0"), (OP, "*"), (NUMBER, str(random.randint(1, 999)))],
+            [(NAME, "len"), (OP, "("), (STRING, '""'), (OP, ")")],
+            [(NAME, "bool"), (OP, "("), (NUMBER, "0"), (OP, ")")],
+            [(OP, "("), (OP, ")"), (NAME, "and"), (NAME, "True")],
         ]
+        return random.choice(false_conds)
+
+    def _generate_dead_if_tokens(self, indent_level: int):
         inner_indent = "    " * (indent_level + 1)
 
         tokens = [(NAME, "if")]
-        tokens.extend(random.choice(false_conds))
+        tokens.extend(self._get_false_cond())
         tokens.extend(
             [
                 (OP, ":"),
@@ -171,7 +191,7 @@ class DeadCodeObfuscator:
         num_elif = random.randint(0, max(0, self.max_branches - 1))
         for _ in range(num_elif):
             tokens.append((NAME, "elif"))
-            tokens.extend(random.choice(false_conds))
+            tokens.extend(self._get_false_cond())
             tokens.extend(
                 [
                     (OP, ":"),
@@ -191,6 +211,10 @@ class DeadCodeObfuscator:
         empty_choices = [
             [(OP, "["), (OP, "]")],
             [(NAME, "range"), (OP, "("), (NUMBER, "0"), (OP, ")")],
+            [(OP, "("), (OP, ")")],
+            [(OP, "{"), (OP, "}")],
+            [(STRING, '""')],
+            [(NAME, "set"), (OP, "("), (OP, ")")],
         ]
 
         tokens = [
@@ -212,13 +236,15 @@ class DeadCodeObfuscator:
 
     def _generate_dead_while_tokens(self, indent_level: int):
         inner_indent = "    " * (indent_level + 1)
-        tokens = [
-            (NAME, "while"),
-            (NAME, "False"),
-            (OP, ":"),
-            (NEWLINE, "\n"),
-            (INDENT, inner_indent),
-        ]
+        tokens = [(NAME, "while")]
+        tokens.extend(self._get_false_cond())
+        tokens.extend(
+            [
+                (OP, ":"),
+                (NEWLINE, "\n"),
+                (INDENT, inner_indent),
+            ]
+        )
         tokens.extend(self._body_tokens())
         tokens.append((DEDENT, ""))
         return tokens
