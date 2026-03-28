@@ -1327,7 +1327,6 @@ Other Python obfuscation projects:
 
 ## TODO
 
-- Fix `NamesObfuscator`.
 - Add option to prepend a shebang, and add ability to customize it.
 
 ## License
