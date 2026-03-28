@@ -243,7 +243,7 @@ class DeadCodeObfuscator:
                 (OP, ":"),
                 (NEWLINE, "\n"),
                 (INDENT, inner_indent),
-            ]
+            ],
         )
         tokens.extend(self._body_tokens())
         tokens.append((DEDENT, ""))

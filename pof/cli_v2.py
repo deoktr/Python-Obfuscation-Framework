@@ -92,9 +92,6 @@ def add_obfuscation(tokens, args):
     if args.obf_constants:
         logger.debug("obfuscating constants")
         tokens = ConstantsObfuscator().obfuscate_tokens(tokens)
-    if args.obf_definitions:
-        logger.debug("obfuscating definitions")
-        tokens = DefinitionsObfuscator().obfuscate_tokens(tokens)
     if args.obf_a85:
         logger.debug("obfuscating a85")
         tokens = ASCII85Obfuscator().obfuscate_tokens(tokens)
@@ -146,9 +143,6 @@ def add_obfuscation(tokens, args):
     if args.obf_names:
         logger.debug("obfuscating names")
         tokens = NamesObfuscator().obfuscate_tokens(tokens)
-    if args.obf_names_rope:
-        logger.debug("obfuscating names_rope")
-        tokens = NamesRopeObfuscator().obfuscate_tokens(tokens)
     if args.obf_numbers:
         logger.debug("obfuscating numbers")
         tokens = NumberObfuscator().obfuscate_tokens(tokens)

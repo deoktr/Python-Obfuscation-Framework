@@ -45,7 +45,6 @@ from pof.obfuscator import (
     BuiltinsObfuscator,
     CommentsObfuscator,
     ConstantsObfuscator,
-    DefinitionsObfuscator,
     DocstringObfuscator,
     ExceptionObfuscator,
     GlobalsObfuscator,
@@ -56,7 +55,6 @@ from pof.obfuscator import (
     NumberObfuscator,
     PrintObfuscator,
     StringsObfuscator,
-    VariablesObfuscator,
     XORObfuscator,
 )
 from pof.stager import ImageStager, RC4Stager
@@ -123,8 +121,6 @@ class Obfuscator(BaseObfuscator):
                 generator=ex_generator,
             ).obfuscate_tokens(tokens)
 
-        tokens = DefinitionsObfuscator().obfuscate_tokens(tokens)
-
         # configure generator
         # generator = alphabet_generator()
         gen_dict = {
@@ -145,42 +141,7 @@ class Obfuscator(BaseObfuscator):
             obf_builtins_rate=0.3,
         ).obfuscate_tokens(tokens)
 
-        # FIXME (deoktr): breaks !
-        # for detailed explanation just consider the following:
-        #   ```
-        #   import module
-        #   class Bar:
-        #       def __init__(self):
-        #           self.foo = getattr(config, "FOO", True)
-        #           module.imported.function(self.foo)
-        #   ```
-        # in this case the first instance of `foo` will successfully be
-        # obfuscated (as it should) but then with the getattr it's marked has
-        # "imported" because it's the result of a builtin function, but notice
-        # that it's not a "simple" variable but rather it's a class attribute
-        # and has a 'self' behind it, so if the variable is marked has imported
-        # and a `.` is placed behind it, it won't be changed, this is the case
-        # in the function call, which is itself imported, and thus set the
-        # imported attribute for itself and all the parameters given to it
-        # this is because we don't keep track of the level of the imported
-        #
-        # FIXME (deoktr): breaks !
-        # Another problem is related to result of function, this is, ofc very
-        # hard to deal with, but if a function returns an object, such has for
-        # example an object of an imported class, which attribute are not
-        # obfuscatable, then it breaks.
-        #   ```
-        #   import foo
-        #   def a():
-        #       return foo.bar()
-        #   x = a()
-        #   x.baz()
-        #   ```
-        # In this context, `baz` would be obfuscated, but it shouldn't because
-        # the function is part of the `foo` imported module
-        # tokens = NamesObfuscator(generator=generator).obfuscate_tokens(tokens)
-        # TODO (deoktr): use alternative variable obfuscator using the AST
-        # tokens = VariablesObfuscator().obfuscate_tokens(tokens)
+        tokens = NamesObfuscator(generator=generator).obfuscate_tokens(tokens)
 
         tokens = GlobalsObfuscator().obfuscate_tokens(tokens)
         tokens = BuiltinsObfuscator().obfuscate_tokens(tokens)
@@ -241,9 +202,7 @@ class Obfuscator(BaseObfuscator):
         tokens = self._get_tokens(source)
         tokens = CommentsObfuscator().obfuscate_tokens(tokens)
         generator = BasicGenerator.alphabet_generator()
-        # tokens = NamesObfuscator(generator=generator).obfuscate_tokens(tokens)
-        tokens = VariablesObfuscator(generator=generator).obfuscate_tokens(tokens)
-        tokens = DefinitionsObfuscator(generator=generator).obfuscate_tokens(tokens)
+        tokens = NamesObfuscator(generator=generator).obfuscate_tokens(tokens)
         tokens = IndentsObfuscator().obfuscate_tokens(tokens)
         tokens = NewlineObfuscator().obfuscate_tokens(tokens)
         return self._untokenize(tokens)
@@ -309,18 +268,7 @@ class Obfuscator(BaseObfuscator):
         tokens = CommentsObfuscator().obfuscate_tokens(tokens)
         tokens = ExceptionObfuscator(generator=generator).obfuscate_tokens(tokens)
         tokens = LoggingObfuscator(generator=generator).obfuscate_tokens(tokens)
-        # FIXME (deoktr): when placed BEFORE NamesObfuscator it breaks the code
-        # tokens = ConstantsObfuscator(
-        #     generator=generator,
-        #     obf_number_rate=1,
-        #     # FIXME (deoktr): breaks if obf_string_rate=1 with NamesObfuscator
-        #     obf_string_rate=0,
-        #     # FIXME (deoktr): breaks if obf_builtins_rate=1 with NamesObfuscator
-        #     obf_builtins_rate=0,
-        # ).obfuscate_tokens(tokens)
-        # tokens = NamesObfuscator(generator=generator).obfuscate_tokens(tokens)
-        tokens = VariablesObfuscator(generator=generator).obfuscate_tokens(tokens)
-        tokens = DefinitionsObfuscator(generator=generator).obfuscate_tokens(tokens)
+        tokens = NamesObfuscator(generator=generator).obfuscate_tokens(tokens)
         tokens = ConstantsObfuscator(
             generator=generator,
             obf_number_rate=1,
@@ -384,10 +332,9 @@ class Obfuscator(BaseObfuscator):
         # tokens = ConstantsObfuscator(generator=generator).obfuscate_tokens(tokens)
 
         tokens = CommentsObfuscator().obfuscate_tokens(tokens)
-        # tokens = DeepEncryptionEvasion().add_evasion(tokens)  # TODO (deoktr): fix
-        # tokens = NamesObfuscator(
-        #     generator=AdvancedGenerator.fixed_length_generator(),
-        # ).obfuscate_tokens(tokens)
+        tokens = NamesObfuscator(
+            generator=AdvancedGenerator.fixed_length_generator(),
+        ).obfuscate_tokens(tokens)
         tokens = BooleanObfuscator().obfuscate_tokens(tokens)
         tokens = IndentsObfuscator().obfuscate_tokens(tokens)
         tokens = NewlineObfuscator().obfuscate_tokens(tokens)

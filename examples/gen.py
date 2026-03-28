@@ -84,8 +84,7 @@ class Example(BaseObfuscator):
             obf_builtins_rate=0.3,
         ).obfuscate_tokens(tokens)
 
-        # FIXME: broken for the moment
-        # tokens = NamesObfuscator(generator=generator).obfuscate_tokens(tokens)
+        tokens = NamesObfuscator(generator=generator).obfuscate_tokens(tokens)
 
         # obfuscate function calls by calling `globals()` instead
         tokens = GlobalsObfuscator().obfuscate_tokens(tokens)
@@ -166,7 +165,7 @@ def run_all():
         black_format(obf.custom_complete(source)), "custom_complete_format"
     )
     obfuscate_to_file(obf.evasion_basic(source), "evasion_basic")
-    obfuscate_to_file(obf.obfuscator(VariablesObfuscator(), source), "variables_obf")
+    obfuscate_to_file(obf.obfuscator(NamesObfuscator(), source), "names_obf")
     obfuscate_to_file(obf.obfuscator(ConstantsObfuscator(), source), "constant_obf")
     obfuscate_to_file(
         obf.obfuscator(ExtractVariablesObfuscator(), source), "extractvariables_obf"

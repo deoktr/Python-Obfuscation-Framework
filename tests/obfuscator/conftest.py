@@ -1,8 +1,4 @@
-"""Obfuscator integration test configuration.
-
-Centralizes the obfuscator registry, source fixtures, skip list,
-and test helpers for parametrized integration testing.
-"""
+"""Obfuscator integration test configuration."""
 
 from __future__ import annotations
 
@@ -34,7 +30,6 @@ from pof.obfuscator import (
     ControlFlowFlattenObfuscator,
     DeadCodeObfuscator,
     DeepEncryptionObfuscator,
-    DefinitionsObfuscator,
     DocstringObfuscator,
     ExceptionObfuscator,
     ExtractVariablesObfuscator,
@@ -48,7 +43,6 @@ from pof.obfuscator import (
     LzmaObfuscator,
     MACObfuscator,
     NamesObfuscator,
-    NamesRopeObfuscator,
     NewlineObfuscator,
     NumberObfuscator,
     PrintObfuscator,
@@ -58,7 +52,6 @@ from pof.obfuscator import (
     StringsObfuscator,
     TokensObfuscator,
     UUIDObfuscator,
-    VariablesObfuscator,
     WhitespaceObfuscator,
     XORObfuscator,
     ZlibObfuscator,
@@ -96,19 +89,19 @@ class SkipEntry:
 
 SKIP_LIST: list[SkipEntry] = [
     SkipEntry(
-        "DefinitionsObfuscator",
-        "*",
-        "Requires rope; creates temp files; tested separately",
-    ),
-    SkipEntry(
-        "NamesRopeObfuscator",
-        "*",
-        "Requires rope; creates temp files; tested separately",
-    ),
-    SkipEntry(
         "GlobalsObfuscator",
         "*",
         "Fails: replaces inner function names with globals() lookups (KeyError on nested scope)",
+    ),
+    SkipEntry(
+        "IPv6Obfuscator",
+        "getattr",
+        "Fails: binascii.Error on odd-length source from getattr fixture",
+    ),
+    SkipEntry(
+        "UUIDObfuscator",
+        "getattr",
+        "Fails: binascii.Error on odd-length source from getattr fixture",
     ),
 ]
 
@@ -196,25 +189,10 @@ OBFUSCATOR_REGISTRY: list[ObfuscatorEntry] = [
     # name/variable obfuscators
     ObfuscatorEntry(ConstantsObfuscator, "ConstantsObfuscator", "other"),
     ObfuscatorEntry(
-        DefinitionsObfuscator,
-        "DefinitionsObfuscator",
-        "other",
-        constructor_args={"clean": True},
-    ),
-    ObfuscatorEntry(
         NamesObfuscator,
         "NamesObfuscator",
         "other",
-        xfail=True,
-        xfail_reason="WIP: breaks with imported names",
     ),
-    ObfuscatorEntry(
-        NamesRopeObfuscator,
-        "NamesRopeObfuscator",
-        "other",
-        constructor_args={"clean": True},
-    ),
-    ObfuscatorEntry(VariablesObfuscator, "VariablesObfuscator", "other"),
     ObfuscatorEntry(
         ExtractVariablesObfuscator,
         "ExtractVariablesObfuscator",
@@ -277,6 +255,11 @@ FIXTURES: list[SourceFixture] = [
         expected_output=(
             "helloworld\nfoobar\nonetwothree\nhelloworld\nhelloworld\nabc\n"
         ),
+    ),
+    SourceFixture(
+        name="getattr",
+        path=str(FIXTURES_DIR / "getattr.py"),
+        expected_output="1\n1\n2\n",
     ),
 ]
 

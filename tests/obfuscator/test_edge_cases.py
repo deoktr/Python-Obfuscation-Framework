@@ -1,9 +1,3 @@
-"""Edge-case tests migrated from legacy individual test files.
-
-Each test preserves a unique assertion pattern not covered by
-test_integration.py's parametrized round-trip tests.
-"""
-
 from __future__ import annotations
 
 import io

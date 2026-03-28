@@ -26,7 +26,6 @@ from .compression.lzma import LzmaObfuscator
 from .compression.zlib import ZlibObfuscator
 from .constants import ConstantsObfuscator
 from .controlflow.control_flow_flatten import ControlFlowFlattenObfuscator
-from .definitions import DefinitionsObfuscator
 from .encoding.a85 import ASCII85Obfuscator
 from .encoding.b16 import Base16Obfuscator
 from .encoding.b32 import Base32Obfuscator
@@ -45,7 +44,6 @@ from .junk.add_comments import AddCommentsObfuscator
 from .junk.add_newlines import AddNewlinesObfuscator
 from .junk.dead_code import DeadCodeObfuscator
 from .names import NamesObfuscator
-from .names_rope import NamesRopeObfuscator
 from .numbers import NumberObfuscator
 from .other.tokens import TokensObfuscator
 from .remove.comments import CommentsObfuscator
@@ -59,7 +57,6 @@ from .stegano.ipv6encoding import IPv6Obfuscator
 from .stegano.macencoding import MACObfuscator
 from .stegano.uuidencoding import UUIDObfuscator
 from .strings import StringsObfuscator
-from .variables import VariablesObfuscator
 
 __all__ = [
     "ASCII85Obfuscator",
@@ -81,7 +78,6 @@ __all__ = [
     "ControlFlowFlattenObfuscator",
     "DeadCodeObfuscator",
     "DeepEncryptionObfuscator",
-    "DefinitionsObfuscator",
     "DocstringObfuscator",
     "ExceptionObfuscator",
     "ExtractVariablesObfuscator",
@@ -95,7 +91,6 @@ __all__ = [
     "LzmaObfuscator",
     "MACObfuscator",
     "NamesObfuscator",
-    "NamesRopeObfuscator",
     "NewlineObfuscator",
     "NumberObfuscator",
     "PrintObfuscator",
@@ -105,7 +100,6 @@ __all__ = [
     "StringsObfuscator",
     "TokensObfuscator",
     "UUIDObfuscator",
-    "VariablesObfuscator",
     "WhitespaceObfuscator",
     "XORObfuscator",
     "ZlibObfuscator",
