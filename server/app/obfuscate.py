@@ -106,12 +106,6 @@ def add_obfuscation(tokens, form):
     tokens = obfuscation_bool_helper(
         tokens,
         form,
-        "obf_definitions",
-        obfuscator.DefinitionsObfuscator,
-    )
-    tokens = obfuscation_bool_helper(
-        tokens,
-        form,
         "obf_extract_variables",
         obfuscator.ExtractVariablesObfuscator,
     )
@@ -128,23 +122,10 @@ def add_obfuscation(tokens, form):
     tokens = obfuscation_bool_helper(
         tokens,
         form,
-        "obf_variables",
-        obfuscator.VariablesObfuscator,
-        generator=gen,
-    )
-    tokens = obfuscation_bool_helper(
-        tokens,
-        form,
         "obf_names",
         obfuscator.NamesObfuscator,
         generator=gen,
     )
-    # tokens = obfuscation_bool_helper(
-    #     tokens,
-    #     form,
-    #     "obf_names_rope",
-    #     obfuscator.NamesRopeObfuscator,
-    # )
 
     # run all classic string and numbers obfuscators 3 times in a row
     tokens = obfuscation_bool_helper(
