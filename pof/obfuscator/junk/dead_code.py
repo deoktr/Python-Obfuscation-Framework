@@ -301,7 +301,7 @@ class DeadCodeObfuscator:
 
             if toknum == OP and tokval == "@":
                 in_decorator = True
-            if in_decorator and toknum == NEWLINE:
+            if in_decorator and toknum == NAME and tokval in ("def", "class"):
                 in_decorator = False
 
             result.append((toknum, tokval))

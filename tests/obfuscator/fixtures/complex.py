@@ -49,6 +49,22 @@ def validate(func):
     return wrapper
 
 
+def validate2(func):
+    def wrapper(*args, **kwargs):
+        return func(*args, **kwargs)
+
+    return wrapper
+
+
+@validate2
+def validate3(func):
+    @validate
+    def wrapper(*args, **kwargs):
+        return func(*args, **kwargs)
+
+    return wrapper
+
+
 class DataProcessor:
     def __init__(self, data):
         self.data = data
@@ -56,6 +72,21 @@ class DataProcessor:
     @validate
     def filtered(self, threshold):
         return [x for x in self.data if x > threshold]
+
+    @validate
+    @validate2
+    def two_decorators(self):
+        return 1
+
+    @validate
+    @staticmethod
+    @validate2
+    def three_decorators():
+        return 1
+
+    @validate3
+    def foo():
+        pass
 
     def stats(self):
         total = sum(self.data)
