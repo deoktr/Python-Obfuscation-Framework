@@ -750,19 +750,49 @@ exec(binascii.a2b_hex("".join(['7072696e-7428-2748-656c-6c6f2c20776f','726c6427-
 
 #### ImportsObfuscator
 
-Source: `import pathlib`
+Remove keyword `import`.
 
 ```python
-pathlib=__import__('pathlib')
+# import X
+X = __import__("X")
+
+# import X as Y
+Y = __import__("X")
+
+# import X, Y
+X = __import__("X")
+Y = __import__("Y")
+
+# import X.Y
+X = __import__("X.Y")
+
+# from X import Y
+Y = __import__("X", fromlist=["Y"]).Y
+
+# from X import Y as Z
+Z = __import__("X", fromlist=["Y"]).Y
+
+# from X import Y, Z
+Y = __import__("X", fromlist=["Y"]).Y
+Z = __import__("X", fromlist=["Z"]).Z
 ```
 
+> [!NOTE]
+> Does not support wildcard imports `*`, or local imports `from . import`.
+
 #### CharFromDocObfuscator
+
+Get a single character from a documentation.
 
 Source: `print('h')`
 
 ```python
 print(oct.__doc__[8])
 ```
+
+> [!WARNING]
+> This is highly prone to error, if the documentation change between Python
+> versions, then this may break.
 
 #### AddCommentsObfuscator
 

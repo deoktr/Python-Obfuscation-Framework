@@ -50,6 +50,22 @@ class _ScopeAnalyzer(ast.NodeVisitor):
             self.imported_names.add(alias.asname or alias.name)
         self.generic_visit(node)
 
+    def visit_Assign(self, node: ast.Assign) -> None:
+        """Detect `x = __import__(...)` and treat x as an imported name."""
+        if len(node.targets) == 1 and isinstance(node.targets[0], ast.Name):
+            value = node.value
+            # unwrap attribute chains: x = __import__("m", fromlist=["y"]).y
+            # as they could be generated from the ImportObfuscator
+            while isinstance(value, ast.Attribute):
+                value = value.value
+            if (
+                isinstance(value, ast.Call)
+                and isinstance(value.func, ast.Name)
+                and value.func.id == "__import__"
+            ):
+                self.imported_names.add(node.targets[0].id)
+        self.generic_visit(node)
+
     def visit_ClassDef(self, node: ast.ClassDef) -> None:
         self.class_names.add(node.name)
         prev = self._in_class

@@ -47,7 +47,7 @@ class GlobalsObfuscator:
                 local_functions.append(tokval)
             prev_tokval = tokval
 
-        result = []  # obfuscated tokens
+        result = []
         prev_tokval = None
         for index, (toknum, tokval, *_) in enumerate(tokens):
             new_tokens = [(toknum, tokval)]
@@ -60,7 +60,7 @@ class GlobalsObfuscator:
                 # ensure it's not a definition
                 and prev_tokval not in ["def", "class", "."]
                 # ensure it's not an argument of a call
-                and next_tokval not in ["="]
+                and next_tokval != "="
                 and tokval not in cls.RESERVED
             ):
                 new_tokens = [

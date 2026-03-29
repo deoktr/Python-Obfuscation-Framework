@@ -183,31 +183,31 @@ class CharFromDocObfuscator:
     )
 
     @staticmethod
-    def get_char_indexes(string, char):
+    def _get_char_indexes(string, char):
         return [pos for pos, c in enumerate(string) if c == char]
 
     @classmethod
-    def try_find_doc_index(cls, char):
+    def _try_find_doc_index(cls, char):
         # take a random builtin doc and search for index in it
         builtin = random.choice(cls.BUILTINS)
         doc = __builtins__[builtin].__doc__
         if not doc:
             msg = f"doc for {builtin} is not a string"
             raise PofError(msg)
-        indexes = cls.get_char_indexes(doc, char)
+        indexes = cls._get_char_indexes(doc, char)
         if len(indexes) == 0:
             msg = "char not present"
             raise PofError(msg)
         index = random.choice(indexes)
         return builtin, index
 
-    def obfuscate_char(self, char):
+    def _obfuscate_char(self, char):
         builtin = None
         index = None
         retry = 3
         for _ in range(retry):
             try:
-                builtin, index = self.try_find_doc_index(char)
+                builtin, index = self._try_find_doc_index(char)
             except PofError:
                 pass
             else:
@@ -239,7 +239,7 @@ class CharFromDocObfuscator:
                 string = ast.literal_eval(tokval)
                 if len(string) == 1:
                     try:
-                        new_tokens = self.obfuscate_char(string)
+                        new_tokens = self._obfuscate_char(string)
                     except PofError as e:
                         logger.debug(str(e))
                     except Exception:  # noqa: BLE001

@@ -135,14 +135,7 @@ OBFUSCATOR_REGISTRY: list[ObfuscatorEntry] = [
     ObfuscatorEntry(CallObfuscator, "CallObfuscator", "esoteric"),
     ObfuscatorEntry(CharFromDocObfuscator, "CharFromDocObfuscator", "esoteric"),
     ObfuscatorEntry(GlobalsObfuscator, "GlobalsObfuscator", "esoteric"),
-    ObfuscatorEntry(
-        ImportsObfuscator,
-        "ImportsObfuscator",
-        "esoteric",
-        xfail=True,
-        # FIXME
-        xfail_reason="Only handles simple 'import X', not well tested",
-    ),
+    ObfuscatorEntry(ImportsObfuscator, "ImportsObfuscator", "esoteric"),
     # stegano
     ObfuscatorEntry(DocstringObfuscator, "DocstringObfuscator", "stegano"),
     ObfuscatorEntry(IPv6Obfuscator, "IPv6Obfuscator", "stegano"),
