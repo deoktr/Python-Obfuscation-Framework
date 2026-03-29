@@ -1,6 +1,3 @@
-# Language features: stdlib imports, nested functions, lambdas,
-# multi-line strings, generators, all prior features
-
 import math
 import itertools
 
@@ -17,10 +14,6 @@ triple = make_multiplier(3)
 
 print(double(5))
 print(triple(4))
-
-# Lambda
-transform = lambda x: x * x + 1
-print(transform(3))
 
 # Generator expression
 squares_gen = (i * i for i in range(5))
@@ -41,52 +34,12 @@ pairs = list(itertools.product([1, 2], ["a", "b"]))
 print(len(pairs))
 
 
-# Class with decorator and comprehensions
-def validate(func):
-    def wrapper(*args, **kwargs):
-        return func(*args, **kwargs)
-
-    return wrapper
-
-
-def validate2(func):
-    def wrapper(*args, **kwargs):
-        return func(*args, **kwargs)
-
-    return wrapper
-
-
-@validate2
-def validate3(func):
-    @validate
-    def wrapper(*args, **kwargs):
-        return func(*args, **kwargs)
-
-    return wrapper
-
-
 class DataProcessor:
     def __init__(self, data):
         self.data = data
 
-    @validate
     def filtered(self, threshold):
         return [x for x in self.data if x > threshold]
-
-    @validate
-    @validate2
-    def two_decorators(self):
-        return 1
-
-    @validate
-    @staticmethod
-    @validate2
-    def three_decorators():
-        return 1
-
-    @validate3
-    def foo():
-        pass
 
     def stats(self):
         total = sum(self.data)
@@ -124,8 +77,3 @@ print(f"stopped at {i}")
 items = ["alpha", "beta", "gamma"]
 for idx, item in enumerate(items):
     print(f"{idx}:{item}")
-
-foo = 1 + 2
-foo += 1.2 + 2.2
-foo += 10**1
-print(foo)

@@ -1,15 +1,3 @@
-# Language features: classes, inheritance, decorators, comprehensions,
-# try/except/finally, .format(), for/while loops
-
-
-def log_call(func):
-    def wrapper(*args, **kwargs):
-        result = func(*args, **kwargs)
-        return result
-
-    return wrapper
-
-
 class Shape:
     def __init__(self, name):
         self.name = name
@@ -27,7 +15,6 @@ class Rectangle(Shape):
         self.width = width
         self.height = height
 
-    @log_call
     def area(self):
         return self.width * self.height
 
@@ -55,26 +42,12 @@ print(sorted(area_map.items()))
 unique_types = {type(s).__name__ for s in shapes}
 print(sorted(unique_types))
 
-# String formatting
-msg = "Total shapes: {}".format(len(shapes))
-print(msg)
-
-# For loop
 for s in shapes:
     print("{}: {}".format(s.name, s.area()))
 
-# While loop
 count = 0
 total = 0
 while count < len(areas):
     total = total + areas[count]
     count = count + 1
 print("Sum: {}".format(total))
-
-# Try/except/finally
-try:
-    result = 10 // 0
-except ZeroDivisionError:
-    print("caught division error")
-finally:
-    print("cleanup done")

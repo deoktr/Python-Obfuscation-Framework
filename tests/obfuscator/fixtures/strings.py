@@ -1,4 +1,9 @@
-# Language features: implicit string concatenation (multi-line and single-line)
+print("Hello, world!")
+
+msg = "Hello, {}".format("world!")
+print(msg)
+
+# multi-line strings/split strings
 a = ("hello"
 "world")
 print(a)

@@ -1,7 +1,3 @@
-# Language features: functions, string concatenation, arithmetic,
-# conditionals, for loop, print statements
-
-
 def greet(name):
     return "Hello, " + name + "!"
 
