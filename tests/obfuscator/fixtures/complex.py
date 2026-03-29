@@ -78,6 +78,84 @@ items = ["alpha", "beta", "gamma"]
 for idx, item in enumerate(items):
     print(f"{idx}:{item}")
 
+
+a = 2
+if 0 <= a < 10:
+    print("in range")
+
+
+first, *middle, last = [1,2,3,4,5]
+print(middle)
+
+
+# walrus operator
+if (n := len(items)) > 10:
+    print(f"{n} items")
+
+
+def f(x):
+    return x * 2
+
+
+items = list(range(20))
+pairs = [(y := f(x), x) for x in items]
+print(pairs)
+
+
+# breaking loops
+seq = range(10)
+
+def found(x):
+    return x == 20
+
+for x in seq:
+    if found(x): break
+else:
+    print("not found")
+
+
+# force positional
+def f(a, b, /, c, *, d):
+    print(a + b + c + d)
+
+f(1, 2, 3, d=4)
+
+
+# slot
+class P:
+    __slots__ = ("x","y")
+    def __init__(self,x,y):
+        self.x, self.y = x,y
+
+p = P(1, 2)
+print(p.x + p.y)
+
+
+# yield
+def foo_yield(l):
+    for i in l:
+        yield i
+
+x_foo_yield = foo_yield(list(range(1)))
+print(next(x_foo_yield))
+print(next(x_foo_yield))
+print(next(x_foo_yield))
+print(next(x_foo_yield))
+
+
+# lists
+a = list(range(10))
+print(a[-3:])
+print(a[::-1])
+print(a[::2])
+
+
+*a, = range(3)
+print(a)
+
+
+a = b = []; a.append(1); print(b)
+
 # obfuscated
 
 # ControlFlowFlattenObfuscator

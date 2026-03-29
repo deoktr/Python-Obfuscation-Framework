@@ -5,7 +5,6 @@ from tokenize import COMMENT, generate_tokens, untokenize
 
 from pof.obfuscator import CommentsObfuscator, ExceptionObfuscator, PrintObfuscator
 
-
 _COMMENTS_SOURCE = """
 '''multiline
 docstring

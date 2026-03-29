@@ -3,6 +3,16 @@ print("Hello, world!")
 msg = "Hello, {}".format("world!")
 print(msg)
 
+# format
+print(f"{3}")
+
+a = 42
+print(f"{a}")
+
+print("%s".format("Hello"))
+
+print(f"{(n:=len([1,2,3]))=}")
+
 # multi-line strings/split strings
 a = ("hello"
 "world")

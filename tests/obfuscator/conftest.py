@@ -69,12 +69,9 @@ FIXTURES_DIR = Path(__file__).parent / "fixtures"
 class ObfuscatorEntry:
     class_ref: type
     name: str
-    category: str
     is_output_preserving: bool = True
     constructor_args: dict[str, Any] = field(default_factory=dict)
     exec_globals: dict[str, Any] = field(default_factory=dict)
-    xfail: bool = False
-    xfail_reason: str = ""
 
 
 @dataclass
@@ -102,101 +99,92 @@ SKIP_LIST: list[SkipEntry] = [
 
 OBFUSCATOR_REGISTRY: list[ObfuscatorEntry] = [
     # encoding
-    ObfuscatorEntry(ASCII85Obfuscator, "ASCII85Obfuscator", "encoding"),
-    ObfuscatorEntry(Base16Obfuscator, "Base16Obfuscator", "encoding"),
-    ObfuscatorEntry(Base32Obfuscator, "Base32Obfuscator", "encoding"),
-    ObfuscatorEntry(Base32HexObfuscator, "Base32HexObfuscator", "encoding"),
-    ObfuscatorEntry(Base64Obfuscator, "Base64Obfuscator", "encoding"),
-    ObfuscatorEntry(Base85Obfuscator, "Base85Obfuscator", "encoding"),
-    ObfuscatorEntry(BinasciiObfuscator, "BinasciiObfuscator", "encoding"),
-    ObfuscatorEntry(SpacenTabObfuscator, "SpacenTabObfuscator", "encoding"),
-    ObfuscatorEntry(WhitespaceObfuscator, "WhitespaceObfuscator", "encoding"),
+    ObfuscatorEntry(ASCII85Obfuscator, "ASCII85Obfuscator"),
+    ObfuscatorEntry(Base16Obfuscator, "Base16Obfuscator"),
+    ObfuscatorEntry(Base32Obfuscator, "Base32Obfuscator"),
+    ObfuscatorEntry(Base32HexObfuscator, "Base32HexObfuscator"),
+    ObfuscatorEntry(Base64Obfuscator, "Base64Obfuscator"),
+    ObfuscatorEntry(Base85Obfuscator, "Base85Obfuscator"),
+    ObfuscatorEntry(BinasciiObfuscator, "BinasciiObfuscator"),
+    ObfuscatorEntry(SpacenTabObfuscator, "SpacenTabObfuscator"),
+    ObfuscatorEntry(WhitespaceObfuscator, "WhitespaceObfuscator"),
     # compression
-    ObfuscatorEntry(Bz2Obfuscator, "Bz2Obfuscator", "compression"),
-    ObfuscatorEntry(GzipObfuscator, "GzipObfuscator", "compression"),
-    ObfuscatorEntry(LzmaObfuscator, "LzmaObfuscator", "compression"),
-    ObfuscatorEntry(ZlibObfuscator, "ZlibObfuscator", "compression"),
+    ObfuscatorEntry(Bz2Obfuscator, "Bz2Obfuscator"),
+    ObfuscatorEntry(GzipObfuscator, "GzipObfuscator"),
+    ObfuscatorEntry(LzmaObfuscator, "LzmaObfuscator"),
+    ObfuscatorEntry(ZlibObfuscator, "ZlibObfuscator"),
     # cipher
     ObfuscatorEntry(
         XORObfuscator,
         "XORObfuscator",
-        "cipher",
         exec_globals={"b64decode": b64decode},
     ),
-    ObfuscatorEntry(RC4Obfuscator, "RC4Obfuscator", "cipher"),
-    ObfuscatorEntry(ShiftObfuscator, "ShiftObfuscator", "cipher"),
+    ObfuscatorEntry(RC4Obfuscator, "RC4Obfuscator"),
+    ObfuscatorEntry(ShiftObfuscator, "ShiftObfuscator"),
     ObfuscatorEntry(
         DeepEncryptionObfuscator,
         "DeepEncryptionObfuscator",
-        "cipher",
-        constructor_args={"encryption_depth": 0},
+        constructor_args={"encryption_depth": 2},
     ),
     # esoteric
-    ObfuscatorEntry(CallObfuscator, "CallObfuscator", "esoteric"),
-    ObfuscatorEntry(CharFromDocObfuscator, "CharFromDocObfuscator", "esoteric"),
-    ObfuscatorEntry(GlobalsObfuscator, "GlobalsObfuscator", "esoteric"),
-    ObfuscatorEntry(ImportsObfuscator, "ImportsObfuscator", "esoteric"),
+    ObfuscatorEntry(CallObfuscator, "CallObfuscator"),
+    ObfuscatorEntry(CharFromDocObfuscator, "CharFromDocObfuscator"),
+    ObfuscatorEntry(GlobalsObfuscator, "GlobalsObfuscator"),
+    ObfuscatorEntry(ImportsObfuscator, "ImportsObfuscator"),
     # stegano
-    ObfuscatorEntry(DocstringObfuscator, "DocstringObfuscator", "stegano"),
-    ObfuscatorEntry(IPv6Obfuscator, "IPv6Obfuscator", "stegano"),
-    ObfuscatorEntry(MACObfuscator, "MACObfuscator", "stegano"),
-    ObfuscatorEntry(UUIDObfuscator, "UUIDObfuscator", "stegano"),
+    ObfuscatorEntry(DocstringObfuscator, "DocstringObfuscator"),
+    ObfuscatorEntry(IPv6Obfuscator, "IPv6Obfuscator"),
+    ObfuscatorEntry(MACObfuscator, "MACObfuscator"),
+    ObfuscatorEntry(UUIDObfuscator, "UUIDObfuscator"),
     # remove / behavior-altering
-    ObfuscatorEntry(CommentsObfuscator, "CommentsObfuscator", "remove"),
+    ObfuscatorEntry(CommentsObfuscator, "CommentsObfuscator"),
     ObfuscatorEntry(
         ExceptionObfuscator,
         "ExceptionObfuscator",
-        "remove",
         is_output_preserving=False,
     ),
-    ObfuscatorEntry(IndentsObfuscator, "IndentsObfuscator", "remove"),
+    ObfuscatorEntry(IndentsObfuscator, "IndentsObfuscator"),
     ObfuscatorEntry(
         LoggingObfuscator,
         "LoggingObfuscator",
-        "remove",
         is_output_preserving=False,
     ),
     ObfuscatorEntry(
         LoggingRemoveObfuscator,
         "LoggingRemoveObfuscator",
-        "remove",
         is_output_preserving=False,
     ),
-    ObfuscatorEntry(NewlineObfuscator, "NewlineObfuscator", "remove"),
+    ObfuscatorEntry(NewlineObfuscator, "NewlineObfuscator"),
     ObfuscatorEntry(
         PrintObfuscator,
         "PrintObfuscator",
-        "remove",
         is_output_preserving=False,
     ),
     # Junk / behavior-altering
-    ObfuscatorEntry(AddCommentsObfuscator, "AddCommentsObfuscator", "junk"),
-    ObfuscatorEntry(AddNewlinesObfuscator, "AddNewlinesObfuscator", "junk"),
-    ObfuscatorEntry(DeadCodeObfuscator, "DeadCodeObfuscator", "junk"),
+    ObfuscatorEntry(AddCommentsObfuscator, "AddCommentsObfuscator"),
+    ObfuscatorEntry(AddNewlinesObfuscator, "AddNewlinesObfuscator"),
+    ObfuscatorEntry(DeadCodeObfuscator, "DeadCodeObfuscator"),
     # name/variable obfuscators
-    ObfuscatorEntry(ConstantsObfuscator, "ConstantsObfuscator", "other"),
+    ObfuscatorEntry(ConstantsObfuscator, "ConstantsObfuscator"),
     ObfuscatorEntry(
         NamesObfuscator,
         "NamesObfuscator",
-        "other",
     ),
     ObfuscatorEntry(
         ExtractVariablesObfuscator,
         "ExtractVariablesObfuscator",
-        "other",
     ),
     # value obfuscators
-    ObfuscatorEntry(BooleanObfuscator, "BooleanObfuscator", "other"),
-    ObfuscatorEntry(BuiltinsObfuscator, "BuiltinsObfuscator", "other"),
-    ObfuscatorEntry(NumberObfuscator, "NumberObfuscator", "other"),
-    ObfuscatorEntry(StringsObfuscator, "StringsObfuscator", "other"),
+    ObfuscatorEntry(BooleanObfuscator, "BooleanObfuscator"),
+    ObfuscatorEntry(BuiltinsObfuscator, "BuiltinsObfuscator"),
+    ObfuscatorEntry(NumberObfuscator, "NumberObfuscator"),
+    ObfuscatorEntry(StringsObfuscator, "StringsObfuscator"),
     ObfuscatorEntry(
         ControlFlowFlattenObfuscator,
         "ControlFlowFlattenObfuscator",
-        "other",
     ),
     # other
-    ObfuscatorEntry(TokensObfuscator, "TokensObfuscator", "other"),
+    ObfuscatorEntry(TokensObfuscator, "TokensObfuscator"),
 ]
 
 
@@ -295,20 +283,4 @@ def pytest_generate_tests(metafunc: pytest.Metafunc) -> None:
             "fixture_source",
             FIXTURES,
             ids=[f.name for f in FIXTURES],
-        )
-
-
-@pytest.fixture(autouse=True)
-def _apply_xfail(request: pytest.FixtureRequest) -> None:
-    """Automatically apply xfail markers for known-broken obfuscators."""
-    entry = None
-    if "obfuscator_entry" in request.fixturenames:
-        # Access the parametrized value
-        for mark in request.node.callspec.params.values():
-            if isinstance(mark, ObfuscatorEntry) and mark.xfail:
-                entry = mark
-                break
-    if entry is not None and entry.xfail:
-        request.node.add_marker(
-            pytest.mark.xfail(reason=entry.xfail_reason, strict=False)
         )

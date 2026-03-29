@@ -46,7 +46,12 @@ class PrintObfuscator:
         for toknum, tokval, *_ in tokens:
             new_tokens = [(toknum, tokval)]
 
-            if not inside_print and toknum == NAME and tokval == "print":
+            if (
+                not inside_print
+                and toknum == NAME
+                and tokval == "print"
+                and prev_tokval not in ("def", ".")
+            ):
                 new_tokens = None
                 inside_print = True
                 print_par_depth = parenthesis_depth

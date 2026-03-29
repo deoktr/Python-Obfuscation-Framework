@@ -14,7 +14,6 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-# TODO (deoktr): add parameter to disable spacing imports
 import random
 from tokenize import DEDENT, INDENT, NEWLINE
 
@@ -35,7 +34,6 @@ class AddNewlinesObfuscator:
                     new_tokens.extend([(NEWLINE, "\n")])
 
                 else:
-                    # FIXME (deoktr): add newlines BEFORE class/function decorators
                     next_non_indent_tokval = None
                     for i in range(index, len(tokens)):
                         tn, tv, *__ = tokens[i]

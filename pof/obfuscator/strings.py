@@ -87,7 +87,7 @@ class StringsObfuscator:
     @staticmethod
     def _is_bytes_literal(tokval: str) -> bool:
         """Check if a string token represents a bytes literal (b'...' or B'...')."""
-        prefix = tokval.split("'", maxsplit=1)[0].split('"')[0]
+        prefix = tokval.split("'", maxsplit=1)[0].split('"', maxsplit=1)[0]
         return "b" in prefix or "B" in prefix
 
     def _obf_shift(self, tokval: str):
@@ -192,7 +192,7 @@ class StringsObfuscator:
                 return [(STRING, tokval)]
         encoded = ""
         for c in raw_string:
-            ucode = f"\\u{hex(ord(c))[2:]:0>4}" if not c.isdigit() else c  # noqa: FURB116
+            ucode = f"\\u{ord(c):04x}" if not c.isdigit() else c
             encoded += ucode
         return [(STRING, f"'{encoded}'")]
 

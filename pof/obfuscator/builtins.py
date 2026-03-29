@@ -18,7 +18,18 @@
 # TODO (deoktr): add `__name__.__class__.__class__.__base__.__subclasses__()` variant
 
 import random
-from tokenize import LPAR, LSQB, NAME, NUMBER, OP, RPAR, RSQB, STRING
+from tokenize import (
+    FSTRING_END,
+    FSTRING_START,
+    LPAR,
+    LSQB,
+    NAME,
+    NUMBER,
+    OP,
+    RPAR,
+    RSQB,
+    STRING,
+)
 from typing import ClassVar
 
 from pof.logger import logger
@@ -470,6 +481,7 @@ class BuiltinsObfuscator:
     def obfuscate_tokens(self, tokens):
         result = []
         parenthesis_depth = 0  # parenthesis depth
+        fstring_depth = 0
         prev_tokval = None
         for index, (toknum, tokval, *_) in enumerate(tokens):
             new_tokens = [(toknum, tokval)]
@@ -482,14 +494,20 @@ class BuiltinsObfuscator:
             elif toknum == OP and tokval == ")":
                 parenthesis_depth -= 1
 
+            if toknum == FSTRING_START:
+                fstring_depth += 1
+            elif toknum == FSTRING_END:
+                fstring_depth -= 1
+
             if (
                 toknum == NAME
                 and tokval in self.BUILTINS
-                and prev_tokval != "."  # avoid changing class/imports functions
+                and prev_tokval not in (".", "def", "class")
                 and (
                     parenthesis_depth == 0
                     or (parenthesis_depth > 0 and next_tokval != "=")
                 )
+                and fstring_depth == 0
             ):
                 new_tokens = self.obfuscate_builtins(tokval)
 

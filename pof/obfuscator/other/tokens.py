@@ -14,7 +14,17 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-from tokenize import LPAR, NAME, NEWLINE, NUMBER, OP, RPAR, STRING
+from tokenize import (
+    FSTRING_END,
+    FSTRING_START,
+    LPAR,
+    NAME,
+    NEWLINE,
+    NUMBER,
+    OP,
+    RPAR,
+    STRING,
+)
 
 
 class TokensObfuscator:
@@ -33,7 +43,33 @@ class TokensObfuscator:
     def generate_tokens_list(tokens):
         tokens_list = []
         tokens_list.append((OP, "["))
+        fstring_depth = 0
+        fstring_parts: list[str] = []
         for toknum, tokval, *_ in tokens:
+            if toknum == FSTRING_START:
+                fstring_depth += 1
+                fstring_parts = [tokval]
+                continue
+            if fstring_depth > 0:
+                if toknum == FSTRING_END:
+                    fstring_depth -= 1
+                    if fstring_depth == 0:
+                        fstring_parts.append(tokval)
+                        merged = "".join(fstring_parts)
+                        tokens_list.extend(
+                            [
+                                (LPAR, "("),
+                                (NUMBER, str(STRING)),
+                                (OP, ","),
+                                (STRING, repr(merged)),
+                                (RPAR, ")"),
+                                (OP, ","),
+                            ],
+                        )
+                        fstring_parts = []
+                        continue
+                fstring_parts.append(tokval)
+                continue
             tokens_list.extend(
                 [
                     (LPAR, "("),

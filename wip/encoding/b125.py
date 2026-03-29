@@ -22,7 +22,6 @@ https://github.com/kevinAlbs/Base122
 https://github.com/eshaz/simple-yenc#what-is-dynencode
 """
 
-
 if not __package__:
     import default_vars
 else:

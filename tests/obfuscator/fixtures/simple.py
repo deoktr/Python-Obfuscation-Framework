@@ -24,8 +24,8 @@ for i in range(3):
 
 print("done")
 
-var='Hello, world'
+var = "Hello, world"
 print(var)
 
-var="Hello, world"
+var = "Hello, world"
 print(var)

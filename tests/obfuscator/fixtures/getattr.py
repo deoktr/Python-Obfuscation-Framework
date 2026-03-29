@@ -1,6 +1,7 @@
 class Foo:
     bar = 1
 
+
 print(Foo.bar)
 
 b = getattr(Foo, "bar")

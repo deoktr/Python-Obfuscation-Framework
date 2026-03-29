@@ -24,7 +24,7 @@ print(any([True]))
 print(not not True)
 
 # '' in ''
-print('' in '')
+print("" in "")
 
 # bool(1)
 print(bool(1))

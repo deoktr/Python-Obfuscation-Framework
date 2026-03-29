@@ -40,6 +40,8 @@ class ControlFlowFlattenObfuscator:
                     ast.AsyncFor,
                     ast.AsyncWith,
                     ast.Await,
+                    ast.Nonlocal,
+                    ast.Global,
                 ),
             ):
                 return True

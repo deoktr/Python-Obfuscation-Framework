@@ -1,5 +1,9 @@
+from dataclasses import dataclass
+
+
 def validate(func):
     print("validate outer")
+
     def wrapper(*args, **kwargs):
         print("validate")
         return func(*args, **kwargs)
@@ -9,6 +13,7 @@ def validate(func):
 
 def validate2(func):
     print("validate2 outer")
+
     def wrapper(*args, **kwargs):
         print("validate2")
         return func(*args, **kwargs)
@@ -19,6 +24,7 @@ def validate2(func):
 @validate2
 def validate3(func):
     print("validate3 outer")
+
     @validate
     def wrapper(*args, **kwargs):
         print("validate3")
@@ -27,6 +33,7 @@ def validate3(func):
     return wrapper
 
 
+@dataclass(frozen=True)
 class DataProcessor:
     @validate
     def filtered(self):
@@ -46,6 +53,7 @@ class DataProcessor:
     @validate3
     def foo(self):
         return "foo"
+
 
 d = DataProcessor()
 print(d.filtered())

@@ -7,7 +7,7 @@ name = "python-obfuscation-framework"
 version = "1.11.1"
 description = "Python Obfuscation Framework"
 readme = "README.md"
-requires-python = ">=3.10"
+requires-python = ">=3.12"
 license = "GPL-3.0-or-later"
 keywords = ["cybersecurity", "obfuscation", "obfuscator", "stager", "payload"]
 authors = [{ name = "deoktr", email = "35725720+deoktr@users.noreply.github.com" }]

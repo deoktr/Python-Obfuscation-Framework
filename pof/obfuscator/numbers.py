@@ -16,7 +16,19 @@
 
 import random
 from enum import Enum
-from tokenize import COMMA, LPAR, NAME, NUMBER, OP, PLUS, RPAR, STRING, untokenize
+from tokenize import (
+    COMMA,
+    FSTRING_END,
+    FSTRING_START,
+    LPAR,
+    NAME,
+    NUMBER,
+    OP,
+    PLUS,
+    RPAR,
+    STRING,
+    untokenize,
+)
 
 from pof.errors import PofError
 from pof.logger import logger
@@ -274,10 +286,16 @@ class NumberObfuscator:
 
     def obfuscate_tokens(self, tokens):
         result = []
+        fstring_depth = 0
         for toknum, tokval, *_ in tokens:
             new_tokens = [(toknum, tokval)]
 
-            if toknum == NUMBER:
+            if toknum == FSTRING_START:
+                fstring_depth += 1
+            elif toknum == FSTRING_END:
+                fstring_depth -= 1
+
+            if toknum == NUMBER and fstring_depth == 0:
                 new_tokens = self.obfuscate_number(toknum, tokval)
 
             if new_tokens:

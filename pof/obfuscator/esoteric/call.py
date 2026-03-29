@@ -15,7 +15,7 @@
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 import keyword
-from tokenize import NAME, OP
+from tokenize import FSTRING_END, FSTRING_START, NAME, OP
 
 
 # TODO (deoktr): add frequency
@@ -39,11 +39,17 @@ class CallObfuscator:
     def obfuscate_tokens(cls, tokens):
         result = []  # obfuscated tokens
         prev_tokval = None
+        fstring_depth = 0
         for index, (toknum, tokval, *_) in enumerate(tokens):
             new_tokens = [(toknum, tokval)]
             next_tokval = None
             if len(tokens) > index + 1:
                 _, next_tokval, *__ = tokens[index + 1]
+
+            if toknum == FSTRING_START:
+                fstring_depth += 1
+            elif toknum == FSTRING_END:
+                fstring_depth -= 1
 
             if (
                 # ensure it's not a definition
@@ -51,6 +57,7 @@ class CallObfuscator:
                 and toknum == NAME
                 and tokval not in cls.RESERVED
                 and next_tokval == "("
+                and fstring_depth == 0
             ):
                 new_tokens.extend(
                     [

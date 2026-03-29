@@ -6,8 +6,10 @@ localmath = math
 floorval = localmath.floor(3.2)
 print(floorval)
 
+
 def ceil(a):
     print("LOCAL CEIL")
+
 
 print(floor(3.7))
 print(c(3.2))

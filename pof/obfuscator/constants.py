@@ -38,7 +38,18 @@ Can extract:
 #
 
 import random
-from tokenize import DEDENT, ENCODING, INDENT, NAME, NEWLINE, NUMBER, OP, STRING
+from tokenize import (
+    DEDENT,
+    ENCODING,
+    FSTRING_END,
+    FSTRING_START,
+    INDENT,
+    NAME,
+    NEWLINE,
+    NUMBER,
+    OP,
+    STRING,
+)
 
 from pof.utils.generator import BasicGenerator
 from pof.utils.tokens import merge_implicit_strings
@@ -238,6 +249,7 @@ class ConstantsObfuscator:
         variables = {}
         result = []
         parenthesis_depth = 0  # parenthesis depth
+        fstring_depth = 0
         prev_tokval = None
         prev_toknum = None
         for index, (toknum, tokval, *_) in enumerate(tokens):
@@ -252,12 +264,17 @@ class ConstantsObfuscator:
             elif toknum == OP and tokval == ")":
                 parenthesis_depth -= 1
 
+            if toknum == FSTRING_START:
+                fstring_depth += 1
+            elif toknum == FSTRING_END:
+                fstring_depth -= 1
+
             # obfuscation
-            if (
+            if fstring_depth == 0 and (
                 (
                     toknum == NAME
                     and tokval in self.BUILTINS
-                    and prev_tokval != "."  # avoid changing class/imports functions
+                    and prev_tokval not in (".", "def", "class")
                     and (
                         parenthesis_depth == 0
                         or (parenthesis_depth > 0 and next_tokval != "=")

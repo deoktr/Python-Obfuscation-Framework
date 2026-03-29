@@ -15,7 +15,19 @@
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 import keyword
-from tokenize import DEDENT, ENCODING, INDENT, NAME, NEWLINE, NL, NUMBER, OP, STRING
+from tokenize import (
+    DEDENT,
+    ENCODING,
+    FSTRING_END,
+    FSTRING_START,
+    INDENT,
+    NAME,
+    NEWLINE,
+    NL,
+    NUMBER,
+    OP,
+    STRING,
+)
 
 from pof.utils.generator import BasicGenerator
 from pof.utils.tokens import merge_implicit_strings
@@ -207,12 +219,13 @@ class ExtractVariablesObfuscator:
     def generate_new_name(self):
         return next(self.generator)
 
-    def obfuscate_tokens(self, tokens):  # noqa: C901
+    def obfuscate_tokens(self, tokens):  # noqa: C901, PLR0912
         tokens = merge_implicit_strings(tokens)
         result = []
         new_line_buffer = []
         line_buffer = []
         parenthesis_depth = 0
+        fstring_depth = 0
         prev_toknum = None
         in_decorator = False
 
@@ -223,6 +236,11 @@ class ExtractVariablesObfuscator:
                 parenthesis_depth += 1
             elif toknum == OP and tokval == ")":
                 parenthesis_depth -= 1
+
+            if toknum == FSTRING_START:
+                fstring_depth += 1
+            elif toknum == FSTRING_END:
+                fstring_depth -= 1
 
             # track decorator context, suppress flushing between @ and def/class
             if toknum == OP and tokval == "@":
@@ -244,8 +262,10 @@ class ExtractVariablesObfuscator:
             on_continuation_line = first_name_in_line in self.CONTINUATION_KEYWORDS
 
             if (
-                (toknum == STRING and not is_docstring) or toknum == NUMBER
-            ) and not on_continuation_line:
+                ((toknum == STRING and not is_docstring) or toknum == NUMBER)
+                and not on_continuation_line
+                and fstring_depth == 0
+            ):
                 random_name = self.generate_new_name()
                 new_line_buffer.extend(
                     [
