@@ -399,7 +399,7 @@ class RC4Cipher:
             return "".join(res)
 
         def rc4encrypt(key, plaintext):
-            plaintext = [ord(c) for c in plaintext]
+            plaintext = list(plaintext.encode("utf-8"))
             return encrypt_logic(key, plaintext)
 
         return rc4encrypt(self.key, string)

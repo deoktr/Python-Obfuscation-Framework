@@ -192,14 +192,30 @@ class _StringFixer(ast.NodeTransformer):
             node.args[1] = ast.Constant(value=self.mapping[node.args[1].value])
         return node
 
+    def _is_globals_call(self, node: ast.expr) -> bool:
+        """Check if node is a call to globals()."""
+        return (
+            isinstance(node, ast.Call)
+            and isinstance(node.func, ast.Name)
+            and node.func.id == "globals"
+            and not node.args
+        )
+
     def visit_Subscript(self, node: ast.Subscript) -> ast.Subscript:
         self.generic_visit(node)
         if (
-            isinstance(node.value, ast.Attribute)
-            and node.value.attr == "__dict__"
-            and isinstance(node.slice, ast.Constant)
+            isinstance(node.slice, ast.Constant)
             and isinstance(node.slice.value, str)
             and node.slice.value in self.mapping
+            and (
+                # __dict__['name'] pattern
+                (
+                    isinstance(node.value, ast.Attribute)
+                    and node.value.attr == "__dict__"
+                )
+                # globals()['name'] pattern
+                or self._is_globals_call(node.value)
+            )
         ):
             node.slice = ast.Constant(value=self.mapping[node.slice.value])
         return node
@@ -212,6 +228,7 @@ class NamesObfuscator:
         "__file__",
         "__name__",
         "__doc__",
+        "__builtins__",
         "__package__",
         "__loader__",
         "__spec__",

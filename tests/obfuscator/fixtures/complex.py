@@ -77,3 +77,24 @@ print(f"stopped at {i}")
 items = ["alpha", "beta", "gamma"]
 for idx, item in enumerate(items):
     print(f"{idx}:{item}")
+
+# obfuscated
+
+# ControlFlowFlattenObfuscator
+# TODO: uncomment
+# def greet(name):
+#     _state=936
+#     _ret=None
+#     while _state!=435:
+#         if _state==995:
+#             msg=msg+name
+#             _state=528
+#         elif _state==936:
+#             msg='Hello, '
+#             _state=995
+#         elif _state==528:
+#             _ret=msg
+#             _state=435
+#     return _ret
+#
+# greet("world")

@@ -84,15 +84,26 @@ class StringsObfuscator:
             shift_cipher_class_obj = ShiftCipher()
         self.shift_cipher_class_obj = shift_cipher_class_obj
 
-    def obf_shift(self, tokval: str):
+    @staticmethod
+    def _is_bytes_literal(tokval: str) -> bool:
+        """Check if a string token represents a bytes literal (b'...' or B'...')."""
+        prefix = tokval.split("'", maxsplit=1)[0].split('"')[0]
+        return "b" in prefix or "B" in prefix
+
+    def _obf_shift(self, tokval: str):
         # TODO (deoktr): choose random padding here
         raw_string = eval(tokval)  # noqa: S307
         if isinstance(raw_string, bytes):
-            raw_string = raw_string.decode()
+            try:
+                raw_string = raw_string.decode()
+            except UnicodeDecodeError:
+                return [(STRING, tokval)]
+        if not raw_string.isascii():
+            return [(STRING, tokval)]
         encoded = self.shift_cipher_class_obj.encode_tokens(raw_string)
         return self.shift_cipher_class_obj.decode_tokens(encoded)
 
-    def obf_base64(self, tokval: str):
+    def _obf_base64(self, tokval: str):
         """Obfuscate string with base64.
 
         ```
@@ -100,21 +111,28 @@ class StringsObfuscator:
         ```
         """
         raw_string = eval(tokval)  # noqa: S307
+        is_bytes = isinstance(raw_string, bytes)
         if isinstance(raw_string, str):
             raw_string = raw_string.encode()
         b64encoded_string = b64encode(raw_string).decode()
-        return [
+        tokens = [
             (NAME, self.b64decode_name),
             (LPAR, "("),
             (STRING, repr(b64encoded_string)),
             (RPAR, ")"),
-            (OP, "."),
-            (NAME, "decode"),
-            (LPAR, "("),
-            (RPAR, ")"),
         ]
+        if not is_bytes:
+            tokens.extend(
+                [
+                    (OP, "."),
+                    (NAME, "decode"),
+                    (LPAR, "("),
+                    (RPAR, ")"),
+                ],
+            )
+        return tokens
 
-    def obf_base85(self, tokval: str):
+    def _obf_base85(self, tokval: str):
         """Obfuscate string with base85.
 
         ```
@@ -122,38 +140,56 @@ class StringsObfuscator:
         ```
         """
         raw_string = eval(tokval)  # noqa: S307
+        is_bytes = isinstance(raw_string, bytes)
         if isinstance(raw_string, str):
             raw_string = raw_string.encode()
         b85encoded_string = b85encode(raw_string).decode()
-        return [
+        tokens = [
             (NAME, self.b85decode_name),
             (LPAR, "("),
             (STRING, repr(b85encoded_string)),
             (RPAR, ")"),
-            (OP, "."),
-            (NAME, "decode"),
-            (LPAR, "("),
-            (RPAR, ")"),
         ]
+        if not is_bytes:
+            tokens.extend(
+                [
+                    (OP, "."),
+                    (NAME, "decode"),
+                    (LPAR, "("),
+                    (RPAR, ")"),
+                ],
+            )
+        return tokens
 
     @staticmethod
-    def hex(tokval: str):
+    def _hex(tokval: str):
         # Hello --> \x48\x65\x6c\x6c\x6f
         raw_string = eval(tokval)  # noqa: S307
         if isinstance(raw_string, bytes):
-            raw_string = raw_string.decode()
+            encoded = "".join(f"\\x{b:02x}" for b in raw_string)
+            return [(STRING, f"b'{encoded}'")]
         encoded = ""
         for c in raw_string:
-            hexcode = f"\\x{hex(ord(c))[2:]:0>2}" if not c.isdigit() else c  # noqa: FURB116
-            encoded += hexcode
+            code = ord(c)
+            if c.isdigit():
+                encoded += c
+            elif code <= 0xFF:  # noqa: PLR2004
+                encoded += f"\\x{code:02x}"
+            elif code <= 0xFFFF:  # noqa: PLR2004
+                encoded += f"\\u{code:04x}"
+            else:
+                encoded += f"\\U{code:08x}"
         return [(STRING, f"'{encoded}'")]
 
     @staticmethod
-    def unicode(tokval: str):
+    def _unicode(tokval: str):
         # Hell --> \u0048\u0065\u006C\u006C
         raw_string = eval(tokval)  # noqa: S307
         if isinstance(raw_string, bytes):
-            raw_string = raw_string.decode()
+            try:
+                raw_string = raw_string.decode()
+            except UnicodeDecodeError:
+                return [(STRING, tokval)]
         encoded = ""
         for c in raw_string:
             ucode = f"\\u{hex(ord(c))[2:]:0>4}" if not c.isdigit() else c  # noqa: FURB116
@@ -161,8 +197,11 @@ class StringsObfuscator:
         return [(STRING, f"'{encoded}'")]
 
     @staticmethod
-    def additions(tokval: str):
+    def _additions(tokval: str):
         # "Hello, world!" --> "Hello, "+"world!"
+        if len(tokval) < 6:  # noqa: PLR2004
+            return [(STRING, tokval)]
+
         raw_string = False
         if tokval.startswith("r"):
             tokval = tokval[1:]
@@ -183,8 +222,11 @@ class StringsObfuscator:
         ]
 
     @staticmethod
-    def only_additions(tokval: str):
+    def _only_additions(tokval: str):
         # "Hello, world!" --> "Hello, "+"world!"
+        if len(tokval) <= 2:  # noqa: PLR2004
+            return [(STRING, tokval)]
+
         raw_string = False
         if tokval.startswith("r"):
             tokval = tokval[1:]
@@ -215,14 +257,17 @@ class StringsObfuscator:
                 add_slash = False
             else:
                 add_slash = True
-        t.pop()  # remove last +
+        if t:
+            t.pop()  # remove last +
+        else:
+            return [(STRING, tokval)]
         return t
 
     @staticmethod
-    def string_replace(tokval: str):
+    def _string_replace(tokval: str):
         raw_string = eval(tokval)  # noqa: S307
 
-        if not raw_string or isinstance(raw_string, str):
+        if not raw_string or isinstance(raw_string, (str, bytes)):
             return [(STRING, tokval)]
 
         i = random.randint(0, len(raw_string) - 1)
@@ -255,7 +300,7 @@ class StringsObfuscator:
         ]
 
     @staticmethod
-    def string_reverse(tokval: str):
+    def _string_reverse(tokval: str):
         raw_string = eval(tokval)  # noqa: S307
         reversed_string = raw_string[::-1]
         return [
@@ -268,20 +313,19 @@ class StringsObfuscator:
         ]
 
     @staticmethod
-    def string_one_on_n(tokval: str):
+    def _string_one_on_n(tokval: str):
         """One on N.
 
         "".join([l if x%2 ==0 else "" for x, l in
             enumerate("Heeeleleoe,e eweoerelede!e")])
         """
         raw_string = eval(tokval)  # noqa: S307
-        if not raw_string:
+        if not raw_string or isinstance(raw_string, bytes):
             return [(STRING, tokval)]
 
         # steps between each actual characters
         steps = random.randint(1, 7)
 
-        obf_string = raw_string
         obf_string = ""
         for char in raw_string:
             t = "".join(
@@ -323,55 +367,52 @@ class StringsObfuscator:
             (OP, ")"),
         ]
 
-    def obfuscate_string(self, tokval: str, next_tokval: str):  # noqa: C901
+    def _obfuscate_string(self, tokval: str, next_tokval: str):  # noqa: C901, PLR0912
         # TODO (deoktr): consider f"" u"" ur"" b"" r"" strings
         # consider empty strings
         # consider calling function on whole string "".format()
-        strategies = self.ALL  # list(self.Strats._value2member_map_.values())
+        is_bytes = self._is_bytes_literal(tokval)
 
-        # if len(tokval) >= 6:
-        #     strategies = strategies.copy()
-        #     strategies.append(self.Strats.ADDITION)
+        strategies = list(self.ALL)
 
-        # if len(tokval) >= 6 and next_tokval != ".":
-        #     strategies = strategies.copy()
-        #     strategies.append(self.Strats.ONLY_ADDITION)
+        if is_bytes:
+            # SHIFT and REPLACE are text-only; exclude for byte literals
+            for s in (self.Strats.SHIFT, self.Strats.REPLACE):
+                if s in strategies:
+                    strategies.remove(s)
 
         if next_tokval != ".":
-            strategies = list(strategies)
-            strategies.extend(
-                [
-                    self.Strats.HEX,
-                    self.Strats.UNICODE,
-                    self.Strats.SHIFT,
-                ],
-            )
+            strategies.append(self.Strats.HEX)
+            if not is_bytes:
+                # UNICODE uses \u escapes which are invalid in byte literals
+                strategies.append(self.Strats.UNICODE)
+                strategies.append(self.Strats.SHIFT)
 
         strategy = random.choice(strategies)
 
         if strategy == self.Strats.BASE64:
-            tokens = self.obf_base64(tokval)
+            tokens = self._obf_base64(tokval)
         elif strategy == self.Strats.ADDITION:
-            tokens = self.additions(tokval)
+            tokens = self._additions(tokval)
         elif strategy == self.Strats.ONLY_ADDITION:
-            tokens = self.only_additions(tokval)
+            tokens = self._only_additions(tokval)
         elif strategy == self.Strats.BASE85:
-            tokens = self.obf_base85(tokval)
+            tokens = self._obf_base85(tokval)
         elif strategy == self.Strats.HEX:
-            tokens = self.hex(tokval)
+            tokens = self._hex(tokval)
         elif strategy == self.Strats.UNICODE:
-            tokens = self.unicode(tokval)
+            tokens = self._unicode(tokval)
         elif strategy == self.Strats.SHIFT:
-            tokens = self.obf_shift(tokval)
+            tokens = self._obf_shift(tokval)
         elif strategy == self.Strats.REPLACE:
-            tokens = self.string_replace(tokval)
+            tokens = self._string_replace(tokval)
         elif strategy == self.Strats.REVERSE:
-            tokens = self.string_reverse(tokval)
+            tokens = self._string_reverse(tokval)
         elif strategy == self.Strats.ONE_ON_N:
-            tokens = self.string_one_on_n(tokval)
+            tokens = self._string_one_on_n(tokval)
         else:
-            logger.error("unsupported strategy %s", strategy)
-            return None
+            logger.error("unsupported strategy %s, not obfuscating", strategy)
+            return [(STRING, tokval)]
 
         return tokens
 
@@ -442,9 +483,9 @@ class StringsObfuscator:
                 ENCODING,
             ]:
                 try:
-                    new_tokens = self.obfuscate_string(tokval, next_tokval)
-                except BaseException:  # noqa: BLE001
-                    logger.exception("failed to get new token")
+                    new_tokens = self._obfuscate_string(tokval, next_tokval)
+                except Exception:  # noqa: BLE001
+                    logger.warning("failed to obfuscate string token: %s", tokval[:50])
 
             if new_tokens:
                 result.extend(new_tokens)

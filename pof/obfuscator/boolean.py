@@ -44,24 +44,30 @@ class BooleanObfuscator:
                     (RPAR, ")"),
                 ]
             case 3:
-                # not False
+                # (not False)
                 return [
+                    (LPAR, "("),
                     (NAME, "not"),
                     (NAME, "False"),
+                    (RPAR, ")"),
                 ]
             case 4:
-                # not not True
+                # (not not True)
                 return [
+                    (LPAR, "("),
                     (NAME, "not"),
                     (NAME, "not"),
                     (NAME, "True"),
+                    (RPAR, ")"),
                 ]
             case 5:
-                # "" in ""
+                # ("" in "")
                 return [
+                    (LPAR, "("),
                     (STRING, "''"),
                     (NAME, "in"),
                     (STRING, "''"),
+                    (RPAR, ")"),
                 ]
             case 6:
                 # bool(1)
@@ -97,25 +103,31 @@ class BooleanObfuscator:
                     (RPAR, ")"),
                 ]
             case 3:
-                # not True
+                # (not True)
                 return [
+                    (LPAR, "("),
                     (NAME, "not"),
                     (NAME, "True"),
+                    (RPAR, ")"),
                 ]
             case 4:
-                # not not False
+                # (not not False)
                 return [
+                    (LPAR, "("),
                     (NAME, "not"),
                     (NAME, "not"),
                     (NAME, "False"),
+                    (RPAR, ")"),
                 ]
             case 5:
-                # "" not in ""
+                # ("" not in "")
                 return [
+                    (LPAR, "("),
                     (STRING, "''"),
                     (NAME, "not"),
                     (NAME, "in"),
                     (STRING, "''"),
+                    (RPAR, ")"),
                 ]
             case 6:
                 # bool(0)

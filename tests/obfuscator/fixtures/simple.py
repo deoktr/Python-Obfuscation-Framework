@@ -23,3 +23,9 @@ for i in range(3):
     print(classify(i - 1))
 
 print("done")
+
+var='Hello, world'
+print(var)
+
+var="Hello, world"
+print(var)

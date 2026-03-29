@@ -53,7 +53,7 @@ class PrintObfuscator:
 
             if inside_print:
                 if print_par_depth == parenthesis_depth and (
-                    tokval not in ("(", "print") and prev_tokval != "print"
+                    tokval not in ("(", "print") and prev_tokval not in {"print", "."}
                 ):  # check if still inside print
                     inside_print = False
                 else:

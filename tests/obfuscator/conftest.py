@@ -91,7 +91,13 @@ class SkipEntry:
     reason: str
 
 
-SKIP_LIST: list[SkipEntry] = []
+SKIP_LIST: list[SkipEntry] = [
+    SkipEntry(
+        "CommentsObfuscator",
+        "docs",
+        "esoteric fixture uses Foo.__doc__ which CommentsObfuscator removes by design",
+    ),
+]
 
 
 OBFUSCATOR_REGISTRY: list[ObfuscatorEntry] = [
