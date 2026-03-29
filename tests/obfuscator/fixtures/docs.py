@@ -1,10 +1,8 @@
 # DocstringObfuscator
 from base64 import b64decode
-class Foo:
-    """
-    cHJpbnQoJ0hlbGxvLCB3b3JsZCcpCg==
-    """
+
+class L8EU:
+    """cHJpbnQoIkhlbGxvLCB3b3JsZCEiKQo="""
     pass
 
-
-exec(b64decode(Foo.__doc__.replace('\n','').replace(' ','')))
+exec(b64decode("".join([L8EU.__doc__]).replace('\\n','').replace(' ','')))

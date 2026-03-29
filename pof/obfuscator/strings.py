@@ -47,7 +47,7 @@ class StringsObfuscator:
 
     class Strats(Enum):
         BASE64 = 1
-        ADDITION = 2  # FIXME (deoktr): doesn't seems to work <
+        ADDITION = 2
         ONLY_ADDITION = 3
         BASE85 = 4
         HEX = 5

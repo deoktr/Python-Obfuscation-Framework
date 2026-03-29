@@ -15,10 +15,20 @@
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 import ast
-import io
-from tokenize import LPAR, NAME, NEWLINE, OP, RPAR, STRING, generate_tokens
+import random
+from tokenize import (
+    DEDENT,
+    INDENT,
+    LPAR,
+    NAME,
+    NEWLINE,
+    OP,
+    RPAR,
+    STRING,
+)
 
 from pof.utils.encoding import Base64Encoding
+from pof.utils.generator import BasicGenerator
 from pof.utils.tokens import untokenize
 
 
@@ -30,23 +40,80 @@ class DocstringObfuscator:
     # TODO (deoktr): add ability to choose the base code
     # TODO (deoktr): add ability to split the docstring among multiple class/functions
 
-    def __init__(self, encoding_class=None, base_code=None) -> None:
+    def __init__(
+        self,
+        encoding_class=None,
+        generator=None,
+        max_chunk_size: int = 200,
+    ) -> None:
         if encoding_class is None:
             encoding_class = Base64Encoding
         self.encoding_class = encoding_class
 
-        if base_code is None:
-            base_code = "class Foo:\n    pass\n"
-        self.base_code = base_code
+        self.max_chunk_size = max_chunk_size
 
-    def get_exec_tokens(self, name):
-        # the replace will remove \n and space indents from the docstrings
-        # because on some encoding it can break it, it works without problems
-        # with base64 but doesn't with base85, base16 and other.
-        docstring_tokens = [
+        if generator is None:
+            generator = BasicGenerator.alphabet_generator()
+        self.generator = generator
+
+    @staticmethod
+    def _split_into_chunks(encoded: str, max_chunk_size: int) -> list[str]:
+        """Split an encoded string into chunks of at most max_chunk_size characters."""
+        if max_chunk_size <= 0:
+            return [encoded]
+        return [
+            encoded[i : i + max_chunk_size]
+            for i in range(0, len(encoded), max_chunk_size)
+        ]
+
+    @staticmethod
+    def _generate_container_tokens(
+        name: str,
+        chunk: str,
+        is_class: bool,  # noqa: FBT001
+    ) -> list[tuple]:
+        """Generate tokens for a class or function definition with a docstring."""
+        keyword = "class" if is_class else "def"
+        params = [] if is_class else [(OP, "("), (OP, ")")]
+        docstring = f'"""{chunk}"""'
+        return [
+            (NAME, keyword),
             (NAME, name),
+            *params,
+            (OP, ":"),
+            (NEWLINE, "\n"),
+            (INDENT, "    "),
+            (STRING, docstring),
+            (NEWLINE, "\n"),
+            (NAME, "pass"),
+            (NEWLINE, "\n"),
+            (DEDENT, ""),
+        ]
+
+    def _get_exec_tokens(self, container_names: list[str]) -> list[tuple]:
+        """Generate exec tokens that join all container docstrings and decode."""
+        # build: "".join([C1.__doc__, C2.__doc__, ...]).replace('\n','').replace(' ','')
+        join_items = []
+        for i, name in enumerate(container_names):
+            if i > 0:
+                join_items.append((OP, ","))
+            join_items.extend(
+                [
+                    (NAME, name),
+                    (OP, "."),
+                    (NAME, "__doc__"),
+                ],
+            )
+
+        docstring_tokens = [
+            (STRING, '""'),
             (OP, "."),
-            (NAME, "__doc__"),
+            (NAME, "join"),
+            (LPAR, "("),
+            (OP, "["),
+            *join_items,
+            (OP, "]"),
+            (RPAR, ")"),
             (OP, "."),
             (NAME, "replace"),
             (LPAR, "("),
@@ -62,6 +129,7 @@ class DocstringObfuscator:
             (STRING, repr("")),
             (RPAR, ")"),
         ]
+
         return [
             (NEWLINE, "\n"),
             (NAME, "exec"),
@@ -70,58 +138,27 @@ class DocstringObfuscator:
             (RPAR, ")"),
         ]
 
-    def get_docstring(self, code, indent="    "):
-        encode_tokens = ast.literal_eval(
+    def obfuscate_tokens(self, tokens):
+        code = untokenize(tokens)
+
+        encoded = ast.literal_eval(
             untokenize(self.encoding_class.encode_tokens(code.encode())),
         )
 
-        docstring = "\n" + indent
-        chunk_size = 74
-        for i in range(0, len(encode_tokens), chunk_size):
-            chunk = encode_tokens[i : i + chunk_size]
-            docstring += chunk + "\n" + indent
-        return f'"""{docstring}"""'
+        chunks = self._split_into_chunks(encoded, self.max_chunk_size)
 
-    def get_base_tokens(self):
-        io_obj = io.StringIO(self.base_code)
-        return list(generate_tokens(io_obj.readline))
+        container_names = []
+        container_names.extend(next(self.generator) for _ in chunks)
 
-    def obfuscate_tokens(self, tokens):
-        code = untokenize(tokens)
-        docstring = self.get_docstring(code)
-
-        base_tokens = self.get_base_tokens()
-
-        in_declaration = False
-        prev_tokval = None
-        name = None
-        new_tokens = []
-        add_next = False
-        for toknum, tokval, *_ in base_tokens:
-            tokens = [(toknum, tokval)]
-
-            if add_next:
-                tokens.extend([(STRING, docstring), (NEWLINE, "\n")])
-                add_next = False
-
-            # and name is None : used to add the docstring on only one
-            # class/function definition
-            # FIXME (deoktr): split it among multiple definitions
-            if prev_tokval in ["def", "class"] and name is None:
-                name = tokval
-                in_declaration = True
-            elif prev_tokval == ":" and in_declaration:
-                add_next = True
-                in_declaration = False
-
-            prev_tokval = tokval
-            new_tokens.extend(tokens)
-
-        return [
+        result = [
             *self.encoding_class.import_tokens(),
             (NEWLINE, "\n"),
-            *new_tokens,
-            (NEWLINE, "\n"),
-            *self.get_exec_tokens(name),
-            (NEWLINE, "\n"),
         ]
+
+        for name, chunk in zip(container_names, chunks, strict=True):
+            is_class = random.choice([True, False])
+            result.extend(self._generate_container_tokens(name, chunk, is_class))
+
+        result.extend(self._get_exec_tokens(container_names))
+        result.append((NEWLINE, "\n"))
+        return result
