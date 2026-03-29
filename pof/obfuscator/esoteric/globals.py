@@ -15,7 +15,7 @@
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 import keyword
-from tokenize import LPAR, NAME, OP, RPAR, STRING
+from tokenize import LPAR, NAME, NEWLINE, NL, OP, RPAR, STRING
 
 
 # TODO (deoktr): add frequency
@@ -42,14 +42,24 @@ class GlobalsObfuscator:
     def obfuscate_tokens(cls, tokens):
         local_functions = []
         prev_tokval = None
-        for toknum, tokval, *_ in tokens:
-            if prev_tokval in ["def", "class"] and toknum == NAME:
+        prev_col = -1
+        for toknum, tokval, *rest in tokens:
+            start = rest[0] if rest else (0, 0)
+            if prev_tokval in ["def", "class"] and toknum == NAME and prev_col == 0:
                 local_functions.append(tokval)
+            if toknum == NAME and tokval in ("def", "class"):
+                prev_col = start[1]
             prev_tokval = tokval
 
         result = []
         prev_tokval = None
+        in_import = False
         for index, (toknum, tokval, *_) in enumerate(tokens):
+            if tokval in ("import", "from") and toknum == NAME:
+                in_import = True
+            elif toknum in (NEWLINE, NL):
+                in_import = False
+
             new_tokens = [(toknum, tokval)]
             next_tokval = None
             if len(tokens) > index + 1:
@@ -62,6 +72,8 @@ class GlobalsObfuscator:
                 # ensure it's not an argument of a call
                 and next_tokval != "="
                 and tokval not in cls.RESERVED
+                # ensure it's not inside an import statement
+                and not in_import
             ):
                 new_tokens = [
                     (NAME, "globals"),

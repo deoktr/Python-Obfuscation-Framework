@@ -91,13 +91,7 @@ class SkipEntry:
     reason: str
 
 
-SKIP_LIST: list[SkipEntry] = [
-    SkipEntry(
-        "GlobalsObfuscator",
-        "*",
-        "Fails: replaces inner function names with globals() lookups (KeyError on nested scope)",
-    ),
-]
+SKIP_LIST: list[SkipEntry] = []
 
 
 OBFUSCATOR_REGISTRY: list[ObfuscatorEntry] = [
