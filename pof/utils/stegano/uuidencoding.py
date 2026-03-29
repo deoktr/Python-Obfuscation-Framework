@@ -40,9 +40,8 @@ class UUIDEncoding:
 
         for string_chunk in string_chunks:
             sc = string_chunk
-            if len(sc) < cls.UUID_LEN:
-                padding = cls.UUID_LEN - len(sc)
-                # TODO (deoktr): choose this randomly (anything BUT the padding_byte)
+            padding = cls.UUID_LEN - len(sc)
+            if padding > 0:
                 sc += b"1"
                 sc += cls.padding_byte * (padding - 1)
 
@@ -57,6 +56,17 @@ class UUIDEncoding:
             uuid = "-".join(uuid_chunks)
 
             uuid_list.append(uuid)
+
+        if len(hex_string) % cls.UUID_LEN == 0 and len(hex_string) > 0:
+            pc = (b"1" + cls.padding_byte * (cls.UUID_LEN - 1)).decode()
+            uuid_chunks = [
+                pc[0:8],
+                pc[8:12],
+                pc[12:16],
+                pc[16:20],
+                pc[20:],
+            ]
+            uuid_list.append("-".join(uuid_chunks))
 
         return uuid_list
 
@@ -83,7 +93,7 @@ class UUIDEncoding:
         """UUID decode tokens.
 
         ```
-        binascii.a2b_hex("".join(["...",]).replace("-", "").strip("0")[:-1])
+        binascii.a2b_hex("".join(["...",]).replace("-", "").rstrip("0")[:-1])
         ```
         """
         return [
@@ -105,7 +115,7 @@ class UUIDEncoding:
             (STRING, '""'),
             (OP, ")"),
             (OP, "."),
-            (NAME, "strip"),
+            (NAME, "rstrip"),
             (OP, "("),
             (STRING, repr(cls.padding_byte.decode())),
             (OP, ")"),

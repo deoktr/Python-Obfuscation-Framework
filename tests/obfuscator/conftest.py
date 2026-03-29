@@ -97,22 +97,6 @@ SKIP_LIST: list[SkipEntry] = [
         "*",
         "Fails: replaces inner function names with globals() lookups (KeyError on nested scope)",
     ),
-    # TODO: fix all
-    SkipEntry(
-        "IPv6Obfuscator",
-        "*",
-        "Fails: binascii.Error on odd-length source",
-    ),
-    SkipEntry(
-        "UUIDObfuscator",
-        "*",
-        "Fails: binascii.Error on odd-length source",
-    ),
-    SkipEntry(
-        "MACObfuscator",
-        "*",
-        "Fails: binascii.Error on odd-length source",
-    ),
 ]
 
 

@@ -37,9 +37,8 @@ class MACEncoding:
 
         for sc in string_chunks:
             string_chunk = sc
-            if len(string_chunk) < cls.MAC_LEN:
-                padding = cls.MAC_LEN - len(string_chunk)
-                # TODO (deoktr): choose this randomly (anything BUT the padding_byte)
+            padding = cls.MAC_LEN - len(string_chunk)
+            if padding > 0:
                 string_chunk += b"1"
                 string_chunk += cls.padding_byte * (padding - 1)
 
@@ -51,6 +50,11 @@ class MACEncoding:
             mac = "-".join(mac_chunks)
 
             mac_list.append(mac)
+
+        if len(hex_string) % cls.MAC_LEN == 0 and len(hex_string) > 0:
+            pad_chunk = (b"1" + cls.padding_byte * (cls.MAC_LEN - 1)).decode()
+            mac_chunks = [pad_chunk[i : i + 2] for i in range(0, len(pad_chunk), 2)]
+            mac_list.append("-".join(mac_chunks))
 
         return mac_list
 
@@ -77,7 +81,7 @@ class MACEncoding:
         """MAC encoding decode tokens.
 
         ```
-        binascii.a2b_hex("".join(["...",]).replace("-", "").strip("0")[:-1])
+        binascii.a2b_hex("".join(["...",]).replace("-", "").rstrip("0")[:-1])
         ```.
         """
         return [
@@ -99,7 +103,7 @@ class MACEncoding:
             (STRING, repr("")),
             (OP, ")"),
             (OP, "."),
-            (NAME, "strip"),
+            (NAME, "rstrip"),
             (OP, "("),
             (STRING, repr(cls.padding_byte.decode())),
             (OP, ")"),
