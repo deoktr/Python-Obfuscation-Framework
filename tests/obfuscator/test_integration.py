@@ -30,6 +30,9 @@ class TestOutputPreserving:
         obfuscator_entry: ObfuscatorEntry,
         fixture_source: SourceFixture,
     ) -> None:
+        if fixture_source.error is not None:
+            pytest.fail(fixture_source.error)
+
         if not obfuscator_entry.is_output_preserving:
             return
 
@@ -67,6 +70,9 @@ class TestBehaviorAltering:
         obfuscator_entry: ObfuscatorEntry,
         fixture_source: SourceFixture,
     ) -> None:
+        if fixture_source.error is not None:
+            pytest.fail(fixture_source.error)
+
         if obfuscator_entry.is_output_preserving:
             return
 

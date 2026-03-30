@@ -136,7 +136,7 @@ def foo_yield(l):
     for i in l:
         yield i
 
-x_foo_yield = foo_yield(list(range(1)))
+x_foo_yield = foo_yield(list(range(100)))
 print(next(x_foo_yield))
 print(next(x_foo_yield))
 print(next(x_foo_yield))

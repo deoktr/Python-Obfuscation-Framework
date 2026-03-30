@@ -4,7 +4,6 @@ from __future__ import annotations
 
 import builtins
 import io
-import warnings
 from base64 import b64decode
 from dataclasses import dataclass, field
 from pathlib import Path
@@ -79,6 +78,7 @@ class SourceFixture:
     name: str
     path: str
     expected_output: str
+    error: str | None = None
 
 
 @dataclass
@@ -198,9 +198,16 @@ def discover_fixtures() -> list[SourceFixture]:
             source = path.read_text()
             expected_output = exec_capture(source, {"__builtins__": builtins})
         except Exception as exc:  # noqa: BLE001
-            warnings.warn(
-                f"Skipping fixture {path.name}: {exc}",
-                stacklevel=1,
+            fixtures.append(
+                SourceFixture(
+                    name=path.stem,
+                    path=str(path),
+                    expected_output="",
+                    error=(
+                        f"Fixture '{path.stem}' is invalid (pre-obfuscation): "
+                        f"{type(exc).__name__}: {exc}"
+                    ),
+                )
             )
             continue
         fixtures.append(

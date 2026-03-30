@@ -1,4 +1,4 @@
-from typing import Optional, List, Dict, Final, Literal, Annotated
+from typing import Optional, List, Dict, Final, Literal, Annotated, Any
 
 a: int = 42
 b: float = 4.2
@@ -30,8 +30,13 @@ class Foo:
         print(self.foo2)
         print(self.foo3)
 
+    def l(self) -> List[Any]:
+        return [self.foo1, self.foo2, self.foo3]
+
 
 Foo().print()
+
+print(Foo().l())
 
 
 def foo_opt(a: Optional[int]) -> Optional[int]:
