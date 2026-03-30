@@ -15,15 +15,15 @@
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 import random
-from tokenize import LPAR, LSQB, NAME, NUMBER, RPAR, RSQB, STRING
+from tokenize import LPAR, LSQB, NAME, NUMBER, OP, RPAR, RSQB, STRING
 
 
 class BooleanObfuscator:
     """Obfuscate booleans with multiple methods."""
 
     @staticmethod
-    def obf_true():
-        match random.randint(1, 6):
+    def obf_true():  # noqa: PLR0911
+        match random.randint(1, 9):
             case 1:
                 # all([])
                 return [
@@ -77,10 +77,39 @@ class BooleanObfuscator:
                     (NUMBER, "1"),
                     (RPAR, ")"),
                 ]
+            case 7:
+                # bool(1&1)
+                return [
+                    (NAME, "bool"),
+                    (LPAR, "("),
+                    (NUMBER, "1"),
+                    (OP, "&"),
+                    (NUMBER, "1"),
+                    (RPAR, ")"),
+                ]
+            case 8:
+                # bool(1|0)
+                return [
+                    (NAME, "bool"),
+                    (LPAR, "("),
+                    (NUMBER, "1"),
+                    (OP, "|"),
+                    (NUMBER, "0"),
+                    (RPAR, ")"),
+                ]
+            case 9:
+                # bool(~0)
+                return [
+                    (NAME, "bool"),
+                    (LPAR, "("),
+                    (OP, "~"),
+                    (NUMBER, "0"),
+                    (RPAR, ")"),
+                ]
 
     @staticmethod
-    def obf_false():
-        match random.randint(1, 6):
+    def obf_false():  # noqa: PLR0911
+        match random.randint(1, 9):
             case 1:
                 # False = all([[]])
                 return [
@@ -135,6 +164,36 @@ class BooleanObfuscator:
                     (NAME, "bool"),
                     (LPAR, "("),
                     (NUMBER, "0"),
+                    (RPAR, ")"),
+                ]
+            case 7:
+                # bool(1&0)
+                return [
+                    (NAME, "bool"),
+                    (LPAR, "("),
+                    (NUMBER, "1"),
+                    (OP, "&"),
+                    (NUMBER, "0"),
+                    (RPAR, ")"),
+                ]
+            case 8:
+                # bool(0|0)
+                return [
+                    (NAME, "bool"),
+                    (LPAR, "("),
+                    (NUMBER, "0"),
+                    (OP, "|"),
+                    (NUMBER, "0"),
+                    (RPAR, ")"),
+                ]
+            case 9:
+                # bool(1^1)
+                return [
+                    (NAME, "bool"),
+                    (LPAR, "("),
+                    (NUMBER, "1"),
+                    (OP, "^"),
+                    (NUMBER, "1"),
                     (RPAR, ")"),
                 ]
 

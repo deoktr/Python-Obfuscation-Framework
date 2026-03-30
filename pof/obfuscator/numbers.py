@@ -43,18 +43,21 @@ class NumberObfuscator:
         HEX = 3
         BOOLEAN = 4
         LEN = 5
+        BITWISE = 6
 
     INT_STRATS = (  # positive int obfuscation strategies
         NStrats.STRING,
         NStrats.ADDITION,
         NStrats.HEX,
         NStrats.LEN,
+        NStrats.BITWISE,
     )
     NEG_INT_STRATS = (  # negative int obfuscation strategies
         NStrats.STRING,
         NStrats.ADDITION,
         NStrats.HEX,
         NStrats.LEN,
+        NStrats.BITWISE,
     )
     FLOAT_STRATS = (  # positive float obfuscation strategies
         NStrats.STRING,
@@ -204,6 +207,133 @@ class NumberObfuscator:
         return t
 
     @staticmethod
+    def obf_bitwise(tokval):  # noqa: C901, PLR0912
+        """Obfuscate integer using bitwise operations."""
+        n = int(tokval)
+
+        # choose a sub-strategy randomly
+        strategies = ["xor", "shift", "not"]
+        if n != 0:
+            strategies.append("or_compose")
+        strategy = random.choice(strategies)
+
+        if strategy == "xor":
+            # n = a ^ b where a is random, b = n ^ a
+            mask = random.randint(1, max(abs(n) + 100, 255))
+            other = n ^ mask
+            tokens = [
+                (NUMBER, str(mask)),
+                (OP, "^"),
+            ]
+            if other < 0:
+                tokens.extend(
+                    [
+                        (LPAR, "("),
+                        (NUMBER, str(other)),
+                        (RPAR, ")"),
+                    ],
+                )
+            else:
+                tokens.append((NUMBER, str(other)))
+
+        elif strategy == "shift":
+            if n == 0:
+                # 1 >> 1 = 0
+                tokens = [
+                    (NUMBER, "1"),
+                    (OP, ">>"),
+                    (NUMBER, "1"),
+                ]
+            elif n > 0:
+                # find a valid shift amount
+                k = random.randint(1, 3)
+                shifted = n >> k
+                remainder = n - (shifted << k)
+                if remainder == 0:
+                    tokens = [
+                        (NUMBER, str(shifted)),
+                        (OP, "<<"),
+                        (NUMBER, str(k)),
+                    ]
+                else:
+                    tokens = [
+                        (LPAR, "("),
+                        (NUMBER, str(shifted)),
+                        (OP, "<<"),
+                        (NUMBER, str(k)),
+                        (RPAR, ")"),
+                        (OP, "|"),
+                        (NUMBER, str(remainder)),
+                    ]
+            else:
+                # for negatives, use ~(~n)
+                complement = ~n
+                tokens = [
+                    (OP, "~"),
+                    (NUMBER, str(complement)),
+                ]
+
+        elif strategy == "not":
+            # ~(~n) = n, but render as ~m where m = ~n
+            complement = ~n
+            if complement >= 0:
+                tokens = [
+                    (OP, "~"),
+                    (NUMBER, str(complement)),
+                ]
+            else:
+                tokens = [
+                    (OP, "~"),
+                    (LPAR, "("),
+                    (NUMBER, str(complement)),
+                    (RPAR, ")"),
+                ]
+
+        else:
+            # or_compose: split n into disjoint bit groups
+            # a | b where a & b == 0 and a | b == n
+            if n > 0:
+                bit_len = n.bit_length()
+                split = random.randint(1, max(bit_len - 1, 1))
+                mask = (1 << split) - 1
+                a = n & mask
+                b = n & ~mask
+            else:
+                # for negatives, use XOR as fallback
+                mask = random.randint(1, 255)
+                other = n ^ mask
+                tokens = [
+                    (NUMBER, str(mask)),
+                    (OP, "^"),
+                ]
+                if other < 0:
+                    tokens.extend(
+                        [
+                            (LPAR, "("),
+                            (NUMBER, str(other)),
+                            (RPAR, ")"),
+                        ],
+                    )
+                else:
+                    tokens.append((NUMBER, str(other)))
+                return [
+                    (LPAR, "("),
+                    *tokens,
+                    (RPAR, ")"),
+                ]
+            tokens = [
+                (NUMBER, str(a)),
+                (OP, "|"),
+                (NUMBER, str(b)),
+            ]
+
+        return [
+            (LPAR, "("),
+            *tokens,
+            (RPAR, ")"),
+        ]
+
+    @staticmethod
     def verify_number_obfuscation(tokval, tokens):
         # if only one token then it's the same
         if len(tokens) < 1:
@@ -217,7 +347,7 @@ class NumberObfuscator:
         logger.error(msg)
         return False
 
-    def obfuscate_number(self, toknum, tokval):  # noqa: C901 PLR0912
+    def obfuscate_number(self, toknum, tokval):  # noqa: C901, PLR0912, PLR0915
         unobfuscated = [(toknum, tokval)]
 
         # get token type
@@ -268,6 +398,8 @@ class NumberObfuscator:
                 tokens = self.obf_boolean_conversion(tokval)
             elif strategy == self.NStrats.LEN:
                 tokens = self.obf_len_random(tokval)
+            elif strategy == self.NStrats.BITWISE:
+                tokens = self.obf_bitwise(tokval)
             else:
                 msg = f"Strategy {strategy} not found"
                 raise PofError(msg)  # noqa: TRY301

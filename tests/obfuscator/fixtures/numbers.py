@@ -27,3 +27,12 @@ print(len('bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb'))
 
 # Boolean
 print((True+True+True+True+True+True+True+True+True+True+True+True+True+True+True+True+True+True+True+True+True+True+True+True+True+True+True+True+True+True+True+True+True+True+True+True+True+True+True+True+True+True))
+
+# Bitwise XOR
+print((53^31))
+
+# Bitwise shift
+print((21<<1))
+
+# Bitwise NOT complement
+print((~(~42)))

@@ -373,6 +373,15 @@ print(len('bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb'))
 
 # Boolean
 print((True+True+True+True+True+True+True+True+True+True+True+True+True+True+True+True+True+True+True+True+True+True+True+True+True+True+True+True+True+True+True+True+True+True+True+True+True+True+True+True+True+True))
+
+# Bitwise XOR
+print((53^31))
+
+# Bitwise shift
+print((21<<1))
+
+# Bitwise NOT complement
+print((~(~42)))
 ```
 
 #### BooleanObfuscator
@@ -380,23 +389,22 @@ print((True+True+True+True+True+True+True+True+True+True+True+True+True+True+Tru
 Source: `print(True)`
 
 ```python
-# not False
 print(not False)
-
-# all([])
 print(all([]))
-
-# any([True])
 print(any([True]))
-
-# not not True
 print(not not True)
-
-# '' in ''
 print('' in '')
-
-# bool(1)
 print(bool(1))
+print(bool(1&1))
+print(bool(~0))
+```
+
+Source: `print(False)`
+
+```python
+print(bool(1&0))
+print(bool(1^1))
+print(bool(0|0))
 ```
 
 #### ConstantsObfuscator
