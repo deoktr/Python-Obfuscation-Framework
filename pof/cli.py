@@ -176,8 +176,8 @@ def _cli() -> int:
     parser.add_argument(
         "-f",
         "--function",
-        help="obfuscation function",
-        default="obfuscate",
+        help="obfuscation function, can be a specific function or preset: basic/moderate/advanced/extreme",
+        default="moderate",
     )
     parser.add_argument(
         "--format",

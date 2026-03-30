@@ -220,6 +220,15 @@ cat in.py | docker run --rm -i ghcr.io/deoktr/python-obfuscation-framework:lates
 
 ## Usage
 
+You can select the obfuscation level with the `-f` flag, here are the levels:
+
+- basic
+- moderate
+- advanced
+- extreme
+
+Or you can specify and use a single obfuscator.
+
 ```bash
 # pipe input and output to stdout
 echo "print('Hello, world')" | pof
@@ -232,6 +241,12 @@ pof in.py > out.py
 
 # pipe to python to run it
 pof in.py | python
+
+# obfuscator preset, choose the level of obfuscation needed
+pof in.py -o out.py -f basic
+pof in.py -o out.py -f moderate
+pof in.py -o out.py -f advanced
+pof in.py -o out.py -f extreme
 
 # obfuscator
 pof in.py -o out.py -f obfuscator -k BuiltinsObfuscator

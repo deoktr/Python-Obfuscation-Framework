@@ -49,14 +49,12 @@ class NumberObfuscator:
         NStrats.STRING,
         NStrats.ADDITION,
         NStrats.HEX,
-        NStrats.LEN,
         NStrats.BITWISE,
     )
     NEG_INT_STRATS = (  # negative int obfuscation strategies
         NStrats.STRING,
         NStrats.ADDITION,
         NStrats.HEX,
-        NStrats.LEN,
         NStrats.BITWISE,
     )
     FLOAT_STRATS = (  # positive float obfuscation strategies
@@ -65,7 +63,7 @@ class NumberObfuscator:
     )
     NEG_FLOAT_STRATS = (  # negative float obfuscation strategies
         NStrats.STRING,
-        NStrats.ADDITION,
+        NStrats.ADDITION,  # FIXME (deoktr): may fail, for example: 3.3 != 1.1 + 2.2
     )
 
     # TODO (deoktr): add frequency for each techniques, this may be a bit more difficult
@@ -372,8 +370,14 @@ class NumberObfuscator:
         tok_positiv = tok_actual_val >= 0
         if tok_positiv and token_type is int:
             strategies = self.INT_STRATS
+            if 2 < tok_actual_val < 100:  # noqa: PLR2004
+                strategies = list(strategies)
+                strategies.append(self.NStrats.LEN)
         elif not tok_positiv and token_type is int:
             strategies = self.NEG_INT_STRATS
+            if 2 < tok_actual_val < 100:  # noqa: PLR2004
+                strategies = list(strategies)
+                strategies.append(self.NStrats.LEN)
         elif tok_positiv and token_type is float:
             strategies = self.FLOAT_STRATS
         elif not tok_positiv and token_type is float:

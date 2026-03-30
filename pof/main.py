@@ -18,33 +18,17 @@
 
 import io
 import random
-from datetime import datetime, timedelta
-from tokenize import COMMENT, NEWLINE, generate_tokens
+from tokenize import generate_tokens
 
-from pof.evasion import (
-    CPUCountEvasion,
-    DebuggerEvasion,
-    DomainEvasion,
-    ExecPathEvasion,
-    ExpireEvasion,
-    FileExistEvasion,
-    FileListExistEvasion,
-    FileListMissingEvasion,
-    FileMissingEvasion,
-    HostnameEvasion,
-    LinuxRAMCountEvasion,
-    LinuxUIDEvasion,
-    TracemallocEvasion,
-    UsernameEvasion,
-)
-from pof.evasion.utils import FILE_SYSTEM
 from pof.logger import logger
 from pof.obfuscator import (
     AddCommentsObfuscator,
+    AddTypeHintsObfuscator,
     BooleanObfuscator,
     BuiltinsObfuscator,
     CommentsObfuscator,
     ConstantsObfuscator,
+    DeadCodeObfuscator,
     DocstringObfuscator,
     ExceptionObfuscator,
     GlobalsObfuscator,
@@ -53,12 +37,9 @@ from pof.obfuscator import (
     NamesObfuscator,
     NewlineObfuscator,
     NumberObfuscator,
-    PrintObfuscator,
     StringsObfuscator,
-    XORObfuscator,
+    TypeHintsObfuscator,
 )
-from pof.stager import ImageStager, RC4Stager
-from pof.utils.cipher import RC4Cipher
 from pof.utils.extract_names import NameExtract
 from pof.utils.generator import AdvancedGenerator, BaseGenerator, BasicGenerator
 from pof.utils.tokens import untokenize
@@ -82,53 +63,84 @@ class BaseObfuscator:
 
 
 class Obfuscator(BaseObfuscator):
-    def obfuscate(
-        self,
-        source,
-        *,
-        remove_logs: bool = False,
-        remove_prints: bool = False,
-        remove_exceptions: bool = False,
-    ):
-        """Complete chained obfuscation."""
+    def basic(self, source):
+        """Just the bare minimum obfuscation."""
+        tokens = self._get_tokens(source)
+        tokens = CommentsObfuscator().obfuscate_tokens(tokens)
+        generator = BasicGenerator.alphabet_generator()
+        tokens = NamesObfuscator(generator=generator).obfuscate_tokens(tokens)
+        return self._untokenize(tokens)
+
+    def moderate(self, source):
+        tokens = self._get_tokens(source)
+        tokens = CommentsObfuscator().obfuscate_tokens(tokens)
+        tokens = TypeHintsObfuscator().obfuscate_tokens(tokens)
+        generator = BasicGenerator.alphabet_generator()
+        tokens = NamesObfuscator(generator=generator).obfuscate_tokens(tokens)
+        tokens = NumberObfuscator().obfuscate_tokens(tokens)
+        tokens = BooleanObfuscator().obfuscate_tokens(tokens)
+        tokens = StringsObfuscator().obfuscate_tokens(tokens)
+        tokens = IndentsObfuscator().obfuscate_tokens(tokens)
+        tokens = NewlineObfuscator().obfuscate_tokens(tokens)
+        return self._untokenize(tokens)
+
+    def advanced(self, source):
         tokens = self._get_tokens(source)
 
-        # get all the names and add them to the RESERVED_WORDS for the
-        # generators
+        # do not generate any names that was present in source
         reserved_words_add = NameExtract.get_names(tokens)
         BaseGenerator.extend_reserved(reserved_words_add)
 
-        msg = f"reserved {len(tokens)} names"
-        logger.info(msg)
+        tokens = CommentsObfuscator().obfuscate_tokens(tokens)
+        tokens = TypeHintsObfuscator().obfuscate_tokens(tokens)
+
+        generator = AdvancedGenerator.multi_generator(
+            {
+                86: AdvancedGenerator.realistic_generator(),
+                10: BasicGenerator.alphabet_generator(),
+                4: BasicGenerator.number_name_generator(length=random.randint(2, 5)),
+            },
+        )
+
+        tokens = DeadCodeObfuscator(generator=generator).obfuscate_tokens(tokens)
+        tokens = AddTypeHintsObfuscator().obfuscate_tokens(tokens)
+        tokens = NamesObfuscator(generator=generator).obfuscate_tokens(tokens)
+        tokens = NumberObfuscator().obfuscate_tokens(tokens)
+        tokens = BooleanObfuscator().obfuscate_tokens(tokens)
+        tokens = StringsObfuscator().obfuscate_tokens(tokens)
+        tokens = IndentsObfuscator().obfuscate_tokens(tokens)
+        tokens = NewlineObfuscator().obfuscate_tokens(tokens)
+        return self._untokenize(tokens)
+
+    def extreme(self, source):
+        """Complete chained obfuscation."""
+        tokens = self._get_tokens(source)
+
+        # do not generate any names that was present in source
+        reserved_words_add = NameExtract.get_names(tokens)
+        BaseGenerator.extend_reserved(reserved_words_add)
 
         # clean input
         tokens = CommentsObfuscator().obfuscate_tokens(tokens)
-        if remove_logs:
-            # doesn't work yet !
-            tokens = LoggingObfuscator().obfuscate_tokens(tokens)
-
-        if remove_prints:
-            # not 100% safe !
-            tokens = PrintObfuscator().obfuscate_tokens(tokens)
-
-        if remove_exceptions:
-            # not fully tested
-            ex_generator = (
-                BasicGenerator.number_name_generator()
-            )  # TODO (deoktr): have multiple generator !!!
-            tokens = ExceptionObfuscator(
-                add_codes=True,
-                generator=ex_generator,
-            ).obfuscate_tokens(tokens)
+        tokens = TypeHintsObfuscator().obfuscate_tokens(tokens)
 
         # configure generator
-        # generator = alphabet_generator()
-        gen_dict = {
-            86: AdvancedGenerator.realistic_generator(),
-            10: BasicGenerator.alphabet_generator(),
-            4: BasicGenerator.number_name_generator(length=random.randint(2, 5)),
-        }
-        generator = AdvancedGenerator.multi_generator(gen_dict)
+        generator = AdvancedGenerator.multi_generator(
+            {
+                86: AdvancedGenerator.realistic_generator(),
+                10: BasicGenerator.alphabet_generator(),
+                4: BasicGenerator.number_name_generator(length=random.randint(2, 5)),
+            },
+        )
+
+        # add trash
+        tokens = DeadCodeObfuscator(
+            max_function_depth=3,
+            max_branches=5,
+            generate_classes=True,
+            generator=generator,
+        ).obfuscate_tokens(tokens)
+        tokens = AddTypeHintsObfuscator().obfuscate_tokens(tokens)
 
         # core obfuscation
         tokens = ConstantsObfuscator(
@@ -160,105 +172,14 @@ class Obfuscator(BaseObfuscator):
 
         for _ in range(2):
             tokens = NumberObfuscator().obfuscate_tokens(tokens)
-
-        tokens = BuiltinsObfuscator().obfuscate_tokens(tokens)
-
-        for _ in range(2):
             tokens = string_obfuscator.obfuscate_tokens(tokens)
-
-        # TODO (deoktr): enable once fully tested
-        # for _ in range(2):
-        #     tokens = BooleanObfuscator().obfuscate_tokens(tokens)
+            tokens = BooleanObfuscator().obfuscate_tokens(tokens)
 
         tokens = AddCommentsObfuscator().obfuscate_tokens(tokens)
 
         # clean output
         tokens = IndentsObfuscator().obfuscate_tokens(tokens)
         tokens = NewlineObfuscator().obfuscate_tokens(tokens)
-
-        xor_payload = False
-        if xor_payload:
-            tokens = XORObfuscator().obfuscate_tokens(tokens)
-            generator = BasicGenerator.alphabet_generator()
-            tokens = NamesObfuscator(generator=generator).obfuscate_tokens(tokens)
-
-        docstring_payload = False
-        if docstring_payload:
-            tokens = DocstringObfuscator().obfuscate_tokensj(tokens)
-            generator = BasicGenerator.alphabet_generator()
-            tokens = NamesObfuscator(generator=generator).obfuscate_tokens(tokens)
-            tokens = BuiltinsObfuscator().obfuscate_tokens(tokens)
-            tokens = StringsObfuscator(
-                import_b64decode=True,
-                import_b85decode=True,
-                b64decode_name=b64decode_name,
-                b85decode_name=b85decode_name,
-            ).obfuscate_tokens(tokens)
-
-        return self._untokenize(tokens)
-
-    def basic(self, source):
-        """Just the bare minimum obfuscation."""
-        tokens = self._get_tokens(source)
-        tokens = CommentsObfuscator().obfuscate_tokens(tokens)
-        generator = BasicGenerator.alphabet_generator()
-        tokens = NamesObfuscator(generator=generator).obfuscate_tokens(tokens)
-        tokens = IndentsObfuscator().obfuscate_tokens(tokens)
-        tokens = NewlineObfuscator().obfuscate_tokens(tokens)
-        return self._untokenize(tokens)
-
-    def full_evasion(  # noqa: C901, PLR0913, PLR0912
-        self,
-        source,
-        hostname: str | None = None,
-        username: str | None = None,
-        uid=None,
-        domain: str | None = None,
-        file_exist=None,
-        file_missing=None,
-        min_cpu_count: int | None = None,
-        min_ram: int | None = None,
-        file_list_exist=None,
-        file_list_missing=None,
-        *,
-        expire: bool = False,
-        check_tracemalloc: bool = False,
-        check_debugger: bool = False,
-        check_executable_path: bool = False,
-    ):
-        tokens = self._get_tokens(source)
-
-        if file_missing:
-            tokens = FileMissingEvasion(file=file_missing).add_evasion(tokens)
-        if min_cpu_count:
-            tokens = CPUCountEvasion(min_cpu_count=min_cpu_count).add_evasion(tokens)
-        if min_ram:
-            tokens = LinuxRAMCountEvasion(min_ram=min_ram).add_evasion(tokens)
-        if check_tracemalloc:
-            tokens = TracemallocEvasion().add_evasion(tokens)
-        if file_list_exist:
-            tokens = FileListMissingEvasion(file_list=FILE_SYSTEM).add_evasion(tokens)
-        if file_exist:
-            tokens = FileExistEvasion(file=file_exist).add_evasion(tokens)
-        if file_list_missing:
-            # TODO (deoktr): remove
-            idk = ["/tmp/a", "/tmp/b"]  # noqa: S108
-            tokens = FileListExistEvasion(file_list=idk).add_evasion(tokens)
-        if domain:
-            tokens = DomainEvasion(domain=domain).add_evasion(tokens)
-        if hostname:
-            tokens = HostnameEvasion(hostname=hostname).add_evasion(tokens)
-        if uid:
-            tokens = LinuxUIDEvasion(uid=uid).add_evasion(tokens)
-        if username:
-            tokens = UsernameEvasion(username=username).add_evasion(tokens)
-        if expire:
-            under_datetime = datetime.utcnow() + timedelta(seconds=5)  # noqa: DTZ003
-            tokens = ExpireEvasion(under_datetime).add_evasion(tokens)
-        if check_executable_path:
-            tokens = ExecPathEvasion().add_evasion(tokens)
-        if check_debugger:
-            tokens = DebuggerEvasion().add_evasion(tokens)
 
         return self._untokenize(tokens)
 
@@ -277,66 +198,16 @@ class Obfuscator(BaseObfuscator):
         ).obfuscate_tokens(tokens)
         tokens = IndentsObfuscator().obfuscate_tokens(tokens)
         tokens = NewlineObfuscator().obfuscate_tokens(tokens)
-
-        tokens = [(COMMENT, "# I love circles <3"), (NEWLINE, "\n"), *tokens]
-
         return self._untokenize(tokens)
 
-    def image(self, source):
-        """Encrypt and store the payload code inside an image."""
+    def docstring(self, source):
         tokens = self._get_tokens(source)
-        img_in = "pof/wip/stegano/i.png"
-        encoding_class = RC4Cipher()
-        tokens = ImageStager(encoding_class=encoding_class).generate_stager(
-            tokens,
-            img_in,
-        )
-        return self._untokenize(tokens)
-
-    def advanced_image(self, source):
-        """Obfuscate, encrypt, and store the payload code inside an image."""
-        tokens = self._get_tokens(source)
+        tokens = DocstringObfuscator().obfuscate_tokens(tokens)
         generator = BasicGenerator.alphabet_generator()
-
-        # obfuscate source
         tokens = NamesObfuscator(generator=generator).obfuscate_tokens(tokens)
-        tokens = IndentsObfuscator().obfuscate_tokens(tokens)
-
-        # stage inside image
-        img_in = "pof/wip/stegano/i.png"
-        encoding_class = RC4Cipher()
-        tokens = ImageStager(encoding_class=encoding_class).generate_stager(
-            tokens,
-            img_in,
-        )
-
-        # FIXME (deoktr): break the image stager
-        # obfuscate stager
-        # tokens = NamesObfuscator(generator=generator).obfuscate_tokens(tokens)
-        # tokens = IndentsObfuscator().obfuscate_tokens(tokens)
-
-        # encrypt stager
-        tokens = RC4Stager().generate_stager(tokens)
-
-        # FIXME (deoktr): break the decryption part because set 256 to a variable
-        # obfuscate decryption stager
-        # tokens = NamesObfuscator(generator=generator).obfuscate_tokens(tokens)
-        # tokens = IndentsObfuscator().obfuscate_tokens(tokens)
-
-        return self._untokenize(tokens)
-
-    def test(self, source):
-        tokens = self._get_tokens(source)
-
-        # generator = AdvancedGenerator.fixed_length_generator()
-        # tokens = ConstantsObfuscator(generator=generator).obfuscate_tokens(tokens)
-
-        tokens = CommentsObfuscator().obfuscate_tokens(tokens)
-        tokens = NamesObfuscator(
-            generator=AdvancedGenerator.fixed_length_generator(),
+        tokens = BuiltinsObfuscator().obfuscate_tokens(tokens)
+        tokens = StringsObfuscator(
+            import_b64decode=True,
+            import_b85decode=True,
         ).obfuscate_tokens(tokens)
-        tokens = BooleanObfuscator().obfuscate_tokens(tokens)
-        tokens = IndentsObfuscator().obfuscate_tokens(tokens)
-        tokens = NewlineObfuscator().obfuscate_tokens(tokens)
-
         return self._untokenize(tokens)

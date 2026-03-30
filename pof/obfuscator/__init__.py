@@ -41,8 +41,8 @@ from .esoteric.globals import GlobalsObfuscator
 from .esoteric.imports import ImportsObfuscator
 from .extract_variables import ExtractVariablesObfuscator
 from .junk.add_comments import AddCommentsObfuscator
-from .junk.add_type_hints import AddTypeHintsObfuscator
 from .junk.add_newlines import AddNewlinesObfuscator
+from .junk.add_type_hints import AddTypeHintsObfuscator
 from .junk.dead_code import DeadCodeObfuscator
 from .names import NamesObfuscator
 from .numbers import NumberObfuscator
