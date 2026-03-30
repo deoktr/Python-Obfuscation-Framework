@@ -322,6 +322,7 @@ Other very basic obfuscation functions are done by specific obfuscators like:
   `LoggingRemoveObfuscator`.
 - Remove empty lines with `NewlineObfuscator`.
 - Remove print statements with `PrintObfuscator`.
+- Remove type hints with `TypeHintsObfuscator`.
 
 #### StringsObfuscator
 
@@ -853,8 +854,6 @@ def greet(name):
 
 Insert dead (unreachable/unused) code blocks into the source.
 
-Source: `print('Hello, world')`
-
 ```python
 while False:
     Etb4inx6B1=[21,7,46,2]
@@ -862,6 +861,26 @@ while False:
     FwQ2='msg'
 
 print('Hello, world')
+```
+
+#### AddTypeHintsObfuscator
+
+Insert random type hints.
+
+Source:
+
+```python
+def foo(x):
+    z = x + 2
+    print(z)
+```
+
+Obfuscated:
+
+```python
+def foo(x: dict[dict[bytearray, None], frozenset[complex]])-> str | type:
+    z: complex | dict[memoryview, complex]=x+2
+    print(z)
 ```
 
 ### Stager

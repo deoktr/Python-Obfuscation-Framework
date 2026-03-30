@@ -163,7 +163,6 @@ class _NameTransformer(ast.NodeTransformer):
             node = node.value
         if isinstance(node, ast.Name):
             return node.id in self.imported_names
-        # Non-Name roots (Constant, Call, List, etc.) — conservatively skip
         return True
 
     def visit_Attribute(self, node: ast.Attribute) -> ast.Attribute:

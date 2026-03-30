@@ -14,6 +14,7 @@ import pytest
 from pof.obfuscator import (
     AddCommentsObfuscator,
     AddNewlinesObfuscator,
+    AddTypeHintsObfuscator,
     ASCII85Obfuscator,
     Base16Obfuscator,
     Base32HexObfuscator,
@@ -52,6 +53,7 @@ from pof.obfuscator import (
     SpacenTabObfuscator,
     StringsObfuscator,
     TokensObfuscator,
+    TypeHintsObfuscator,
     UUIDObfuscator,
     WhitespaceObfuscator,
     XORObfuscator,
@@ -160,9 +162,11 @@ OBFUSCATOR_REGISTRY: list[ObfuscatorEntry] = [
         "PrintObfuscator",
         is_output_preserving=False,
     ),
+    ObfuscatorEntry(TypeHintsObfuscator, "TypeHintsObfuscator"),
     # Junk / behavior-altering
     ObfuscatorEntry(AddCommentsObfuscator, "AddCommentsObfuscator"),
     ObfuscatorEntry(AddNewlinesObfuscator, "AddNewlinesObfuscator"),
+    ObfuscatorEntry(AddTypeHintsObfuscator, "AddTypeHintsObfuscator"),
     ObfuscatorEntry(DeadCodeObfuscator, "DeadCodeObfuscator"),
     # name/variable obfuscators
     ObfuscatorEntry(ConstantsObfuscator, "ConstantsObfuscator"),

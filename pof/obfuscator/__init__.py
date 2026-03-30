@@ -41,6 +41,7 @@ from .esoteric.globals import GlobalsObfuscator
 from .esoteric.imports import ImportsObfuscator
 from .extract_variables import ExtractVariablesObfuscator
 from .junk.add_comments import AddCommentsObfuscator
+from .junk.add_type_hints import AddTypeHintsObfuscator
 from .junk.add_newlines import AddNewlinesObfuscator
 from .junk.dead_code import DeadCodeObfuscator
 from .names import NamesObfuscator
@@ -52,6 +53,7 @@ from .remove.indents import IndentsObfuscator
 from .remove.loggings import LoggingObfuscator, LoggingRemoveObfuscator
 from .remove.newline import NewlineObfuscator
 from .remove.print import PrintObfuscator
+from .remove.type_hints import TypeHintsObfuscator
 from .stegano.docstrings import DocstringObfuscator
 from .stegano.ipv6encoding import IPv6Obfuscator
 from .stegano.macencoding import MACObfuscator
@@ -62,6 +64,7 @@ __all__ = [
     "ASCII85Obfuscator",
     "AddCommentsObfuscator",
     "AddNewlinesObfuscator",
+    "AddTypeHintsObfuscator",
     "Base16Obfuscator",
     "Base32HexObfuscator",
     "Base32Obfuscator",
@@ -99,6 +102,7 @@ __all__ = [
     "SpacenTabObfuscator",
     "StringsObfuscator",
     "TokensObfuscator",
+    "TypeHintsObfuscator",
     "UUIDObfuscator",
     "WhitespaceObfuscator",
     "XORObfuscator",

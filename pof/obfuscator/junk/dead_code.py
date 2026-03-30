@@ -290,7 +290,6 @@ class DeadCodeObfuscator:
             weights = [1] * len(available)
 
         choice = random.choices(available, weights=weights, k=1)[0]
-
         match choice:
             case "function":
                 return self._generate_dead_function_tokens(indent_level, 0)
@@ -332,7 +331,6 @@ class DeadCodeObfuscator:
 
             result.append((toknum, tokval))
 
-            # insert dead code after NEWLINE tokens
             # do NOT insert if an INDENT is upcoming (possibly after NL/COMMENT
             # tokens), that would break the block header (def/if/for/while/
             # class/try) by placing code between the header's NEWLINE and the
