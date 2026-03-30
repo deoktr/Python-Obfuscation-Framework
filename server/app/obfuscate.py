@@ -67,6 +67,12 @@ def add_obfuscation(tokens, form):
         "obf_print",
         obfuscator.PrintObfuscator,
     )
+    tokens = obfuscation_bool_helper(
+        tokens,
+        form,
+        "obf_type_hints",
+        obfuscator.TypeHintsObfuscator,
+    )
 
     # control flow
     tokens = obfuscation_bool_helper(
@@ -80,6 +86,12 @@ def add_obfuscation(tokens, form):
         form,
         "obf_dead_code",
         obfuscator.DeadCodeObfuscator,
+    )
+    tokens = obfuscation_bool_helper(
+        tokens,
+        form,
+        "obf_add_type_hints",
+        obfuscator.AddTypeHintsObfuscator,
     )
 
     # rename/move
