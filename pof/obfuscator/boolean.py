@@ -22,7 +22,7 @@ class BooleanObfuscator:
     """Obfuscate booleans with multiple methods."""
 
     @staticmethod
-    def obf_true():  # noqa: PLR0911
+    def obf_true():  # noqa: C901, PLR0911
         match random.randint(1, 12):
             case 1:
                 # all([])
@@ -135,7 +135,7 @@ class BooleanObfuscator:
                 ]
 
     @staticmethod
-    def obf_false():  # noqa: PLR0911
+    def obf_false():  # noqa: C901, PLR0911
         match random.randint(1, 12):
             case 1:
                 # False = all([[]])

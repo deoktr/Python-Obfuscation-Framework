@@ -176,7 +176,7 @@ def _cli() -> int:
     parser.add_argument(
         "-f",
         "--function",
-        help="obfuscation function, can be a specific function or preset: basic/moderate/advanced/extreme",
+        help="obfuscation function, can be a specific function or preset: basic/moderate/advanced/extreme",  # noqa: E501
         default="moderate",
     )
     parser.add_argument(
