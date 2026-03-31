@@ -92,7 +92,7 @@ class DocstringObfuscator:
 
     def _get_exec_tokens(self, container_names: list[str]) -> list[tuple]:
         """Generate exec tokens that join all container docstrings and decode."""
-        # build: "".join([C1.__doc__, C2.__doc__, ...]).replace('\n','').replace(' ','')
+        # build: "".join([C1.__doc__, C2.__doc__, ...]).replace('\n','')
         join_items = []
         for i, name in enumerate(container_names):
             if i > 0:
@@ -120,13 +120,6 @@ class DocstringObfuscator:
             (STRING, repr(r"\n")),
             (OP, ","),
             (STRING, "''"),
-            (RPAR, ")"),
-            (OP, "."),
-            (NAME, "replace"),
-            (LPAR, "("),
-            (STRING, repr(" ")),
-            (OP, ","),
-            (STRING, repr("")),
             (RPAR, ")"),
         ]
 

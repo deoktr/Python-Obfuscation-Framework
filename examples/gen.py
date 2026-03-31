@@ -155,7 +155,9 @@ def run_all():
     # defaults from pof
     pof_obf = pof.Obfuscator()
     obfuscate_to_file(pof_obf.basic(source), "basic")
-    obfuscate_to_file(pof_obf.obfuscate(source), "obfuscate")
+    obfuscate_to_file(pof_obf.moderate(source), "moderate")
+    obfuscate_to_file(pof_obf.advanced(source), "advanced")
+    obfuscate_to_file(pof_obf.extreme(source), "extreme")
     obfuscate_to_file(pof_obf.circles(source), "circles")
 
     # custom API example
@@ -186,6 +188,7 @@ def run_all():
     obfuscate_to_file(obf.obfuscator(GlobalsObfuscator(), source), "globals_obf")
     obfuscate_to_file(obf.obfuscator(ControlFlowFlattenObfuscator(), source), "cff_obf")
     obfuscate_to_file(obf.obfuscator(DeadCodeObfuscator(), source), "dead_obf")
+    obfuscate_to_file(obf.obfuscator(AddTypeHintsObfuscator(), source), "types_obf")
     obfuscate_to_file(obf.stager(QuineStager(), source), "quine_stager")
 
 

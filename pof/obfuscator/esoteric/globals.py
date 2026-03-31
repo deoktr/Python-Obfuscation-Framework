@@ -15,10 +15,10 @@
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 import keyword
+import random
 from tokenize import LPAR, NAME, NEWLINE, NL, OP, RPAR, STRING
 
 
-# TODO (deoktr): add frequency
 class GlobalsObfuscator:
     """Change a local function/class reference.
 
@@ -38,8 +38,10 @@ class GlobalsObfuscator:
 
     RESERVED = keyword.kwlist
 
-    @classmethod
-    def obfuscate_tokens(cls, tokens):
+    def __init__(self, frequency: float = 1.0) -> None:
+        self.frequency = max(0.0, min(1.0, frequency))
+
+    def obfuscate_tokens(self, tokens):
         local_functions = []
         prev_tokval = None
         prev_col = -1
@@ -71,9 +73,10 @@ class GlobalsObfuscator:
                 and prev_tokval not in ["def", "class", "."]
                 # ensure it's not an argument of a call
                 and next_tokval != "="
-                and tokval not in cls.RESERVED
+                and tokval not in self.RESERVED
                 # ensure it's not inside an import statement
                 and not in_import
+                and random.random() <= self.frequency
             ):
                 new_tokens = [
                     (NAME, "globals"),

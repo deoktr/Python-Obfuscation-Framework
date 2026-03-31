@@ -22,7 +22,7 @@ class AddNewlinesObfuscator:
     """Add newlines to the code."""
 
     def __init__(self, frequency=0.03) -> None:
-        self.frequency = frequency
+        self.frequency = max(0.0, min(1.0, frequency))
 
     def obfuscate_tokens(self, tokens):
         result = []  # obfuscated tokens

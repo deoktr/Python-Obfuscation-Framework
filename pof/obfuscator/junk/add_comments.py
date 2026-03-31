@@ -30,7 +30,7 @@ class AddCommentsObfuscator:
         frequency=0.03,
         generator=None,
     ) -> None:
-        self.frequency = frequency
+        self.frequency = max(0.0, min(1.0, frequency))
 
         if generator is None:
             generator = CommentGenerator.realistic_generator()

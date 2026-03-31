@@ -51,7 +51,7 @@ class DeadCodeObfuscator:
         generate_classes: bool = False,  # noqa: FBT001, FBT002
         generator: Generator[str] | None = None,
     ) -> None:
-        self.frequency: float = frequency
+        self.frequency = max(0.0, min(1.0, frequency))
         self.max_function_depth: int = max_function_depth
         self.max_branches: int = max_branches
         self.generate_classes: bool = generate_classes

@@ -219,7 +219,7 @@ class ExtractVariablesObfuscator:
     def generate_new_name(self):
         return next(self.generator)
 
-    def obfuscate_tokens(self, tokens):  # noqa: C901, PLR0912
+    def obfuscate_tokens(self, tokens):  # noqa: C901, PLR0912, PLR0915
         tokens = merge_implicit_strings(tokens)
         result = []
         new_line_buffer = []
@@ -227,7 +227,10 @@ class ExtractVariablesObfuscator:
         parenthesis_depth = 0
         fstring_depth = 0
         prev_toknum = None
+        prev_tokval = None
         in_decorator = False
+        in_case_pattern = False
+        case_depth = 0
 
         for toknum, tokval, *_ in tokens:
             new_tokens = [(toknum, tokval)]
@@ -241,6 +244,17 @@ class ExtractVariablesObfuscator:
                 fstring_depth += 1
             elif toknum == FSTRING_END:
                 fstring_depth -= 1
+
+            if prev_tokval == "case":
+                in_case_pattern = True
+                case_depth = 0
+            if in_case_pattern:
+                if tokval in ("(", "[", "{"):
+                    case_depth += 1
+                elif tokval in (")", "]", "}"):
+                    case_depth -= 1
+                elif tokval == ":" and case_depth == 0:
+                    in_case_pattern = False
 
             # track decorator context, suppress flushing between @ and def/class
             if toknum == OP and tokval == "@":
@@ -265,6 +279,8 @@ class ExtractVariablesObfuscator:
                 ((toknum == STRING and not is_docstring) or toknum == NUMBER)
                 and not on_continuation_line
                 and fstring_depth == 0
+                # don't obfuscate case pattern literals
+                and not in_case_pattern
             ):
                 random_name = self.generate_new_name()
                 new_line_buffer.extend(
@@ -294,4 +310,5 @@ class ExtractVariablesObfuscator:
             if new_tokens:
                 result.extend(new_tokens)
             prev_toknum = toknum
+            prev_tokval = tokval
         return result

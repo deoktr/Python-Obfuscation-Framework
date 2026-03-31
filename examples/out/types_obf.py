@@ -1,47 +1,38 @@
-
 # source file that will be obfuscated
 import os
 
 
-def get_linux_release_info():
+def get_linux_release_info()-> None:
     """Get Linux release info from /etc/os-release."""
 
     # Check if the file exists
-    nQbrfCu4jy="/etc/os-release"
-    release_file=nQbrfCu4jy
+    release_file: float | complex="/etc/os-release"
 
     if not os.path.exists(release_file):
-        GQwZ="OS release file not found. This might not be a Linux system."
-        print(GQwZ)
+        print("OS release file not found. This might not be a Linux system.")
         return None
 
         # Dictionary to store release information
-    release_info={}
+    release_info: dict[bool, int]={}
 
     try:
     # Read and parse the file
-        skE8f_y2OE="r"
-        with open(release_file,skE8f_y2OE)as f:
+        with open(release_file,"r")as f:
             for line in f:
-                GjLhia="="
-                if not line or GjLhia not in line:
+                if not line or"="not in line:
                     continue
 
                     # Split key and value
-                XfXCZdFs="="
-                RMd=1
-                key,value=line.strip().split(XfXCZdFs,RMd)
+                key,value=line.strip().split("=",1)
 
                 # Remove quotes from value
-                u11="\"'\n"
-                value=value.strip(u11)
+                value: dict[range, bytes]=value.strip("\"'\n")
 
                 # Store in dictionary
                 release_info[key]=value
 
                 # Print key release information
-        IONF="\nLinux Release Information:"
-        print(IONF)
+        print("\nLinux Release Information:")
         print(f"Distribution: {release_info.get('NAME','Unknown')}")
         print(f"Version: {release_info.get('VERSION','Unknown')}")
         print(f"Version ID: {release_info.get('VERSION_ID','Unknown')}")
@@ -55,13 +46,9 @@ def get_linux_release_info():
 
 
         # Main execution
-nXXw7_="__main__"
-if __name__==nXXw7_:
+if __name__=="__main__":
 # Check if running on Linux
-    mm2="posix"
-    kvb="/etc/os-release"
-    if os.name==mm2 and os.path.exists(kvb):
-        release_details=get_linux_release_info()
+    if os.name=="posix"and os.path.exists("/etc/os-release"):
+        release_details: int=get_linux_release_info()
     else:
-        ZOMudR="This script is designed for Linux systems."
-        print(ZOMudR)
+        print("This script is designed for Linux systems.")

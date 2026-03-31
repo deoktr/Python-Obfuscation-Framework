@@ -317,12 +317,6 @@ class BuiltinsObfuscator:
                 (NAME, "__dict__"),
                 (RPAR, ")"),
             ],
-            # __annotations__.__class__
-            [
-                (NAME, "__annotations__"),
-                (OP, "."),
-                (NAME, "__class__"),
-            ],
         ],
         "type": [
             # __name__.__class__.__class__
@@ -503,6 +497,7 @@ class BuiltinsObfuscator:
                 toknum == NAME
                 and tokval in self.BUILTINS
                 and prev_tokval not in (".", "def", "class")
+                and next_tokval != "."
                 and (
                     parenthesis_depth == 0
                     or (parenthesis_depth > 0 and next_tokval != "=")

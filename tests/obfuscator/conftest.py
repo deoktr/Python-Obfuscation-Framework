@@ -11,6 +11,8 @@ from tokenize import generate_tokens
 from typing import Any
 
 import pytest
+
+from pof.utils import encoding
 from pof.obfuscator import (
     AddCommentsObfuscator,
     AddNewlinesObfuscator,
@@ -99,6 +101,8 @@ SKIP_LIST: list[SkipEntry] = [
 ]
 
 
+# NOTE: all obfuscator that supports it run with max frequency/probability to
+# force all places obfuscation can be applied.
 OBFUSCATOR_REGISTRY: list[ObfuscatorEntry] = [
     # encoding
     ObfuscatorEntry(ASCII85Obfuscator, "ASCII85Obfuscator"),
@@ -129,12 +133,50 @@ OBFUSCATOR_REGISTRY: list[ObfuscatorEntry] = [
         constructor_args={"encryption_depth": 2},
     ),
     # esoteric
-    ObfuscatorEntry(CallObfuscator, "CallObfuscator"),
-    ObfuscatorEntry(CharFromDocObfuscator, "CharFromDocObfuscator"),
-    ObfuscatorEntry(GlobalsObfuscator, "GlobalsObfuscator"),
+    ObfuscatorEntry(
+        CallObfuscator,
+        "CallObfuscator",
+        constructor_args={"frequency": 1},
+    ),
+    ObfuscatorEntry(
+        CharFromDocObfuscator,
+        "CharFromDocObfuscator",
+        constructor_args={"frequency": 1},
+    ),
+    ObfuscatorEntry(
+        GlobalsObfuscator,
+        "GlobalsObfuscator",
+        constructor_args={"frequency": 1},
+    ),
     ObfuscatorEntry(ImportsObfuscator, "ImportsObfuscator"),
     # stegano
+    # NOTE: ASCII85Encoding and WhitespaceEncoding are incompatible
     ObfuscatorEntry(DocstringObfuscator, "DocstringObfuscator"),
+    ObfuscatorEntry(
+        DocstringObfuscator,
+        "DocstringObfuscator",
+        constructor_args={"encoding_class": encoding.Base16Encoding},
+    ),
+    ObfuscatorEntry(
+        DocstringObfuscator,
+        "DocstringObfuscator",
+        constructor_args={"encoding_class": encoding.Base32Encoding},
+    ),
+    ObfuscatorEntry(
+        DocstringObfuscator,
+        "DocstringObfuscator",
+        constructor_args={"encoding_class": encoding.Base32HexEncoding},
+    ),
+    ObfuscatorEntry(
+        DocstringObfuscator,
+        "DocstringObfuscator",
+        constructor_args={"encoding_class": encoding.Base64Encoding},
+    ),
+    ObfuscatorEntry(
+        DocstringObfuscator,
+        "DocstringObfuscator",
+        constructor_args={"encoding_class": encoding.Base85Encoding},
+    ),
     ObfuscatorEntry(IPv6Obfuscator, "IPv6Obfuscator"),
     ObfuscatorEntry(MACObfuscator, "MACObfuscator"),
     ObfuscatorEntry(UUIDObfuscator, "UUIDObfuscator"),
@@ -164,10 +206,36 @@ OBFUSCATOR_REGISTRY: list[ObfuscatorEntry] = [
     ),
     ObfuscatorEntry(TypeHintsObfuscator, "TypeHintsObfuscator"),
     # Junk / behavior-altering
-    ObfuscatorEntry(AddCommentsObfuscator, "AddCommentsObfuscator"),
-    ObfuscatorEntry(AddNewlinesObfuscator, "AddNewlinesObfuscator"),
-    ObfuscatorEntry(AddTypeHintsObfuscator, "AddTypeHintsObfuscator"),
-    ObfuscatorEntry(DeadCodeObfuscator, "DeadCodeObfuscator"),
+    ObfuscatorEntry(
+        AddCommentsObfuscator,
+        "AddCommentsObfuscator",
+        constructor_args={"frequency": 1},
+    ),
+    ObfuscatorEntry(
+        AddNewlinesObfuscator,
+        "AddNewlinesObfuscator",
+        constructor_args={"frequency": 1},
+    ),
+    ObfuscatorEntry(
+        AddTypeHintsObfuscator,
+        "AddTypeHintsObfuscator",
+        constructor_args={
+            "max_depth": 5,
+            "simple_weight": 1,
+            "generic_type_weight": 1,
+            "generic_prob": 0.5,
+            "union_split": 0.5,
+        },
+    ),
+    ObfuscatorEntry(
+        DeadCodeObfuscator,
+        "DeadCodeObfuscator",
+        constructor_args={
+            "frequency": 1,
+            "max_function_depth": 10,
+            "max_branches": 10,
+        },
+    ),
     # name/variable obfuscators
     ObfuscatorEntry(ConstantsObfuscator, "ConstantsObfuscator"),
     ObfuscatorEntry(

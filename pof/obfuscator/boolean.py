@@ -23,7 +23,7 @@ class BooleanObfuscator:
 
     @staticmethod
     def obf_true():  # noqa: PLR0911
-        match random.randint(1, 9):
+        match random.randint(1, 12):
             case 1:
                 # all([])
                 return [
@@ -106,10 +106,37 @@ class BooleanObfuscator:
                     (NUMBER, "0"),
                     (RPAR, ")"),
                 ]
+            case 10:
+                # (True or False)
+                return [
+                    (LPAR, "("),
+                    (NAME, "True"),
+                    (NAME, "or"),
+                    (NAME, "False"),
+                    (RPAR, ")"),
+                ]
+            case 11:
+                # (True or True)
+                return [
+                    (LPAR, "("),
+                    (NAME, "True"),
+                    (NAME, "or"),
+                    (NAME, "False"),
+                    (RPAR, ")"),
+                ]
+            case 12:
+                # (True and True)
+                return [
+                    (LPAR, "("),
+                    (NAME, "True"),
+                    (NAME, "and"),
+                    (NAME, "True"),
+                    (RPAR, ")"),
+                ]
 
     @staticmethod
     def obf_false():  # noqa: PLR0911
-        match random.randint(1, 9):
+        match random.randint(1, 12):
             case 1:
                 # False = all([[]])
                 return [
@@ -194,6 +221,33 @@ class BooleanObfuscator:
                     (NUMBER, "1"),
                     (OP, "^"),
                     (NUMBER, "1"),
+                    (RPAR, ")"),
+                ]
+            case 10:
+                # (False or False)
+                return [
+                    (LPAR, "("),
+                    (NAME, "False"),
+                    (NAME, "or"),
+                    (NAME, "False"),
+                    (RPAR, ")"),
+                ]
+            case 11:
+                # (False and True)
+                return [
+                    (LPAR, "("),
+                    (NAME, "False"),
+                    (NAME, "and"),
+                    (NAME, "True"),
+                    (RPAR, ")"),
+                ]
+            case 12:
+                # (True and False)
+                return [
+                    (LPAR, "("),
+                    (NAME, "True"),
+                    (NAME, "and"),
+                    (NAME, "False"),
                     (RPAR, ")"),
                 ]
 

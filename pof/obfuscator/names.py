@@ -157,6 +157,25 @@ class _NameTransformer(ast.NodeTransformer):
         self.generic_visit(node)
         return node
 
+    def visit_MatchAs(self, node: ast.MatchAs) -> ast.MatchAs:
+        if node.name is not None and self._should_rename(node.name):
+            node.name = self._get_new(node.name)
+        if node.pattern is not None:
+            self.visit(node.pattern)
+        return node
+
+    def visit_MatchStar(self, node: ast.MatchStar) -> ast.MatchStar:
+        if node.name is not None and self._should_rename(node.name):
+            node.name = self._get_new(node.name)
+        return node
+
+    def visit_MatchMapping(self, node: ast.MatchMapping) -> ast.MatchMapping:
+        for pattern in node.patterns:
+            self.visit(pattern)
+        if node.rest is not None and self._should_rename(node.rest):
+            node.rest = self._get_new(node.rest)
+        return node
+
     def _is_imported_root(self, node: ast.expr) -> bool:
         """Check if the root of an attribute chain is an imported name."""
         while isinstance(node, ast.Attribute):

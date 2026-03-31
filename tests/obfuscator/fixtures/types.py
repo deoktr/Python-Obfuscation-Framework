@@ -52,3 +52,15 @@ print(foo_opt(1))
 PI: Final = 3.1415
 Mode = Literal["r", "w"]
 Score = Annotated[int, "0-100"]
+
+
+a = 2
+if type(a) == int:
+    print("a int")
+else:
+    print("a is not int")
+
+if isinstance(a, int):
+    print("a int")
+else:
+    print("a is not int")

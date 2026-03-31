@@ -387,6 +387,17 @@ class StringsObfuscator:
                 # UNICODE uses \u escapes which are invalid in byte literals
                 strategies.append(self.Strats.UNICODE)
                 strategies.append(self.Strats.SHIFT)
+        else:
+            # when followed by method call (e.g., "".join()), exclude wrapping
+            # strategies that produce function calls (b64decode(...),
+            # b85decode(...)) which would break the method chain, keep only
+            # inline strategies
+            strategies = [
+                s for s in strategies if s in (self.Strats.REPLACE, self.Strats.REVERSE)
+            ]
+
+        if not strategies:
+            return [(STRING, tokval)]
 
         strategy = random.choice(strategies)
 
@@ -416,7 +427,7 @@ class StringsObfuscator:
 
         return tokens
 
-    def obfuscate_tokens(self, tokens):
+    def obfuscate_tokens(self, tokens):  # noqa: C901, PLR0912
         tokens = merge_implicit_strings(tokens)
         result = []  # obfuscated tokens
 
@@ -469,19 +480,32 @@ class StringsObfuscator:
                 )
 
         prev_toknum = None
+        prev_tokval = None
+        in_case_pattern = False
+        case_depth = 0
         for index, (toknum, tokval, *_) in enumerate(tokens):
             new_tokens = [(toknum, tokval)]
             next_tokval = None
             if len(tokens) > index + 1:
                 _, next_tokval, *__ = tokens[index + 1]
 
-            # don't obfuscate docstrings
-            if toknum == STRING and prev_toknum not in [
-                NEWLINE,
-                DEDENT,
-                INDENT,
-                ENCODING,
-            ]:
+            if prev_tokval == "case":
+                in_case_pattern = True
+                case_depth = 0
+            if in_case_pattern:
+                if tokval in ("(", "[", "{"):
+                    case_depth += 1
+                elif tokval in (")", "]", "}"):
+                    case_depth -= 1
+                elif tokval == ":" and case_depth == 0:
+                    in_case_pattern = False
+
+            # don't obfuscate docstrings or case pattern literals
+            if (
+                toknum == STRING
+                and prev_toknum not in [NEWLINE, DEDENT, INDENT, ENCODING]
+                and not in_case_pattern
+            ):
                 try:
                     new_tokens = self._obfuscate_string(tokval, next_tokval)
                 except Exception:  # noqa: BLE001
@@ -490,4 +514,5 @@ class StringsObfuscator:
             if new_tokens:
                 result.extend(new_tokens)
             prev_toknum = toknum
+            prev_tokval = tokval
         return result

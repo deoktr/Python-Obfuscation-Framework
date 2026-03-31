@@ -244,7 +244,7 @@ class ConstantsObfuscator:
             variables.update({tokval: [var_name, toknum]})
         return [(NAME, variables[tokval][0])], variables
 
-    def obfuscate_tokens(self, tokens):
+    def obfuscate_tokens(self, tokens):  # noqa: C901, PLR0912
         tokens = merge_implicit_strings(tokens)
         variables = {}
         result = []
@@ -252,6 +252,8 @@ class ConstantsObfuscator:
         fstring_depth = 0
         prev_tokval = None
         prev_toknum = None
+        in_case_pattern = False
+        case_depth = 0
         for index, (toknum, tokval, *_) in enumerate(tokens):
             new_tokens = [(toknum, tokval)]
             next_tokval = None
@@ -269,33 +271,48 @@ class ConstantsObfuscator:
             elif toknum == FSTRING_END:
                 fstring_depth -= 1
 
+            if prev_tokval == "case":
+                in_case_pattern = True
+                case_depth = 0
+            if in_case_pattern:
+                if tokval in ("(", "[", "{"):
+                    case_depth += 1
+                elif tokval in (")", "]", "}"):
+                    case_depth -= 1
+                elif tokval == ":" and case_depth == 0:
+                    in_case_pattern = False
+
             # obfuscation
-            if fstring_depth == 0 and (
-                (
-                    toknum == NAME
-                    and tokval in self.BUILTINS
-                    and prev_tokval not in (".", "def", "class")
-                    and (
-                        parenthesis_depth == 0
-                        or (parenthesis_depth > 0 and next_tokval != "=")
+            if (
+                fstring_depth == 0
+                and not in_case_pattern
+                and (
+                    (
+                        toknum == NAME
+                        and tokval in self.BUILTINS
+                        and prev_tokval not in (".", "def", "class")
+                        and (
+                            parenthesis_depth == 0
+                            or (parenthesis_depth > 0 and next_tokval != "=")
+                        )
+                        and (random.randint(0, 100) / 100) <= self.obf_builtins_rate
                     )
-                    and (random.randint(0, 100) / 100) <= self.obf_builtins_rate
-                )
-                or (
-                    # don't obfuscate docstrings
-                    toknum == STRING
-                    and prev_toknum
-                    not in [
-                        NEWLINE,
-                        DEDENT,
-                        INDENT,
-                        ENCODING,
-                    ]
-                    and (random.randint(0, 100) / 100) <= self.obf_string_rate
-                )
-                or (
-                    toknum == NUMBER
-                    and (random.randint(0, 100) / 100) <= self.obf_number_rate
+                    or (
+                        # don't obfuscate docstrings
+                        toknum == STRING
+                        and prev_toknum
+                        not in [
+                            NEWLINE,
+                            DEDENT,
+                            INDENT,
+                            ENCODING,
+                        ]
+                        and (random.randint(0, 100) / 100) <= self.obf_string_rate
+                    )
+                    or (
+                        toknum == NUMBER
+                        and (random.randint(0, 100) / 100) <= self.obf_number_rate
+                    )
                 )
             ):
                 new_tokens, variables = self.obfuscate_variable(

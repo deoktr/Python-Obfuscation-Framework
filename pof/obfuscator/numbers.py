@@ -420,9 +420,12 @@ class NumberObfuscator:
             # 0o755 all obfuscation method will fail
             return unobfuscated
 
-    def obfuscate_tokens(self, tokens):
+    def obfuscate_tokens(self, tokens):  # noqa: C901
         result = []
         fstring_depth = 0
+        prev_tokval = None
+        in_case_pattern = False
+        case_depth = 0
         for toknum, tokval, *_ in tokens:
             new_tokens = [(toknum, tokval)]
 
@@ -431,9 +434,22 @@ class NumberObfuscator:
             elif toknum == FSTRING_END:
                 fstring_depth -= 1
 
-            if toknum == NUMBER and fstring_depth == 0:
+            if prev_tokval == "case":
+                in_case_pattern = True
+                case_depth = 0
+            if in_case_pattern:
+                if tokval in ("(", "[", "{"):
+                    case_depth += 1
+                elif tokval in (")", "]", "}"):
+                    case_depth -= 1
+                elif tokval == ":" and case_depth == 0:
+                    in_case_pattern = False
+
+            # don't obfuscate case pattern literals
+            if toknum == NUMBER and fstring_depth == 0 and not in_case_pattern:
                 new_tokens = self.obfuscate_number(toknum, tokval)
 
             if new_tokens:
                 result.extend(new_tokens)
+            prev_tokval = tokval
         return result

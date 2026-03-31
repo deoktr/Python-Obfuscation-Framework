@@ -1,23 +1,18 @@
-lc5lf="OS release file not found. This might not be a Linux system."
-dzjKCNa=print
-XUi='Unknown'
-gCQ=open
-T5MlK="__main__"
-V4t=None
-oTG6VKCVI=Exception
-s6qA4rG="\nLinux Release Information:"
-qRxMvYi='VERSION'
-w0Ipb='PRETTY_NAME'
-W47Ny4c="r"
-DDmmJmb="="
-hyUGd7lEl4=__name__
-w1coazp='NAME'
-puTh=1
-ENAmRd_ffx="posix"
-ILw_UuBr="\"'\n"
-CJfG0Ihk="This script is designed for Linux systems."
-qPIn_JGTi="/etc/os-release"
-PV5qXvd='VERSION_ID'
+gav="="
+BdnPpox="\nLinux Release Information:"
+mV8u3bj="OS release file not found. This might not be a Linux system."
+MVIBY="posix"
+fv3paKw="This script is designed for Linux systems."
+RudUBh=Exception
+Ut_HM9U4="__main__"
+E3KTjq=__name__
+EW4feUeq="/etc/os-release"
+Fp4a8N=print
+lC3q=open
+taFh="r"
+N8D1ITP=1
+wWqNy1=None
+s0qAqHq4iY="\"'\n"
 # source file that will be obfuscated
 import os
 
@@ -26,49 +21,49 @@ def get_linux_release_info():
     """Get Linux release info from /etc/os-release."""
 
     # Check if the file exists
-    release_file=qPIn_JGTi
+    release_file=EW4feUeq
 
     if not os.path.exists(release_file):
-        dzjKCNa(lc5lf)
-        return V4t
+        Fp4a8N(mV8u3bj)
+        return wWqNy1
 
         # Dictionary to store release information
     release_info={}
 
     try:
     # Read and parse the file
-        with gCQ(release_file,W47Ny4c)as f:
+        with lC3q(release_file,taFh)as f:
             for line in f:
-                if not line or DDmmJmb not in line:
+                if not line or gav not in line:
                     continue
 
                     # Split key and value
-                key,value=line.strip().split(DDmmJmb,puTh)
+                key,value=line.strip().split(gav,N8D1ITP)
 
                 # Remove quotes from value
-                value=value.strip(ILw_UuBr)
+                value=value.strip(s0qAqHq4iY)
 
                 # Store in dictionary
                 release_info[key]=value
 
                 # Print key release information
-        dzjKCNa(s6qA4rG)
-        dzjKCNa(f"Distribution: {release_info.get(w1coazp,XUi)}")
-        dzjKCNa(f"Version: {release_info.get(qRxMvYi,XUi)}")
-        dzjKCNa(f"Version ID: {release_info.get(PV5qXvd,XUi)}")
-        dzjKCNa(f"Pretty Name: {release_info.get(w0Ipb,XUi)}")
+        Fp4a8N(BdnPpox)
+        Fp4a8N(f"Distribution: {release_info.get('NAME','Unknown')}")
+        Fp4a8N(f"Version: {release_info.get('VERSION','Unknown')}")
+        Fp4a8N(f"Version ID: {release_info.get('VERSION_ID','Unknown')}")
+        Fp4a8N(f"Pretty Name: {release_info.get('PRETTY_NAME','Unknown')}")
 
         return release_info
 
-    except oTG6VKCVI as e:
-        dzjKCNa(f"Error reading release file: {e}")
-        return V4t
+    except RudUBh as e:
+        Fp4a8N(f"Error reading release file: {e}")
+        return wWqNy1
 
 
         # Main execution
-if hyUGd7lEl4==T5MlK:
+if E3KTjq==Ut_HM9U4:
 # Check if running on Linux
-    if os.name==ENAmRd_ffx and os.path.exists(qPIn_JGTi):
+    if os.name==MVIBY and os.path.exists(EW4feUeq):
         release_details=get_linux_release_info()
     else:
-        dzjKCNa(CJfG0Ihk)
+        Fp4a8N(fv3paKw)

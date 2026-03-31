@@ -15,12 +15,12 @@
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 import keyword
+import random
 from tokenize import FSTRING_END, FSTRING_START, NAME, OP
 
 
-# TODO (deoktr): add frequency
 class CallObfuscator:
-    """Add `.__call__` to any call.
+    """Add `.__call__` to call.
 
     ```
     print(...)
@@ -31,13 +31,15 @@ class CallObfuscator:
     ```
     """
 
-    RESERVED_WORDS = ("type",)  # weir but if you do `type.__call__(1)` it doesn't work
+    RESERVED_WORDS = ("type",)  # weird but if you do `type.__call__(1)` it doesn't work
 
     RESERVED = RESERVED_WORDS + tuple(keyword.kwlist)
 
-    @classmethod
-    def obfuscate_tokens(cls, tokens):
-        result = []  # obfuscated tokens
+    def __init__(self, frequency: float = 1.0) -> None:
+        self.frequency = max(0.0, min(1.0, frequency))
+
+    def obfuscate_tokens(self, tokens):
+        result = []
         prev_tokval = None
         fstring_depth = 0
         for index, (toknum, tokval, *_) in enumerate(tokens):
@@ -55,9 +57,10 @@ class CallObfuscator:
                 # ensure it's not a definition
                 (prev_tokval is None or prev_tokval not in ["def", "class"])
                 and toknum == NAME
-                and tokval not in cls.RESERVED
+                and tokval not in self.RESERVED
                 and next_tokval == "("
                 and fstring_depth == 0
+                and random.random() <= self.frequency
             ):
                 new_tokens.extend(
                     [
