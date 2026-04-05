@@ -139,6 +139,94 @@ class Example(BaseObfuscator):
 
         return self._untokenize(tokens)
 
+    def evasion_debugger(self, source):
+        """Debugger detection evasion examples.
+
+        Demonstrates techniques that detect if the code is being analyzed by a
+        debugger, profiler, or tracing tool.
+        """
+        tokens = self._get_tokens(source)
+
+        tokens = DebuggerEvasion().add_evasion(tokens)
+        tokens = TracemallocEvasion().add_evasion(tokens)
+        tokens = CProfileEvasion().add_evasion(tokens)
+
+        return self._untokenize(tokens)
+
+    def evasion_guardrails(self, source):
+        """Guardrails evasion examples.
+
+        Demonstrates techniques that validate the target environment matches
+        expected conditions (files, users, time, etc.).
+        """
+        from datetime import datetime, timedelta
+
+        tokens = self._get_tokens(source)
+
+        # exit if an analysis marker file exists
+        tokens = FileMissingEvasion(file="/tmp/analysis_running").add_evasion(tokens)
+
+        # expire after 24 hours
+        tokens = ExpireEvasion(
+            datetime.now() + timedelta(hours=24)
+        ).add_evasion(tokens)
+
+        # require a specific environment variable to be set
+        tokens = EnvVarEvasion(
+            var_name="DEPLOY_ENV", expected="production"
+        ).add_evasion(tokens)
+
+        return self._untokenize(tokens)
+
+    def evasion_sandbox(self, source):
+        """Sandbox detection evasion examples.
+
+        Demonstrates techniques that detect if the code is running inside a
+        sandbox, VM, or minimal analysis environment.
+        """
+        tokens = self._get_tokens(source)
+
+        tokens = CPUCountEvasion(min_cpu_count=2).add_evasion(tokens)
+        tokens = LinuxRAMCountEvasion(min_ram=2).add_evasion(tokens)
+        tokens = LinuxProcCountEvasion(proc_count=50).add_evasion(tokens)
+        tokens = DiskSizeEvasion(min_gb=20).add_evasion(tokens)
+
+        return self._untokenize(tokens)
+
+    def evasion_environment(self, source):
+        """Environment detection evasion examples.
+
+        Demonstrates techniques that detect specific execution environments
+        (containers, CI/CD, notebooks) and exit if detected.
+        """
+        tokens = self._get_tokens(source)
+
+        tokens = LinuxDockerEvasion().add_evasion(tokens)
+        tokens = CICDEvasion().add_evasion(tokens)
+        tokens = JupyterEvasion().add_evasion(tokens)
+
+        return self._untokenize(tokens)
+
+    def evasion_combined(self, source):
+        """Combined evasion + obfuscation pipeline.
+
+        Demonstrates a realistic workflow: first add evasion guards,
+        then obfuscate the entire result including the guards.
+        """
+        tokens = self._get_tokens(source)
+
+        # add evasion guards
+        tokens = CPUCountEvasion(min_cpu_count=2).add_evasion(tokens)
+        tokens = DebuggerEvasion().add_evasion(tokens)
+        tokens = FileMissingEvasion(file="/tmp/analysis_running").add_evasion(tokens)
+
+        # obfuscate everything (source + evasion code)
+        tokens = CommentsObfuscator().obfuscate_tokens(tokens)
+        tokens = NamesObfuscator().obfuscate_tokens(tokens)
+        tokens = StringsObfuscator().obfuscate_tokens(tokens)
+
+        return self._untokenize(tokens)
+
 
 def obfuscate_to_file(out, file_name):
     file_name = file_name + ".py"
@@ -167,6 +255,11 @@ def run_all():
         black_format(obf.custom_complete(source)), "custom_complete_format"
     )
     obfuscate_to_file(obf.evasion_basic(source), "evasion_basic")
+    obfuscate_to_file(obf.evasion_debugger(source), "evasion_debugger")
+    obfuscate_to_file(obf.evasion_guardrails(source), "evasion_guardrails")
+    obfuscate_to_file(obf.evasion_sandbox(source), "evasion_sandbox")
+    obfuscate_to_file(obf.evasion_environment(source), "evasion_environment")
+    obfuscate_to_file(obf.evasion_combined(source), "evasion_combined")
     obfuscate_to_file(obf.obfuscator(NamesObfuscator(), source), "names_obf")
     obfuscate_to_file(obf.obfuscator(ConstantsObfuscator(), source), "constant_obf")
     obfuscate_to_file(
