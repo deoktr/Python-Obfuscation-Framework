@@ -1288,8 +1288,9 @@ times, and we finally convert the tokens back to code.
 By chaining multiple obfuscations techniques we can create very complex and
 custom output.
 
-Pof also provide evasions methods, detailed below, they are useful for quick and
-easy evasions, and can be used and customized to fit the need.
+Pof also provide evasions methods, they are useful for quick and easy evasions,
+and can be used and customized to fit the need. The full evasion documentation
+can be found in [evasion.md](./evasion.md).
 
 For more example of how to use the pof Python API check the
 [examples/](./examples) directory.
@@ -1369,6 +1370,13 @@ pip install -e ".[build]"
 check-manifest --ignore "tests/**"
 python3 -m build
 python3 -m twine check dist/*
+```
+
+Update evasion documentation:
+
+```bash
+pip install .
+./scripts/generate_evasion_docs.py > evasion.md
 ```
 
 ## Python 2

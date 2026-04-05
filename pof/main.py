@@ -20,7 +20,6 @@ import io
 import random
 from tokenize import generate_tokens
 
-from pof.logger import logger
 from pof.obfuscator import (
     AddCommentsObfuscator,
     AddTypeHintsObfuscator,

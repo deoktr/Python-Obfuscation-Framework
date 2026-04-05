@@ -16,11 +16,11 @@
 
 from tokenize import NEWLINE, OP
 
-from .cpu.cpu_count import CPUCountEvasion
-from .hooks.debugger import DebuggerEvasion
-from .time.expire import ExpireEvasion
-from .time.utc import UTCEvasion
 from pof.evasion.base import BaseEvasion
+from pof.evasion.debugger.debugger import DebuggerEvasion
+from pof.evasion.guardrails.expire import ExpireEvasion
+from pof.evasion.sandbox.cpu_count import CPUCountEvasion
+from pof.evasion.sandbox.utc import UTCEvasion
 
 
 class MultiEvasion(BaseEvasion):

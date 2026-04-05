@@ -23,59 +23,6 @@ Todo:
 - add Ansible directory
 """
 
-WIN_FILE_SYSTEM_PARALLELS = [
-    r"c:\windows\system32\drivers\prleth.sys",
-    r"c:\windows\system32\drivers\prlfs.sys",
-    r"c:\windows\system32\drivers\prlmouse.sys",
-    r"c:\windows\system32\drivers\prlvideo.sys",
-    r"c:\windows\system32\drivers\prltime.sys",
-    r"c:\windows\system32\drivers\prl_pv32.sys",
-    r"c:\windows\system32\drivers\prl_paravirt_32.sys",
-]
-
-WIN_FILE_SYSTEM_VIRTUALBOX = [
-    r"c:\windows\system32\drivers\VBoxMouse.sys",
-    r"c:\windows\system32\drivers\VBoxGuest.sys",
-    r"c:\windows\system32\drivers\VBoxSF.sys",
-    r"c:\windows\system32\drivers\VBoxVideo.sys",
-    r"c:\windows\system32\vboxdisp.dll",
-    r"c:\windows\system32\vboxhook.dll",
-    r"c:\windows\system32\vboxmrxnp.dll",
-    r"c:\windows\system32\vboxogl.dll",
-    r"c:\windows\system32\vboxoglarrayspu.dll",
-    r"c:\windows\system32\vboxoglcrutil.dll",
-    r"c:\windows\system32\vboxoglerrorspu.dll",
-    r"c:\windows\system32\vboxoglfeedbackspu.dll",
-    r"c:\windows\system32\vboxoglpackspu.dll",
-    r"c:\windows\system32\vboxoglpassthroughspu.dll",
-    r"c:\windows\system32\vboxservice.exe",
-    r"c:\windows\system32\vboxtray.exe",
-    r"c:\windows\system32\VBoxControl.exe",
-]
-
-WIN_FILE_SYSTEM_VIRTUALPC = [
-    r"c:\windows\system32\drivers\vmsrvc.sys",
-    r"c:\windows\system32\drivers\vpc-s3.sys",
-]
-
-WIN_FILE_SYSTEM_VMWARE = [
-    r"c:\windows\system32\drivers\vmmouse.sys",
-    r"c:\windows\system32\drivers\vmnet.sys",
-    r"c:\windows\system32\drivers\vmxnet.sys",
-    r"c:\windows\system32\drivers\vmhgfs.sys",
-    r"c:\windows\system32\drivers\vmx86.sys",
-    r"c:\windows\system32\drivers\hgfs.sys",
-]
-
-WIN_FILE_SYSTEM = (
-    WIN_FILE_SYSTEM_PARALLELS
-    + WIN_FILE_SYSTEM_VIRTUALBOX
-    + WIN_FILE_SYSTEM_VIRTUALPC
-    + WIN_FILE_SYSTEM_VMWARE
-)
-
-FILE_SYSTEM = WIN_FILE_SYSTEM
-
 # source: https://evasions.checkpoint.com/techniques/generic-os-queries.html#check-if-username-is-specific
 USERNAME = [
     "admin",
