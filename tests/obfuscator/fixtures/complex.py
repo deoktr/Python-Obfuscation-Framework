@@ -156,6 +156,14 @@ print(a)
 
 a = b = []; a.append(1); print(b)
 
+
+# return format
+def foo(a, b):
+    return f"{a} {b}"
+
+print(foo(1, 2))
+
+
 # obfuscated
 
 # ControlFlowFlattenObfuscator

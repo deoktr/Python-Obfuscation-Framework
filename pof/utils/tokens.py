@@ -18,6 +18,7 @@ from itertools import chain
 from tokenize import (
     DEDENT,
     ENCODING,
+    FSTRING_START,
     INDENT,
     NAME,
     NEWLINE,
@@ -51,6 +52,8 @@ class NoSpaceUntokenizer(Untokenizer):
                     tokval = " " + tokval
                 prevname = True
             else:
+                if prevname and toknum == FSTRING_START:
+                    tokval = " " + tokval
                 prevname = False
 
             # Insert a space between two consecutive strings
