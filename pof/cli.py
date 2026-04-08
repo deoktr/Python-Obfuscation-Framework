@@ -29,6 +29,7 @@ from pof.obfuscator import __all__ as all_obfuscator
 from pof.stager import *  # noqa: F403
 from pof.stager import __all__ as all_stager
 from pof.utils.format import black_format
+from pof.utils.seed import init_seed
 
 handler = logging.StreamHandler()
 formatter = logging.Formatter("%(levelname)s %(message)s\x1b[39m")
@@ -134,6 +135,9 @@ def _handle(args) -> int:
 
     start = time.time()
 
+    seed = init_seed(args.seed)
+    logger.debug(f"random seed: {seed}")
+
     out = CLIObfuscator().__getattribute__(args.function)(source, *a, **k)
 
     end = time.time()
@@ -188,6 +192,12 @@ def _cli() -> int:
         "--logging",
         help="logging level, DEBUG, INFO, ERROR, CRITICAL",
         default="INFO",
+    )
+    parser.add_argument(
+        "--seed",
+        type=int,
+        default=None,
+        help="random seed for deterministic output",
     )
     parser.add_argument(
         "-k",
