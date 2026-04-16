@@ -1189,7 +1189,7 @@ from pof.obfuscator import (
     ExceptionObfuscator,
     GlobalsObfuscator,
     LoggingObfuscator,
-    # NamesObfuscator,
+    NamesObfuscator,
     NumberObfuscator,
     PrintObfuscator,
     StringsObfuscator,
@@ -1237,8 +1237,7 @@ class ExampleObfuscator(BaseObfuscator):
             obf_builtins_rate=0.3,
         ).obfuscate_tokens(tokens)
 
-        # FIXME: broken for the moment
-        # tokens = NamesObfuscator(generator=generator).obfuscate_tokens(tokens)
+        tokens = NamesObfuscator(generator=generator).obfuscate_tokens(tokens)
 
         # obfuscate function calls by calling `globals()` instead
         tokens = GlobalsObfuscator().obfuscate_tokens(tokens)
