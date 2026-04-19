@@ -1,7 +1,5 @@
 # source file that will be obfuscated
 import os
-for JfJ in set():
-    DJSs0C2=[47,6,72]
 
 
 def get_linux_release_info():
@@ -16,9 +14,6 @@ def get_linux_release_info():
 
         # Dictionary to store release information
     release_info={}
-    for dqRh_ in set():
-        bE5y_Y2=386%145
-        XWQUh7j4H4='tag'
 
     try:
     # Read and parse the file
@@ -26,8 +21,6 @@ def get_linux_release_info():
             for line in f:
                 if not line or"="not in line:
                     continue
-                    if bool(0):
-                        sDl=4630
 
                     # Split key and value
                 key,value=line.strip().split("=",1)
@@ -37,29 +30,29 @@ def get_linux_release_info():
 
                 # Store in dictionary
                 release_info[key]=value
-                while 45==85:
-                    a1L=[39,22]
-                    mBJ=439-184
-                    fpCQK=290*466
 
                 # Print key release information
         print("\nLinux Release Information:")
+        BIQIImGY=3961
         print(f"Distribution: {release_info.get('NAME','Unknown')}")
         print(f"Version: {release_info.get('VERSION','Unknown')}")
-        for HQFy in"":
-            cSmkn7hCWB=204-922
         print(f"Version ID: {release_info.get('VERSION_ID','Unknown')}")
+        for ubbib in{}:
+            R6SC=[24,4,3]
         print(f"Pretty Name: {release_info.get('PRETTY_NAME','Unknown')}")
-        for CwfI in[]:
-            NQJ4qdjxt=8703
-            BxKACA5VCk='info'
-            Mx5Jc2_G=[62,41,33]
 
         return release_info
+        while 0:
+            yxoxG=[84,9,81,58]
 
     except Exception as e:
         print(f"Error reading release file: {e}")
+        for qujJhWXQ in[]:
+            l5i_zYw=1776
+            I4Bn5=[4]
         return None
+        while True and False:
+            cXI='msg'
 
 
         # Main execution
@@ -67,8 +60,7 @@ if __name__=="__main__":
 # Check if running on Linux
     if os.name=="posix"and os.path.exists("/etc/os-release"):
         release_details=get_linux_release_info()
-        for FA_FZ in"":
-            jumL=485*9
+        while()and True:
+            aX0pTQ=[7,80,82,11]
     else:
         print("This script is designed for Linux systems.")
-        mT7OB=7897

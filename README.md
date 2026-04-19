@@ -1407,6 +1407,19 @@ Other Python obfuscation projects:
 ## TODO
 
 - Add option to prepend a shebang, and add ability to customize it.
+- For docstring obfuscator make comment length variable.
+- Support selective obfuscation via comments.
+- Support target Python version to only output syntax that will work for that
+  version.
+- Test on multiple Python version.
+- Advanced AST manipulation for deeper transforms.
+- Evasion to detect cloud platform, AWS/Azure/GCP.
+- Evasion for memory forensics.
+- DNS stagger, with output for DNS server.
+- Server, add rate limiting per IP.
+- Server, download output to file.
+- Server, add timeout in case the computation takes too long.
+- Server, set correct version when building the server in CI.
 
 ## License
 

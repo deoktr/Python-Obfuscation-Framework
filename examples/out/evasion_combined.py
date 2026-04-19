@@ -1,41 +1,41 @@
 from base64 import b64decode
 from base64 import b85decode
 import os
-if os.path.isfile(b64decode('L3RtcC9hbmFseXNpc19ydW5uaW5n').decode()):
-    raise Exception('\x46\x69\x6c\x65\x4d\x69\x73\x73\x69\x6e\x67\x45\x76\x61\x73\x69\x6f\x6e')
+if os.path.isfile('\u002f\u0074\u006d\u0070\u002f\u0061\u006e\u0061\u006c\u0079\u0073\u0069\u0073\u005f\u0072\u0075\u006e\u006e\u0069\u006e\u0067'):
+    raise Exception('FileMissingEvasion')
 import sys
-if hasattr(sys,'\x67\x65\x74\x74\x72\x61\x63\x65')and sys.gettrace()is not None:
-    raise Exception('noisavEreggubeD'[::-1])
+if hasattr(sys,'gettrace')and sys.gettrace()is not None:
+    raise Exception('DebuggerEvasion')
 import multiprocessing
 if multiprocessing.cpu_count()<2:
-    raise Exception(b85decode('Lr_&iZ*^{TMRs9xX>V=').decode())
+    raise Exception("".join([chr(ord(i)-3)for i in'FSXFrxqwHydvlrq']))
 import os
 
-def BoM5PID():
-    MtIIgVmZ5='\x2f\x65\x74\x63\x2f\x6f\x73\x2d\x72\x65\x6c\x65\x61\x73\x65'
-    if not os.path.exists(MtIIgVmZ5):
-        print("".join([chr(ord(i)-3)for i in'RV#uhohdvh#iloh#qrw#irxqg1#Wklv#pljkw#qrw#eh#d#Olqx{#v|vwhp1']))
+def u8Juit6L():
+    IU7aWxc='\u002f\u0065\u0074\u0063\u002f\u006f\u0073\u002d\u0072\u0065\u006c\u0065\u0061\u0073\u0065'
+    if not os.path.exists(IU7aWxc):
+        print(b85decode('Pg5XrWo%_(b7dfAX>4U6Zf|rTW^Z+FWG*07XlZjGZE0s{bRceTbRc47AYmX(X>N6RAai+hbY*QW').decode())
         return None
-    E_aykn={}
+    XEPiXy_t={}
     try:
-        with open(MtIIgVmZ5,'r')as ufFwiC:
-            for mDWUss in ufFwiC:
-                if not mDWUss or'='not in mDWUss:
+        with open(IU7aWxc,'\x72')as u1Pomif:
+            for lezn_ in u1Pomif:
+                if not lezn_ or"".join([chr(ord(i)-3)for i in'@'])not in lezn_:
                     continue
-                WqR5ocanvo,uE56fbgmtN=mDWUss.strip().split('='[::-1],1)
-                uE56fbgmtN=uE56fbgmtN.strip('"\'\n')
-                E_aykn[WqR5ocanvo]=uE56fbgmtN
-        print(b85decode('3QTEkb$B3BWo%_(b7de&Zf0+CZDDk2Z*Dp').decode())
-        print(f"Distribution: {E_aykn.get("".join([chr(ord(i)-3)for i in'QDPH']),'\x55\x6e\x6b\x6e\x6f\x77\x6e')}")
-        print(f"Version: {E_aykn.get("".join([chr(ord(i)-3)for i in'YHUVLRQ']),'\x55\x6e\x6b\x6e\x6f\x77\x6e')}")
-        print(f"Version ID: {E_aykn.get("".join([chr(ord(i)-3)for i in'YHUVLRQbLG']),b85decode('Rc>o;Z+C7').decode())}")
-        print(f"Pretty Name: {E_aykn.get('\u0050\u0052\u0045\u0054\u0054\u0059\u005f\u004e\u0041\u004d\u0045',b64decode('VW5rbm93bg==').decode())}")
-        return E_aykn
-    except Exception as ZPavCg:
-        print(f'Error reading release file: {ZPavCg}')
+                geX_Gg,ojbA_k8h=lezn_.strip().split('\u003d',1)
+                ojbA_k8h=ojbA_k8h.strip(b85decode('A}0y').decode())
+                XEPiXy_t[geX_Gg]=ojbA_k8h
+        print("".join([chr(ord(i)-3)for i in'\rOlqx{#Uhohdvh#Lqirupdwlrq=']))
+        print(f"Distribution: {XEPiXy_t.get("".join([chr(ord(i)-3)for i in'QDPH']),'\u0055\u006e\u006b\u006e\u006f\u0077\u006e')}")
+        print(f"Version: {XEPiXy_t.get('\x56\x45\x52\x53\x49\x4f\x4e',"".join([chr(ord(i)-3)for i in'Xqnqrzq']))}")
+        print(f"Version ID: {XEPiXy_t.get("".join([chr(ord(i)-3)for i in'YHUVLRQbLG']),'\x55\x6e\x6b\x6e\x6f\x77\x6e')}")
+        print(f"Pretty Name: {XEPiXy_t.get('\x50\x52\x45\x54\x54\x59\x5f\x4e\x41\x4d\x45','\x55\x6e\x6b\x6e\x6f\x77\x6e')}")
+        return XEPiXy_t
+    except Exception as J2VhIfjM:
+        print(f'Error reading release file: {J2VhIfjM}')
         return None
-if __name__=='__main__':
-    if os.name=='posix'and os.path.exists("".join([chr(ord(i)-3)for i in'2hwf2rv0uhohdvh'])):
-        hCayP7B2U=BoM5PID()
+if __name__=='\x5f\x5f\x6d\x61\x69\x6e\x5f\x5f':
+    if os.name=='\u0070\u006f\u0073\u0069\u0078'and os.path.exists('\u002f\u0065\u0074\u0063\u002f\u006f\u0073\u002d\u0072\u0065\u006c\u0065\u0061\u0073\u0065'):
+        nmmD=u8Juit6L()
     else:
         print('\x54\x68\x69\x73\x20\x73\x63\x72\x69\x70\x74\x20\x69\x73\x20\x64\x65\x73\x69\x67\x6e\x65\x64\x20\x66\x6f\x72\x20\x4c\x69\x6e\x75\x78\x20\x73\x79\x73\x74\x65\x6d\x73\x2e')

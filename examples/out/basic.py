@@ -1,30 +1,30 @@
 import os
 
-def Ray9KtDB_():
-    vN_isq = '/etc/os-release'
-    if not os.path.exists(vN_isq):
+def bJFC():
+    Vnl3e = '/etc/os-release'
+    if not os.path.exists(Vnl3e):
         print('OS release file not found. This might not be a Linux system.')
         return None
-    Gti2zkl = {}
+    fBD = {}
     try:
-        with open(vN_isq, 'r') as WNWpzI4OgZ:
-            for PgQ in WNWpzI4OgZ:
-                if not PgQ or '=' not in PgQ:
+        with open(Vnl3e, 'r') as Jz2:
+            for CJau3R in Jz2:
+                if not CJau3R or '=' not in CJau3R:
                     continue
-                bz2u5I, IJF = PgQ.strip().split('=', 1)
-                IJF = IJF.strip('"\'\n')
-                Gti2zkl[bz2u5I] = IJF
+                jBRnlWm, wHf7pWkL = CJau3R.strip().split('=', 1)
+                wHf7pWkL = wHf7pWkL.strip('"\'\n')
+                fBD[jBRnlWm] = wHf7pWkL
         print('\nLinux Release Information:')
-        print(f"Distribution: {Gti2zkl.get('NAME', 'Unknown')}")
-        print(f"Version: {Gti2zkl.get('VERSION', 'Unknown')}")
-        print(f"Version ID: {Gti2zkl.get('VERSION_ID', 'Unknown')}")
-        print(f"Pretty Name: {Gti2zkl.get('PRETTY_NAME', 'Unknown')}")
-        return Gti2zkl
-    except Exception as y7R:
-        print(f'Error reading release file: {y7R}')
+        print(f"Distribution: {fBD.get('NAME', 'Unknown')}")
+        print(f"Version: {fBD.get('VERSION', 'Unknown')}")
+        print(f"Version ID: {fBD.get('VERSION_ID', 'Unknown')}")
+        print(f"Pretty Name: {fBD.get('PRETTY_NAME', 'Unknown')}")
+        return fBD
+    except Exception as KyifDLkD:
+        print(f'Error reading release file: {KyifDLkD}')
         return None
 if __name__ == '__main__':
     if os.name == 'posix' and os.path.exists('/etc/os-release'):
-        XYvmvI = Ray9KtDB_()
+        yJ7U = bJFC()
     else:
         print('This script is designed for Linux systems.')

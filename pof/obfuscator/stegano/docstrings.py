@@ -16,6 +16,7 @@
 
 import ast
 import random
+from collections.abc import Iterator
 from tokenize import (
     DEDENT,
     INDENT,
@@ -43,28 +44,52 @@ class DocstringObfuscator:
     def __init__(
         self,
         encoding_class=None,
-        generator=None,
+        generator: Iterator[str] | None = None,
         max_chunk_size: int = 200,
+        min_chunk_size: int = 20,
     ) -> None:
         if encoding_class is None:
             encoding_class = Base64Encoding
         self.encoding_class = encoding_class
 
+        if min_chunk_size > max_chunk_size:
+            msg = f"min_chunk_size ({min_chunk_size}) must be <= max_chunk_size ({max_chunk_size})"  # noqa: E501
+            raise ValueError(msg)
+
+        self.min_chunk_size = min_chunk_size
         self.max_chunk_size = max_chunk_size
 
         if generator is None:
             generator = BasicGenerator.alphabet_generator()
         self.generator = generator
 
-    @staticmethod
-    def _split_into_chunks(encoded: str, max_chunk_size: int) -> list[str]:
-        """Split an encoded string into chunks of at most max_chunk_size characters."""
+    def _split_into_chunks(
+        self,
+        encoded: str,
+        min_chunk_size: int,
+        max_chunk_size: int,
+    ) -> list[str]:
+        """Split an encoded string into variable-length chunks."""
         if max_chunk_size <= 0:
             return [encoded]
-        return [
-            encoded[i : i + max_chunk_size]
-            for i in range(0, len(encoded), max_chunk_size)
-        ]
+
+        chunks = []
+        pos = 0
+        total_length = len(encoded)
+
+        while pos < total_length:
+            remaining = total_length - pos
+            if remaining <= max_chunk_size:
+                chunks.append(encoded[pos:])
+                break
+            if min_chunk_size == max_chunk_size:
+                chunk_size = max_chunk_size
+            else:
+                chunk_size = random.randint(min_chunk_size, max_chunk_size)
+            actual_chunk_size = min(chunk_size, remaining)
+            chunks.append(encoded[pos : pos + actual_chunk_size])
+            pos += actual_chunk_size
+        return chunks
 
     @staticmethod
     def _generate_container_tokens(
@@ -131,14 +156,18 @@ class DocstringObfuscator:
             (RPAR, ")"),
         ]
 
-    def obfuscate_tokens(self, tokens):
+    def obfuscate_tokens(self, tokens: list[tuple]) -> list[tuple]:
         code = untokenize(tokens)
 
         encoded = ast.literal_eval(
             untokenize(self.encoding_class.encode_tokens(code.encode())),
         )
 
-        chunks = self._split_into_chunks(encoded, self.max_chunk_size)
+        chunks = self._split_into_chunks(
+            encoded,
+            self.min_chunk_size,
+            self.max_chunk_size,
+        )
 
         container_names = []
         container_names.extend(next(self.generator) for _ in chunks)

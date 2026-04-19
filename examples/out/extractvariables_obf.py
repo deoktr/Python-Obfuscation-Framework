@@ -7,12 +7,12 @@ def get_linux_release_info():
     """Get Linux release info from /etc/os-release."""
 
     # Check if the file exists
-    nQbrfCu4jy="/etc/os-release"
-    release_file=nQbrfCu4jy
+    BNQ6q="/etc/os-release"
+    release_file=BNQ6q
 
     if not os.path.exists(release_file):
-        GQwZ="OS release file not found. This might not be a Linux system."
-        print(GQwZ)
+        PrzrNr="OS release file not found. This might not be a Linux system."
+        print(PrzrNr)
         return None
 
         # Dictionary to store release information
@@ -20,28 +20,28 @@ def get_linux_release_info():
 
     try:
     # Read and parse the file
-        skE8f_y2OE="r"
-        with open(release_file,skE8f_y2OE)as f:
+        XsuOipxOs="r"
+        with open(release_file,XsuOipxOs)as f:
             for line in f:
-                GjLhia="="
-                if not line or GjLhia not in line:
+                WO1="="
+                if not line or WO1 not in line:
                     continue
 
                     # Split key and value
-                XfXCZdFs="="
-                RMd=1
-                key,value=line.strip().split(XfXCZdFs,RMd)
+                t5Jtynqxd="="
+                MDDDdTk=1
+                key,value=line.strip().split(t5Jtynqxd,MDDDdTk)
 
                 # Remove quotes from value
-                u11="\"'\n"
-                value=value.strip(u11)
+                i9VxX_9ruy="\"'\n"
+                value=value.strip(i9VxX_9ruy)
 
                 # Store in dictionary
                 release_info[key]=value
 
                 # Print key release information
-        IONF="\nLinux Release Information:"
-        print(IONF)
+        c1bI1C="\nLinux Release Information:"
+        print(c1bI1C)
         print(f"Distribution: {release_info.get('NAME','Unknown')}")
         print(f"Version: {release_info.get('VERSION','Unknown')}")
         print(f"Version ID: {release_info.get('VERSION_ID','Unknown')}")
@@ -55,13 +55,13 @@ def get_linux_release_info():
 
 
         # Main execution
-nXXw7_="__main__"
-if __name__==nXXw7_:
+WAiw5_="__main__"
+if __name__==WAiw5_:
 # Check if running on Linux
-    mm2="posix"
-    kvb="/etc/os-release"
-    if os.name==mm2 and os.path.exists(kvb):
+    DF3ZfWOY="posix"
+    Hn6="/etc/os-release"
+    if os.name==DF3ZfWOY and os.path.exists(Hn6):
         release_details=get_linux_release_info()
     else:
-        ZOMudR="This script is designed for Linux systems."
-        print(ZOMudR)
+        cFYfXgyL5Y="This script is designed for Linux systems."
+        print(cFYfXgyL5Y)

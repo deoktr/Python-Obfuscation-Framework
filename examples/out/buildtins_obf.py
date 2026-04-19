@@ -33,16 +33,16 @@ def get_linux_release_info():
 
                 # Print key release information
         globals()['__builtins__'].__dict__['print']("\nLinux Release Information:")
-        __builtins__.__dict__.__getitem__('print')(f"Distribution: {release_info.get('NAME','Unknown')}")
-        globals()['__builtins__'].__dict__['print'](f"Version: {release_info.get('VERSION','Unknown')}")
-        __builtins__.__dict__['print'](f"Version ID: {release_info.get('VERSION_ID','Unknown')}")
-        __builtins__.__getattribute__('print')(f"Pretty Name: {release_info.get('PRETTY_NAME','Unknown')}")
+        __builtins__.__dict__['print'](f"Distribution: {release_info.get('NAME','Unknown')}")
+        __builtins__.__getattribute__('print')(f"Version: {release_info.get('VERSION','Unknown')}")
+        __builtins__.__dict__.__getitem__('print')(f"Version ID: {release_info.get('VERSION_ID','Unknown')}")
+        globals()['__builtins__'].__dict__['print'](f"Pretty Name: {release_info.get('PRETTY_NAME','Unknown')}")
 
         return release_info
 
     except globals()['__builtins__'].__dict__['Exception']as e:
-        __builtins__.__dict__.__getitem__('print')(f"Error reading release file: {e}")
-        return __name__.__class__.__base__.__base__
+        __builtins__.__getattribute__('print')(f"Error reading release file: {e}")
+        return __builtins__.__dict__.__getitem__('None')
 
 
         # Main execution
@@ -51,4 +51,4 @@ if __name__=="__main__":
     if os.name=="posix"and os.path.exists("/etc/os-release"):
         release_details=get_linux_release_info()
     else:
-        __builtins__.__getattribute__('print')("This script is designed for Linux systems.")
+        __builtins__.__dict__.__getitem__('print')("This script is designed for Linux systems.")

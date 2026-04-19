@@ -1,10 +1,21 @@
 import os
 
 def get_linux_release_info():
-    _state=381
+    _state=851
     _ret=None
-    while _state!=413:
-        if _state==499:
+    while _state!=370:
+        if _state==453:
+            if not os.path.exists(release_file):
+                print('OS release file not found. This might not be a Linux system.')
+                return None
+            _state=155
+        elif _state==962:
+            release_file='/etc/os-release'
+            _state=453
+        elif _state==155:
+            release_info={}
+            _state=757
+        elif _state==757:
             try:
                 with open(release_file,'r')as f:
                     for line in f:
@@ -22,21 +33,10 @@ def get_linux_release_info():
             except Exception as e:
                 print(f'Error reading release file: {e}')
                 return None
-            _state=413
-        elif _state==401:
-            if not os.path.exists(release_file):
-                print('OS release file not found. This might not be a Linux system.')
-                return None
-            _state=256
-        elif _state==381:
+            _state=370
+        elif _state==851:
             'Get Linux release info from /etc/os-release.'
-            _state=382
-        elif _state==382:
-            release_file='/etc/os-release'
-            _state=401
-        elif _state==256:
-            release_info={}
-            _state=499
+            _state=962
     return _ret
 if __name__=='__main__':
     if os.name=='posix'and os.path.exists('/etc/os-release'):

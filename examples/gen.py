@@ -26,6 +26,7 @@ from pof.stager import *
 from pof.utils.extract_names import NameExtract
 from pof.utils.generator import AdvancedGenerator, BaseGenerator, BasicGenerator
 from pof.utils.format import black_format
+from pof.utils.seed import init_seed
 
 
 class Example(BaseObfuscator):
@@ -236,6 +237,8 @@ def obfuscate_to_file(out, file_name):
 
 
 def run_all():
+    init_seed(42)
+
     file = pathlib.Path(__file__).parent / "source.py"
     with file.open() as f:
         source = f.read()

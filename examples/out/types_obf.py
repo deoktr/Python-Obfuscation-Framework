@@ -2,18 +2,18 @@
 import os
 
 
-def get_linux_release_info()-> None:
+def get_linux_release_info()-> object:
     """Get Linux release info from /etc/os-release."""
 
     # Check if the file exists
-    release_file: float | complex="/etc/os-release"
+    release_file: bool | int="/etc/os-release"
 
     if not os.path.exists(release_file):
         print("OS release file not found. This might not be a Linux system.")
         return None
 
         # Dictionary to store release information
-    release_info: dict[bool, int]={}
+    release_info: set[str] | list[bytearray]={}
 
     try:
     # Read and parse the file
@@ -26,7 +26,7 @@ def get_linux_release_info()-> None:
                 key,value=line.strip().split("=",1)
 
                 # Remove quotes from value
-                value: dict[range, bytes]=value.strip("\"'\n")
+                value: bool=value.strip("\"'\n")
 
                 # Store in dictionary
                 release_info[key]=value
@@ -49,6 +49,6 @@ def get_linux_release_info()-> None:
 if __name__=="__main__":
 # Check if running on Linux
     if os.name=="posix"and os.path.exists("/etc/os-release"):
-        release_details: int=get_linux_release_info()
+        release_details: bool=get_linux_release_info()
     else:
         print("This script is designed for Linux systems.")

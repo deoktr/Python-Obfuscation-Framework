@@ -1,31 +1,31 @@
 import os
 
-def Tfju3yFpyg():
+def KBWGU6():
     """Get Linux release info from /etc/os-release."""
-    r86mYpS = '/etc/os-release'
-    if not os.path.exists(r86mYpS):
+    zaeKcrMaMC = '/etc/os-release'
+    if not os.path.exists(zaeKcrMaMC):
         print('OS release file not found. This might not be a Linux system.')
         return None
-    RzHbgjXjps = {}
+    ucJtme = {}
     try:
-        with open(r86mYpS, 'r') as lrv21In9:
-            for Vdw7DOdWT in lrv21In9:
-                if not Vdw7DOdWT or '=' not in Vdw7DOdWT:
+        with open(zaeKcrMaMC, 'r') as wtrHUFDGMl:
+            for KBjP0w_mM in wtrHUFDGMl:
+                if not KBjP0w_mM or '=' not in KBjP0w_mM:
                     continue
-                Vj3RKRxY, QSCqeex1P1 = Vdw7DOdWT.strip().split('=', 1)
-                QSCqeex1P1 = QSCqeex1P1.strip('"\'\n')
-                RzHbgjXjps[Vj3RKRxY] = QSCqeex1P1
+                UWk, XQS = KBjP0w_mM.strip().split('=', 1)
+                XQS = XQS.strip('"\'\n')
+                ucJtme[UWk] = XQS
         print('\nLinux Release Information:')
-        print(f"Distribution: {RzHbgjXjps.get('NAME', 'Unknown')}")
-        print(f"Version: {RzHbgjXjps.get('VERSION', 'Unknown')}")
-        print(f"Version ID: {RzHbgjXjps.get('VERSION_ID', 'Unknown')}")
-        print(f"Pretty Name: {RzHbgjXjps.get('PRETTY_NAME', 'Unknown')}")
-        return RzHbgjXjps
-    except Exception as HzWN:
-        print(f'Error reading release file: {HzWN}')
+        print(f"Distribution: {ucJtme.get('NAME', 'Unknown')}")
+        print(f"Version: {ucJtme.get('VERSION', 'Unknown')}")
+        print(f"Version ID: {ucJtme.get('VERSION_ID', 'Unknown')}")
+        print(f"Pretty Name: {ucJtme.get('PRETTY_NAME', 'Unknown')}")
+        return ucJtme
+    except Exception as ApDbWgNfO:
+        print(f'Error reading release file: {ApDbWgNfO}')
         return None
 if __name__ == '__main__':
     if os.name == 'posix' and os.path.exists('/etc/os-release'):
-        LLXDw8F = Tfju3yFpyg()
+        uCtgY = KBWGU6()
     else:
         print('This script is designed for Linux systems.')

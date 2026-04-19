@@ -47,9 +47,3 @@ from pygments.formatters import HtmlFormatter
 with open("static/pygment.css", "w") as f:
     f.write(HtmlFormatter(style="monokai").get_style_defs(".highlight"))
 ```
-
-## TODO
-
-- Download output to file.
-- Add timeout in case the computation takes too long.
-- Set correct version when building the server in CI.

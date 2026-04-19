@@ -1,21 +1,21 @@
 import sys
 if(hasattr(sys,'gettrace')and sys.gettrace()is not None):
-    raise Exception('type')
+    raise Exception('DebuggerEvasion')
 from datetime import datetime
-if(datetime.now()>datetime(2026,3,31,21,35,25)):
-    raise Exception('type')
+if(datetime.now()>datetime(2026,4,19,23,15,18)):
+    raise Exception('ExpireEvasion')
 import tracemalloc
 if(tracemalloc.is_tracing()):
-    raise Exception('type')
+    raise Exception('TracemallocEvasion')
 import os
 if(((os.sysconf('SC_PAGE_SIZE')*os.sysconf('SC_PHYS_PAGES'))/(1024.**3))<2):
-    raise Exception('type')
+    raise Exception('LinuxRAMCountEvasion')
 import multiprocessing
 if(multiprocessing.cpu_count()<2):
-    raise Exception('type')
+    raise Exception('CPUCountEvasion')
 import os
 if(os.path.isfile('/tmp/foobar')):
-    raise Exception('type')
+    raise Exception('FileMissingEvasion')
 # source file that will be obfuscated
 import os
 
