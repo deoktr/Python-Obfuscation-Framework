@@ -2,14 +2,14 @@
 
 _Auto-generated documentation. Do not edit manually._
 
-**Total techniques**: 71
+**Total techniques**: 85
 
 ## Categories
 
-- [Debugger](#debugger) (7 techniques)
-- [Guardrails](#guardrails) (27 techniques)
-- [Sandbox](#sandbox) (28 techniques)
-- [Special](#special) (9 techniques)
+- [Debugger](#debugger) (8 techniques)
+- [Guardrails](#guardrails) (29 techniques)
+- [Sandbox](#sandbox) (38 techniques)
+- [Special](#special) (10 techniques)
 
 ---
 
@@ -102,6 +102,26 @@ _No parameters_
 import os 
 if (any (x in open ("/proc/"+str (os .getppid ())+"/comm").read ()for x in ["pydevd","debugpy","pdb"])):
     raise Exception ('LinuxDebugProcessEvasion')
+print ("Hello, world!")
+```
+
+### `MacDebugProcessEvasion`
+
+- **Platform**: darwin
+- **Description**: Detects macOS debugging tools by parent process name
+
+**Parameters**:
+
+| Parameter | Type | Default |
+|---|---|---|
+| `debuggers` | `list[str] | None` | `None` |
+
+**Example output**:
+
+```python
+import subprocess ,os 
+if (any (x in subprocess .check_output (['ps','-o','comm=','-p',str (os .getppid ())]).decode ()for x in ['lldb','dtrace','sample','spindump','leaks'])):
+    raise Exception ('MacDebugProcessEvasion')
 print ("Hello, world!")
 ```
 
@@ -301,7 +321,7 @@ print ("Hello, world!")
 
 ```python
 from datetime import datetime 
-if (datetime .now ()>datetime (2026 ,4 ,5 ,16 ,36 ,10 )):
+if (datetime .now ()>datetime (2026 ,4 ,19 ,13 ,16 ,5 )):
     raise Exception ('ExpireEvasion')
 print ("Hello, world!")
 ```
@@ -570,6 +590,46 @@ print ("Hello, world!")
 
 ```python
 # Example not available: invalid literal for int() with base 16: 'example'
+```
+
+### `MacSIPEvasion`
+
+- **Platform**: darwin
+- **Description**: Checks macOS System Integrity Protection (SIP) status
+
+**Parameters**:
+
+| Parameter | Type | Default |
+|---|---|---|
+| `expected_enabled` | `bool` | `True` |
+
+**Example output**:
+
+```python
+import subprocess 
+if ((b"enabled"in subprocess .check_output (['csrutil','status']))!=True ):
+    raise Exception ('MacSIPEvasion')
+print ("Hello, world!")
+```
+
+### `MacVersionEvasion`
+
+- **Platform**: darwin
+- **Description**: Checks macOS version against a minimum version
+
+**Parameters**:
+
+| Parameter | Type | Default |
+|---|---|---|
+| `min_version` | `str` | `'11.0'` |
+
+**Example output**:
+
+```python
+import platform 
+if (tuple (int (x )for x in platform .mac_ver ()[0 ].split ('.'))<tuple (int (x )for x in '11.0'.split ('.'))):
+    raise Exception ('MacVersionEvasion')
+print ("Hello, world!")
 ```
 
 ### `TimezoneEvasion`
@@ -947,6 +1007,202 @@ print ("Hello, world!")
 from pathlib import Path 
 if (float (Path ('/proc/uptime').read_text ().split ()[0 ])<720 ):
     raise Exception ('LinuxUptimeEvasion')
+print ("Hello, world!")
+```
+
+### `MacDiskSizeEvasion`
+
+- **Platform**: darwin
+- **Description**: Detects small disk size on macOS indicating a sandbox VM
+
+**Parameters**:
+
+| Parameter | Type | Default |
+|---|---|---|
+| `min_disk` | `int` | `52428800` |
+
+**Example output**:
+
+```python
+import subprocess 
+if (int (subprocess .check_output (['df','-k','/']).decode ().split ('\n')[1 ].split ()[1 ])<52428800 ):
+    raise Exception ('MacDiskSizeEvasion')
+print ("Hello, world!")
+```
+
+### `MacEDREvasion`
+
+- **Platform**: darwin
+- **Description**: Detects EDR/security products via macOS process list
+
+**Parameters**:
+
+| Parameter | Type | Default |
+|---|---|---|
+| `edr_list` | `list[str] | None` | `None` |
+
+**Example output**:
+
+```python
+import subprocess 
+if (any (e in subprocess .check_output (['ps','-eo','comm']).decode ().lower ()for e in ['cbosxsensorservice','cbdefense','sentinelagent','falcond','crowdstrike','malwarebytes','littlesnitch','lulu'])):
+    raise Exception ('MacEDREvasion')
+print ("Hello, world!")
+```
+
+### `MacMouseEvasion`
+
+- **Platform**: darwin
+- **Description**: Detects absence of mouse/trackpad on macOS via IORegistry
+
+**Parameters**:
+
+_No parameters_
+
+**Example output**:
+
+```python
+import subprocess 
+if (b"AppleHIDMouseDevice"not in subprocess .check_output (['ioreg','-c','AppleHIDMouseDevice','-r'])):
+    raise Exception ('MacMouseEvasion')
+print ("Hello, world!")
+```
+
+### `MacProcessListEvasion`
+
+- **Platform**: darwin
+- **Description**: Detects known analysis tool processes on macOS
+
+**Parameters**:
+
+| Parameter | Type | Default |
+|---|---|---|
+| `process_list` | `list[str] | None` | `None` |
+
+**Example output**:
+
+```python
+import subprocess 
+if (any (x in subprocess .check_output (['ps','-eo','comm']).decode ()for x in ['Wireshark','tcpdump','dtrace','lldb','fsmon','filemon','procmon','Instruments'])):
+    raise Exception ('MacProcessListEvasion')
+print ("Hello, world!")
+```
+
+### `MacRAMCountEvasion`
+
+- **Platform**: darwin
+- **Description**: Detects low RAM on macOS indicating a sandbox VM
+
+**Parameters**:
+
+| Parameter | Type | Default |
+|---|---|---|
+| `min_ram` | `int` | `2147483648` |
+
+**Example output**:
+
+```python
+import subprocess 
+if (int (subprocess .check_output (['sysctl','-n','hw.memsize']).strip ())<2147483648 ):
+    raise Exception ('MacRAMCountEvasion')
+print ("Hello, world!")
+```
+
+### `MacSandboxArtifactEvasion`
+
+- **Platform**: darwin
+- **Description**: Detects known sandbox/VM artifact files on macOS
+
+**Parameters**:
+
+| Parameter | Type | Default |
+|---|---|---|
+| `artifacts` | `list[str] | None` | `None` |
+
+**Example output**:
+
+```python
+import os 
+if (any (os .path .exists (a )for a in ['/Library/Parallels Guest Tools','/Library/Application Support/VMware Tools','/usr/local/bin/VBoxControl','/Library/LaunchDaemons/com.parallels.vm.prl_nettool.plist'])):
+    raise Exception ('MacSandboxArtifactEvasion')
+print ("Hello, world!")
+```
+
+### `MacScreenResolutionEvasion`
+
+- **Platform**: darwin
+- **Description**: Detects low screen resolution on macOS indicating a headless sandbox
+
+**Parameters**:
+
+| Parameter | Type | Default |
+|---|---|---|
+| `min_width` | `int` | `1024` |
+
+**Example output**:
+
+```python
+import subprocess 
+if (int (subprocess .check_output (['osascript','-e','tell application "Finder" to get bounds of window of desktop']).decode ().split (', ')[2 ])<1024 ):
+    raise Exception ('MacScreenResolutionEvasion')
+print ("Hello, world!")
+```
+
+### `MacTmpCountEvasion`
+
+- **Platform**: darwin
+- **Description**: Detects low temp file count on macOS
+
+**Parameters**:
+
+| Parameter | Type | Default |
+|---|---|---|
+| `min_count` | `int` | `3` |
+
+**Example output**:
+
+```python
+import os 
+if (len (os .listdir ('/private/tmp'))<3 ):
+    raise Exception ('MacTmpCountEvasion')
+print ("Hello, world!")
+```
+
+### `MacUptimeEvasion`
+
+- **Platform**: darwin
+- **Description**: Detects low uptime on macOS indicating a recently booted sandbox
+
+**Parameters**:
+
+| Parameter | Type | Default |
+|---|---|---|
+| `min_uptime` | `int` | `600` |
+
+**Example output**:
+
+```python
+import subprocess ,time 
+if (time .time ()-int (subprocess .check_output (['sysctl','-n','kern.boottime']).decode ().split ('sec = ')[1 ].split (',')[0 ])<600 ):
+    raise Exception ('MacUptimeEvasion')
+print ("Hello, world!")
+```
+
+### `MacVMEvasion`
+
+- **Platform**: darwin
+- **Description**: Detects VM/hypervisor on macOS via sysctl CPU VMM flag
+
+**Parameters**:
+
+_No parameters_
+
+**Example output**:
+
+```python
+import subprocess 
+if (b"VMM"in subprocess .check_output (['sysctl','-n','machdep.cpu.features'])):
+    raise Exception ('MacVMEvasion')
 print ("Hello, world!")
 ```
 
@@ -1332,6 +1588,24 @@ _No parameters_
 import os 
 if (os .path .exists ("/proc/version")and "microsoft"in open ("/proc/version").read ().lower ()):
     raise Exception ('LinuxWSLEvasion')
+print ("Hello, world!")
+```
+
+### `MacAppSandboxEvasion`
+
+- **Platform**: darwin
+- **Description**: Detects macOS App Sandbox environment
+
+**Parameters**:
+
+_No parameters_
+
+**Example output**:
+
+```python
+import os 
+if (os .environ .get ('APP_SANDBOX_CONTAINER_ID')is not None ):
+    raise Exception ('MacAppSandboxEvasion')
 print ("Hello, world!")
 ```
 

@@ -82,6 +82,80 @@ class LinuxEDREvasion(BaseEvasion):
         ]
 
 
+MAC_EDR_LIST = [
+    "cbosxsensorservice",
+    "cbdefense",
+    "sentinelagent",
+    "falcond",
+    "crowdstrike",
+    "malwarebytes",
+    "littlesnitch",
+    "lulu",
+]
+
+
+class MacEDREvasion(BaseEvasion):
+    CATEGORY = Category.SANDBOX
+    PLATFORM = Platform.DARWIN
+    DESCRIPTION = "Detects EDR/security products via macOS process list"
+
+    def __init__(self, edr_list: list[str] | None = None) -> None:
+        self.edr_list = edr_list if edr_list is not None else MAC_EDR_LIST
+
+    @staticmethod
+    def import_tokens() -> list[tuple[int, str]]:
+        return [
+            (NAME, "import"),
+            (NAME, "subprocess"),
+        ]
+
+    def check_tokens(self) -> list[tuple[int, str]]:
+        """Output.
+
+        `any(e in subprocess.check_output(["ps", "-eo", "comm"])
+        .decode().lower() for e in [...])`.
+        """
+        edr_tokens: list[tuple[int, str]] = []
+        for i, edr in enumerate(self.edr_list):
+            if i > 0:
+                edr_tokens.append((OP, ","))
+            edr_tokens.append((STRING, repr(edr)))
+
+        return [
+            (NAME, "any"),
+            (LPAR, "("),
+            (NAME, "e"),
+            (NAME, "in"),
+            (NAME, "subprocess"),
+            (OP, "."),
+            (NAME, "check_output"),
+            (LPAR, "("),
+            (OP, "["),
+            (STRING, repr("ps")),
+            (OP, ","),
+            (STRING, repr("-eo")),
+            (OP, ","),
+            (STRING, repr("comm")),
+            (OP, "]"),
+            (RPAR, ")"),
+            (OP, "."),
+            (NAME, "decode"),
+            (LPAR, "("),
+            (RPAR, ")"),
+            (OP, "."),
+            (NAME, "lower"),
+            (LPAR, "("),
+            (RPAR, ")"),
+            (NAME, "for"),
+            (NAME, "e"),
+            (NAME, "in"),
+            (OP, "["),
+            *edr_tokens,
+            (OP, "]"),
+            (RPAR, ")"),
+        ]
+
+
 class WinEDREvasion(BaseEvasion):
     CATEGORY = Category.SANDBOX
     PLATFORM = Platform.WINDOWS
