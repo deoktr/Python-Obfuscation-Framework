@@ -1407,7 +1407,6 @@ Other Python obfuscation projects:
 ## TODO
 
 - Add option to prepend a shebang, and add ability to customize it.
-- For docstring obfuscator make comment length variable.
 - Support selective obfuscation via comments.
 - Support target Python version to only output syntax that will work for that
   version.
