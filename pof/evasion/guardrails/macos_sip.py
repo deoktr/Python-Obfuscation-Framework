@@ -24,7 +24,7 @@ class MacSIPEvasion(BaseEvasion):
     PLATFORM = Platform.DARWIN
     DESCRIPTION = "Checks macOS System Integrity Protection (SIP) status"
 
-    def __init__(self, expected_enabled: bool = True) -> None:
+    def __init__(self, *, expected_enabled: bool = True) -> None:
         self.expected_enabled = expected_enabled
 
     @staticmethod
@@ -35,7 +35,7 @@ class MacSIPEvasion(BaseEvasion):
         ]
 
     def check_tokens(self) -> list[tuple[int, str]]:
-        """`(b"enabled" in subprocess.check_output(["csrutil", "status"])) != expected_enabled`."""
+        """`(b"enabled" in subprocess.check_output(["csrutil", "status"])) != expected_enabled`."""  # noqa: E501
         return [
             (LPAR, "("),
             (STRING, 'b"enabled"'),

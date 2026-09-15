@@ -35,7 +35,7 @@ class MacDiskSizeEvasion(BaseEvasion):
         ]
 
     def check_tokens(self) -> list[tuple[int, str]]:
-        """`int(subprocess.check_output(["df","-k","/"]).decode().split("\\n")[1].split()[1]) < min_disk`."""
+        r"""`int(subprocess.check_output(["df","-k","/"]).decode().split("\n")[1].split()[1]) < min_disk`."""  # noqa: E501
         return [
             (NAME, "int"),
             (LPAR, "("),

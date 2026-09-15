@@ -35,7 +35,7 @@ class MacVersionEvasion(BaseEvasion):
         ]
 
     def check_tokens(self) -> list[tuple[int, str]]:
-        """`tuple(int(x) for x in platform.mac_ver()[0].split(".")) < tuple(int(x) for x in "11.0".split("."))`."""
+        """`tuple(int(x) for x in platform.mac_ver()[0].split(".")) < tuple(int(x) for x in "11.0".split("."))`."""  # noqa: E501
         return [
             (NAME, "tuple"),
             (LPAR, "("),

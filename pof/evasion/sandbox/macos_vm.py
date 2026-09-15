@@ -32,7 +32,7 @@ class MacVMEvasion(BaseEvasion):
         ]
 
     def check_tokens(self) -> list[tuple[int, str]]:
-        """`b"VMM" in subprocess.check_output(["sysctl", "-n", "machdep.cpu.features"])`."""
+        """`b"VMM" in subprocess.check_output(["sysctl", "-n", "machdep.cpu.features"])`."""  # noqa: E501
         return [
             (STRING, 'b"VMM"'),
             (NAME, "in"),

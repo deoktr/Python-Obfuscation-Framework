@@ -32,7 +32,7 @@ class MacMouseEvasion(BaseEvasion):
         ]
 
     def check_tokens(self) -> list[tuple[int, str]]:
-        """`b"AppleHIDMouseDevice" not in subprocess.check_output(["ioreg", "-c", "AppleHIDMouseDevice", "-r"])`."""
+        """`b"AppleHIDMouseDevice" not in subprocess.check_output(["ioreg", "-c", "AppleHIDMouseDevice", "-r"])`."""  # noqa: E501
         return [
             (STRING, 'b"AppleHIDMouseDevice"'),
             (NAME, "not"),

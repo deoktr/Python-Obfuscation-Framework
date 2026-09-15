@@ -168,9 +168,7 @@ class Example(BaseObfuscator):
         tokens = FileMissingEvasion(file="/tmp/analysis_running").add_evasion(tokens)
 
         # expire after 24 hours
-        tokens = ExpireEvasion(
-            datetime.now() + timedelta(hours=24)
-        ).add_evasion(tokens)
+        tokens = ExpireEvasion(datetime.now() + timedelta(hours=24)).add_evasion(tokens)
 
         # require a specific environment variable to be set
         tokens = EnvVarEvasion(

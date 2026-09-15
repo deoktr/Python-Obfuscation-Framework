@@ -37,7 +37,7 @@ class MacUptimeEvasion(BaseEvasion):
         ]
 
     def check_tokens(self) -> list[tuple[int, str]]:
-        """`time.time() - int(subprocess.check_output(["sysctl","-n","kern.boottime"]).decode().split("sec = ")[1].split(",")[0]) < min_uptime`."""
+        """`time.time() - int(subprocess.check_output(["sysctl","-n","kern.boottime"]).decode().split("sec = ")[1].split(",")[0]) < min_uptime`."""  # noqa: E501
         return [
             (NAME, "time"),
             (OP, "."),

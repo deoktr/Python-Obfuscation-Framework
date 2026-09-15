@@ -45,7 +45,7 @@ class MacDebugProcessEvasion(BaseEvasion):
         ]
 
     def check_tokens(self) -> list[tuple[int, str]]:
-        """`any(x in subprocess.check_output(["ps","-o","comm=","-p",str(os.getppid())]).decode() for x in [...])`."""
+        """`any(x in subprocess.check_output(["ps","-o","comm=","-p",str(os.getppid())]).decode() for x in [...])`."""  # noqa: E501
         dbg_tokens: list[tuple[int, str]] = []
         for i, dbg in enumerate(self.debuggers):
             if i > 0:

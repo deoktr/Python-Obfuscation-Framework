@@ -72,6 +72,7 @@ target-version = ["py313"]
 extend-exclude = """
 (
   ^/tests/obfuscator/test_names/code/
+  | ^/tests/obfuscator/fixtures/
   | ^/examples/out/
 )
 """

@@ -384,7 +384,9 @@ class NumberObfuscator:
             strategies = self.NEG_FLOAT_STRATS
 
         if (
-            token_type is int and tok_positiv and 2 < tok_actual_val < 100  # noqa: PLR2004
+            token_type is int
+            and tok_positiv
+            and 2 < tok_actual_val < 100  # noqa: PLR2004
         ):
             strategies = list(strategies)
             strategies.append(self.NStrats.BOOLEAN)

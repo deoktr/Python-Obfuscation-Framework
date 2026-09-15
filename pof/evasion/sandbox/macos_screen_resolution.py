@@ -35,7 +35,7 @@ class MacScreenResolutionEvasion(BaseEvasion):
         ]
 
     def check_tokens(self) -> list[tuple[int, str]]:
-        """`int(subprocess.check_output(["osascript","-e",'tell application "Finder" to get bounds of window of desktop']).decode().split(", ")[2]) < 1024`."""
+        """`int(subprocess.check_output(["osascript","-e",'tell application "Finder" to get bounds of window of desktop']).decode().split(", ")[2]) < 1024`."""  # noqa: E501
         return [
             (NAME, "int"),
             (LPAR, "("),
