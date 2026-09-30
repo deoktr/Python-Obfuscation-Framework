@@ -91,8 +91,8 @@ class TestBehaviorAltering:
         # verify execution completes without error
         try:
             exec_ns: dict = {"__builtins__": builtins}
-            exec(obfuscated, exec_ns)  # noqa: S102
-        except Exception as exc:  # noqa: BLE001
+            exec(obfuscated, exec_ns)
+        except Exception as exc:
             pytest.fail(
                 f"{obfuscator_entry.name} + {fixture_source.name}: "
                 f"obfuscated code raised {type(exc).__name__}: {exc}"

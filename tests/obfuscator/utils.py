@@ -1,5 +1,5 @@
-import io
 import contextlib
+import io
 
 
 def exec_capture(code, a=None):

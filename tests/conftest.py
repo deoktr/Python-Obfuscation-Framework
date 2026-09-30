@@ -51,9 +51,8 @@ def pytest_runtest_makereport(item: pytest.Item, call: pytest.CallInfo) -> None:
     report = outcome.get_result()
     if report.failed and call.when == "call":
         seed = getattr(item, "_pof_seed", None)
-        if seed is not None:
-            if report.longrepr:
-                report.longreprtext += f"\n[pof] random seed: {seed}"
+        if seed is not None and report.longrepr:
+            report.longreprtext += f"\n[pof] random seed: {seed}"
 
 
 @pytest.fixture()

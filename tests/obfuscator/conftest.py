@@ -11,8 +11,6 @@ from tokenize import generate_tokens
 from typing import Any
 
 import pytest
-
-from pof.utils import encoding
 from pof.obfuscator import (
     AddCommentsObfuscator,
     AddNewlinesObfuscator,
@@ -61,6 +59,7 @@ from pof.obfuscator import (
     XORObfuscator,
     ZlibObfuscator,
 )
+from pof.utils import encoding
 from pof.utils.tokens import untokenize
 
 from .utils import exec_capture
@@ -269,7 +268,7 @@ def discover_fixtures() -> list[SourceFixture]:
         try:
             source = path.read_text()
             expected_output = exec_capture(source, {"__builtins__": builtins})
-        except Exception as exc:  # noqa: BLE001
+        except Exception as exc:
             fixtures.append(
                 SourceFixture(
                     name=path.stem,

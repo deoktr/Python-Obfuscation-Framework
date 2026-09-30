@@ -34,10 +34,21 @@ pof_bp = Blueprint("pof", __name__)
 @pof_bp.post("/")
 def pof_route():
     """Basic HTTP endpoint to send and receive raw source code."""
-    src = request.get_data().decode()
-    if len(src) > current_app.config["INPUT_SIZE_LIMIT"]:
+    content_length = request.content_length
+    size_limit = current_app.config["INPUT_SIZE_LIMIT"]
+    if content_length and content_length > size_limit:
+        logger.warning("input too large (content-length)")
+        return "Input too large", 413
+
+    try:
+        src = request.get_data().decode()
+    except UnicodeDecodeError:
+        logger.warning("invalid encoding")
+        return "Invalid encoding", 400
+
+    if len(src) > size_limit:
         logger.warning("input too large")
-        return "Inpt too large", 413
+        return "Input too large", 413
 
     try:
         return obfuscator_instance.obfuscate(src)
@@ -53,8 +64,14 @@ def format_html_error(msg: str) -> str:
 @pof_bp.post("/html")
 def pof_route_html():
     """HTML endpoint to send form data and receive HTML formatted code."""
+    content_length = request.content_length
+    size_limit = current_app.config["INPUT_SIZE_LIMIT"]
+    if content_length and content_length > size_limit:
+        logger.warning("input too large (content-length)")
+        return format_html_error("Input too large.")
+
     src = request.form.get("src", "")
-    if len(src) > current_app.config["INPUT_SIZE_LIMIT"]:
+    if len(src) > size_limit:
         logger.warning("input too large")
         return format_html_error("Input too large.")
 

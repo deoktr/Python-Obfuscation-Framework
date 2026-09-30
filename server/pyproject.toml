@@ -61,7 +61,6 @@ lint.ignore = ["ANN", "FIX"]
 lint.extend-ignore = ["ERA001", "S311", "D100", "D101", "D102", "D103", "D104", "D105", "D106", "D107", "TD001", "TD003"]
 lint.isort.known-local-folder = ["pof", "test"]
 lint.pydocstyle.convention = "google"
-lint.flake8-copyright.author = "deoktr"
 
 [tool.mypy]
 ignore_missing_imports = true

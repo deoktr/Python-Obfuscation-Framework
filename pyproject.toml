@@ -38,8 +38,8 @@ dependencies = [
 
 [project.optional-dependencies]
 dev = [
-  "ruff==0.14.4",
-  "black==25.9.0",
+  "ruff>=0.14.4",
+  "black>=26.3.1",
   "pyinstrument",
 ]
 test = [
@@ -103,7 +103,10 @@ lint.extend-ignore = ["ERA001", "S311", "D100", "D101", "D102", "D103", "D104", 
 lint.isort.known-local-folder = ["pof", "test"]
 lint.pydocstyle.convention = "google"
 lint.extend-per-file-ignores."pof/cli.py" = ["G004"]
-lint.flake8-copyright.author = "deoktr"
+
+[tool.ruff.lint.flake8-copyright]
+author = "Deoktr"
+notice-rgx = "(?i)Copyright \\(C\\) \\d{4} - \\d{4}"
 
 [tool.mypy]
 ignore_missing_imports = true

@@ -42,7 +42,7 @@ class DeadCodeObfuscator:
         "assignment",
     )
 
-    def __init__(  # noqa: PLR0913
+    def __init__(  # noqa: PLR0913, PLR0917
         self,
         frequency: float = 0.3,
         max_function_depth: int = 2,

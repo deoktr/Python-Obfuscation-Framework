@@ -14,7 +14,6 @@ import io
 from pathlib import Path
 
 import pytest
-
 from pof import Obfuscator
 
 LEVELS = ["basic", "moderate", "advanced", "extreme"]
@@ -71,7 +70,7 @@ def _discover_fixtures() -> list[tuple[str, str, str]]:
         try:
             source = path.read_text()
             expected = _exec_capture(source)
-        except Exception:  # noqa: BLE001
+        except Exception:  # noqa: S112
             continue
         fixtures.append((path.stem, source, expected))
     return fixtures
